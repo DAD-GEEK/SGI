@@ -199,8 +199,30 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
+      {/* Quick Stats / Trust Indicators (De la plantilla móvil) */}
+      <section className="py-12 bg-white border-y border-[#c2c6d4]/40">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-10 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div className="flex flex-col items-center p-2">
+            <span className="text-[#055bb2] font-headline text-3xl md:text-4xl font-bold mb-1">10+</span>
+            <span className="text-xs md:text-sm font-medium text-[#424752]">Años de Experiencia</span>
+          </div>
+          <div className="flex flex-col items-center p-2 border-l border-[#c2c6d4]/30">
+            <span className="text-[#055bb2] font-headline text-3xl md:text-4xl font-bold mb-1">100%</span>
+            <span className="text-xs md:text-sm font-medium text-[#424752]">Garantía de Cumplimiento</span>
+          </div>
+          <div className="flex flex-col items-center p-2 border-l border-[#c2c6d4]/30">
+            <span className="text-[#055bb2] font-headline text-3xl md:text-4xl font-bold mb-1">24/7</span>
+            <span className="text-xs md:text-sm font-medium text-[#424752]">Acompañamiento Técnico</span>
+          </div>
+          <div className="flex flex-col items-center p-2 border-l border-[#c2c6d4]/30">
+            <span className="text-[#055bb2] font-headline text-3xl md:text-4xl font-bold mb-1">ISO</span>
+            <span className="text-xs md:text-sm font-medium text-[#424752]">Auditoría Certificada</span>
+          </div>
+        </div>
+      </section>
+
       {/* CTA / Contact Section */}
-      <section className="py-20 bg-white" id="contacto">
+      <section className="py-20 bg-[#f7f9fb] pb-24 md:pb-20" id="contacto">
         <div className="max-w-[1280px] mx-auto px-4 md:px-10">
           <div className="bg-[#055bb2] rounded-2xl p-8 md:p-14 text-white flex flex-col md:flex-row justify-between items-center gap-8 shadow-xl">
             <div className="space-y-4 max-w-2xl text-center md:text-left">

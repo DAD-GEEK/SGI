@@ -156,6 +156,57 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Bottom Navigation Bar (Exclusiva para Móviles < 768px como en la plantilla móvil) */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#c2c6d4]/80 shadow-[0_-4px_16px_rgba(30,41,59,0.08)] z-50 py-1.5 px-4 flex justify-around items-center">
+        <Link
+          to="/"
+          className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 transition-colors ${
+            isActive('/') ? 'text-[#055bb2] font-bold' : 'text-[#545f73] hover:text-[#055bb2]'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: isActive('/') ? "'FILL' 1" : "'FILL' 0" }}>
+            home
+          </span>
+          <span className="text-[10px] font-medium leading-none mt-1">Inicio</span>
+        </Link>
+
+        <Link
+          to="/servicios"
+          className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 transition-colors ${
+            isActive('/servicios') ? 'text-[#055bb2] font-bold' : 'text-[#545f73] hover:text-[#055bb2]'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: isActive('/servicios') ? "'FILL' 1" : "'FILL' 0" }}>
+            grid_view
+          </span>
+          <span className="text-[10px] font-medium leading-none mt-1">Servicios</span>
+        </Link>
+
+        <Link
+          to="/pesv"
+          className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 transition-colors ${
+            isActive('/pesv') ? 'text-[#055bb2] font-bold' : 'text-[#545f73] hover:text-[#055bb2]'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: isActive('/pesv') ? "'FILL' 1" : "'FILL' 0" }}>
+            directions_car
+          </span>
+          <span className="text-[10px] font-medium leading-none mt-1">PESV</span>
+        </Link>
+
+        <a
+          href="https://wa.me/573112490072?text=Hola%2C%20quisiera%20cotizar"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-[#16A34A] hover:text-[#15803D] transition-colors"
+        >
+          <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+            chat
+          </span>
+          <span className="text-[10px] font-medium leading-none mt-1">WhatsApp</span>
+        </a>
+      </div>
     </header>
   );
 };
