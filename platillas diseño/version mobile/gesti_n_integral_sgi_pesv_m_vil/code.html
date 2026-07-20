@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PESV - Plan Estratégico de Seguridad Vial | Gestión Integral SGI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#eff1f3",
+                    "secondary-container": "#d5e0f8",
+                    "surface-dim": "#d8dadc",
+                    "tertiary-container": "#66768d",
+                    "primary-fixed": "#d6e3ff",
+                    "on-surface-variant": "#424752",
+                    "surface-container-high": "#e6e8ea",
+                    "on-secondary-fixed": "#111c2d",
+                    "surface-variant": "#e0e3e5",
+                    "on-error": "#ffffff",
+                    "secondary-fixed": "#d8e3fb",
+                    "tertiary-fixed": "#d3e4fe",
+                    "background": "#f7f9fb",
+                    "on-tertiary-container": "#fdfcff",
+                    "on-primary-fixed": "#001b3e",
+                    "on-error-container": "#93000a",
+                    "tertiary": "#4d5d73",
+                    "surface-tint": "#0d5db5",
+                    "surface-container": "#eceef0",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary-fixed-variant": "#00468c",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed-dim": "#a9c7ff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "primary": "#055bb2",
+                    "on-primary-container": "#fefcff",
+                    "surface": "#f7f9fb",
+                    "secondary-fixed-dim": "#bcc7de",
+                    "error-container": "#ffdad6",
+                    "outline-variant": "#c2c6d4",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "inverse-surface": "#2d3133",
+                    "on-secondary-fixed-variant": "#3c475a",
+                    "on-secondary-container": "#586377",
+                    "primary-container": "#3374cd",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "outline": "#727783",
+                    "inverse-primary": "#a9c7ff",
+                    "surface-bright": "#f7f9fb",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary": "#545f73",
+                    "on-surface": "#191c1e",
+                    "on-background": "#191c1e"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "margin-desktop": "40px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Manrope"],
+                    "headline-lg": ["Manrope"],
+                    "label-md": ["Inter"],
+                    "headline-sm": ["Manrope"],
+                    "headline-md": ["Manrope"],
+                    "body-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background antialiased flex flex-col min-h-screen">
+<!-- Top Navigation (Mobile Version - Hidden md) -->
+<header class="w-full top-0 z-50 sticky bg-surface border-b border-outline-variant shadow-sm transition-all duration-300 ease-in-out">
+<div class="flex justify-between items-center max-w-container mx-auto px-margin-mobile py-4">
+<div class="text-headline-md font-headline-md font-bold text-primary">
+                Gestión Integral SGI
+            </div>
+<button aria-label="Menu" class="text-on-surface hover:text-primary transition-colors p-2">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center w-full pb-12">
+<!-- Hero Section -->
+<section class="w-full px-margin-mobile pt-8 pb-12 flex flex-col gap-6 relative">
+<div class="w-full aspect-[4/5] rounded-xl overflow-hidden relative shadow-[0_4px_12px_rgba(30,41,59,0.05)] bg-surface-container-highest">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover" data-alt="A portrait-oriented, professional shot of a modern fleet of commercial vehicles aligned in a clean, brightly lit corporate depot. The lighting is crisp and corporate, highlighting safety features and compliance details. The overall color palette features cool tones, prominent whites, slate grays, and subtle primary blue accents, conveying a sense of reliable innovation, strict regulatory compliance, and operational efficiency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXtZNJYsY3lGJnQbNx75TcX9jFJJSDprXfkQXhlXleS1GcW0KWv00-1jNkuPxSwCZN5_31NZGvLbXjzx1MpjHKQ4JXxg3Wv_lv_PBlkqt_Sl4g-Y6XwWsNu2YIjecu_R_aIRi7YVACdtvPS-YQv6vy98eej8jTrAN_gximPR5Sg1jtATRQG3WDN-OtFwVl2ma9PopAc-nIaf_K37mmglnfr5VAynua7i5h-tC4XXZCqJct5795MiBe"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-transparent z-10"></div>
+<div class="relative z-20 h-full flex flex-col justify-end p-6 gap-4">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/20 text-primary w-fit font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]" data-icon="verified_user">verified_user</span>
+                        Cumplimiento Normativo
+                    </span>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Plan Estratégico de Seguridad Vial</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Proteja su organización y garantice el cumplimiento de la Ley 2050 mediante una gestión vial integral y preventiva.</p>
+</div>
+</div>
+</section>
+<!-- Regulatory Framework Grid -->
+<section class="w-full px-margin-mobile py-8 flex flex-col gap-6">
+<h2 class="font-headline-sm text-headline-sm text-on-surface border-b border-surface-container-high pb-2">Marco Legal &amp; Prevención</h2>
+<div class="flex flex-col gap-4">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_4px_12px_rgba(30,41,59,0.05)] border border-surface-variant flex flex-col gap-3 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[64px] text-primary" data-icon="gavel">gavel</span>
+</div>
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<h3 class="font-headline-sm text-headline-sm">Ley 2050</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Auditoría detallada y diseño estructurado para asegurar la alineación total con los requerimientos normativos nacionales vigentes.</p>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg p-6 shadow-[0_4px_12px_rgba(30,41,59,0.05)] border border-surface-variant flex flex-col gap-3 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[64px] text-secondary" data-icon="shield">shield</span>
+</div>
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+<h3 class="font-headline-sm text-headline-sm">Prevención Activa</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Implementación de protocolos de prevención y mitigación de riesgos para flotas, reduciendo incidentes y optimizando la seguridad.</p>
+</div>
+<!-- CTA Card -->
+<div class="bg-primary-container rounded-lg p-6 shadow-[0_4px_12px_rgba(30,41,59,0.05)] flex flex-col items-center justify-center text-center gap-4 mt-2">
+<h3 class="font-headline-sm text-headline-sm text-on-primary-container">¿Listo para auditar su PESV?</h3>
+<p class="font-body-sm text-body-sm text-on-primary-container opacity-90">Contáctenos para una evaluación preliminar de cumplimiento.</p>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-lg shadow-sm w-full mt-2 hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_today">calendar_today</span>
+                        Agendar Consultoría
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-secondary-fixed-variant">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-container mx-auto px-margin-mobile py-12">
+<div class="flex flex-col gap-4">
+<div class="font-headline-sm text-headline-sm font-bold text-on-secondary-fixed">
+                    Gestión Integral SGI
+                </div>
+<div class="flex flex-col gap-2">
+<a class="font-body-sm text-body-sm text-on-secondary-fixed opacity-80 hover:opacity-100 transition-opacity" href="#">Inicio</a>
+<a class="font-body-sm text-body-sm text-on-secondary-fixed opacity-80 hover:opacity-100 transition-opacity" href="#">Acerca de nosotros</a>
+<a class="font-body-sm text-body-sm text-on-secondary-fixed opacity-80 hover:opacity-100 transition-opacity" href="#">Servicios</a>
+<a class="font-body-sm text-body-sm text-on-secondary-fixed opacity-80 hover:opacity-100 transition-opacity" href="#">Términos de servicio</a>
+<a class="font-body-sm text-body-sm text-on-secondary-fixed opacity-80 hover:opacity-100 transition-opacity" href="#">Política de privacidad</a>
+</div>
+<div class="font-body-sm text-body-sm text-on-secondary-fixed opacity-60 mt-4">
+                    © 2024 Gestión Integral SGI S.A.S. Todos los derechos reservados.
+                </div>
+</div>
+</div>
+</footer>
+</body></html>
