@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Shield, MessageSquare } from 'lucide-react';
+import { Menu, X, MessageSquare } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -13,9 +13,11 @@ export const Navbar: React.FC = () => {
       <div className="max-w-[1280px] mx-auto px-4 md:px-10 py-3.5 flex justify-between items-center">
         {/* Brand Logo & Name */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-full bg-[#055bb2]/10 border border-[#055bb2]/30 flex items-center justify-center text-[#055bb2] group-hover:scale-105 transition-transform">
-            <Shield className="w-5 h-5" />
-          </div>
+          <img
+            src="/logo.png"
+            alt="Gestión Integral SGI Logo"
+            className="w-10 h-10 md:w-11 md:h-11 object-contain group-hover:scale-105 transition-transform"
+          />
           <div className="flex flex-col">
             <span className="text-lg md:text-xl font-bold font-headline text-[#055bb2] leading-tight">
               Gestión Integral SGI

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, CheckCircle2, Award, ArrowRight, Play, PhoneCall, Activity, LogIn, Target, Eye } from 'lucide-react';
+import { Shield, CheckCircle2, Award, ArrowRight, Play, PhoneCall, Activity, LogIn, Target, Eye, HeartHandshake, Scale, Lock, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Home: React.FC = () => {
@@ -20,8 +20,8 @@ export const Home: React.FC = () => {
 
         <div className="max-w-[1280px] mx-auto px-10 py-20 relative z-10 w-full text-white">
           <div className="max-w-3xl space-y-6">
-            <div className="inline-flex items-center gap-2 bg-[#055bb2]/40 border border-[#a9c7ff]/30 text-[#d6e3ff] px-4 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md">
-              <Shield className="w-4 h-4 text-[#a9c7ff]" />
+            <div className="inline-flex items-center gap-2.5 bg-[#055bb2]/40 border border-[#a9c7ff]/30 text-[#d6e3ff] px-4 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md">
+              <img src="/logo.png" alt="SGI Logo" className="w-5 h-5 object-contain" />
               <span>Sistemas de Gestión Integrados • Res. 0312 & Dec. 1072</span>
             </div>
 
@@ -60,6 +60,9 @@ export const Home: React.FC = () => {
       {/* ============================================================ */}
       <section className="md:hidden relative bg-[#f2f4f6] px-4 py-12 text-center overflow-hidden flex flex-col justify-center items-center">
         <div className="relative z-10 space-y-5 max-w-md mx-auto">
+          <div className="flex justify-center mb-2">
+            <img src="/logo.png" alt="SGI Logo Mobile" className="w-16 h-16 object-contain" />
+          </div>
           <h1 className="text-[36px] sm:text-[40px] leading-tight text-[#191c1e] font-bold font-headline">
             SU ASESOR... <br />
             <span className="text-[#055bb2]">SU ALIADO</span>
@@ -183,6 +186,95 @@ export const Home: React.FC = () => {
           <p className="text-sm text-[#424752] leading-relaxed">
             Ser reconocidos para el 2027 como una firma líder a nivel nacional en la prestación de servicios de consultoría y gestión empresarial, destacando por nuestra innovación, confiabilidad y el valor agregado entregado a nuestros clientes.
           </p>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 🌟 SECCIÓN VALORES CORPORATIVOS (Con valores.png)             */}
+      {/* ============================================================ */}
+      <section className="py-20 bg-white border-y border-[#c2c6d4]/40" id="valores">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-10 space-y-12">
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <span className="text-[#055bb2] font-semibold text-xs uppercase tracking-widest bg-[#d6e3ff]/60 px-3 py-1 rounded-md">
+              Cultura & Principios
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold font-headline text-[#191c1e]">
+              Nuestros Valores Corporativos
+            </h2>
+            <p className="text-sm md:text-base text-[#424752]">
+              Fundamentamos cada proyecto de asesoría en principios éticos sólidos y en una relación integral de confianza y valor con nuestros clientes.
+            </p>
+          </div>
+
+          {/* Banner Visual / Infografía de Valores */}
+          <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-lg border border-[#c2c6d4]/50 bg-[#f7f9fb] p-4 md:p-8 flex flex-col md:flex-row items-center gap-8">
+            <div className="w-full md:w-1/2 flex justify-center">
+              <img
+                src="/valores.png"
+                alt="Valores Corporativos Gestión Integral SGI"
+                className="w-full h-auto max-h-[320px] object-contain rounded-xl shadow-xs"
+              />
+            </div>
+            <div className="w-full md:w-1/2 space-y-4">
+              <div className="inline-flex items-center gap-2 text-[#055bb2] font-bold text-sm">
+                <Sparkles className="w-5 h-5" />
+                <span>Nuestra Filosofía de Trabajo</span>
+              </div>
+              <h3 className="text-xl font-bold font-headline text-[#191c1e]">
+                Confianza, Valor y Seguridad
+              </h3>
+              <p className="text-xs md:text-sm text-[#424752] leading-relaxed">
+                Nuestros profesionales están altamente calificados, formados y comprometidos con ofrecer un servicio eficiente, oportuno, personalizado y confidencial que se ajuste a las particularidades de cada empresa.
+              </p>
+            </div>
+          </div>
+
+          {/* Cards Bento Grid de los 4 Valores */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Valor 1: Ética Empresarial */}
+            <div className="bg-[#f7f9fb] p-6 rounded-xl border border-[#e0e3e5] elevation-1 flex flex-col space-y-3">
+              <div className="w-12 h-12 rounded-lg bg-[#055bb2]/10 text-[#055bb2] flex items-center justify-center">
+                <Scale className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold text-base text-[#191c1e] font-headline">Ética Empresarial</h4>
+              <p className="text-xs text-[#424752] leading-relaxed">
+                Prevalencia absoluta de la transparencia, rectitud y cumplimiento legal en cada diagnóstico, auditoría y consultoría.
+              </p>
+            </div>
+
+            {/* Valor 2: Calidad Humana */}
+            <div className="bg-[#f7f9fb] p-6 rounded-xl border border-[#e0e3e5] elevation-1 flex flex-col space-y-3">
+              <div className="w-12 h-12 rounded-lg bg-[#16A34A]/10 text-[#16A34A] flex items-center justify-center">
+                <HeartHandshake className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold text-base text-[#191c1e] font-headline">Calidad Humana</h4>
+              <p className="text-xs text-[#424752] leading-relaxed">
+                Desarrollo sostenible enfocado primordialmente en la salud, la seguridad y la dignidad de cada colaborador.
+              </p>
+            </div>
+
+            {/* Valor 3: Confidencialidad */}
+            <div className="bg-[#f7f9fb] p-6 rounded-xl border border-[#e0e3e5] elevation-1 flex flex-col space-y-3">
+              <div className="w-12 h-12 rounded-lg bg-[#545f73]/10 text-[#545f73] flex items-center justify-center">
+                <Lock className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold text-base text-[#191c1e] font-headline">Confidencialidad</h4>
+              <p className="text-xs text-[#424752] leading-relaxed">
+                Tratamiento seguro y reservado de toda la información técnica, documental y operativa de las organizaciones aliadas.
+              </p>
+            </div>
+
+            {/* Valor 4: Eficiencia & Oportunidad */}
+            <div className="bg-[#f7f9fb] p-6 rounded-xl border border-[#e0e3e5] elevation-1 flex flex-col space-y-3">
+              <div className="w-12 h-12 rounded-lg bg-[#055bb2]/10 text-[#055bb2] flex items-center justify-center">
+                <Sparkles className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold text-base text-[#191c1e] font-headline">Eficiencia Oportuna</h4>
+              <p className="text-xs text-[#424752] leading-relaxed">
+                Acompañamiento ágil y soluciones a la medida que garantizan resultados tangibles y cierres efectivos de compromisos.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

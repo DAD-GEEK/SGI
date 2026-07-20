@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shield, Phone, Mail, MapPin, MessageSquare } from 'lucide-react';
+import { Phone, Mail, MapPin, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
@@ -9,9 +9,11 @@ export const Footer: React.FC = () => {
         {/* Col 1: Brand */}
         <div className="space-y-4 col-span-1">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white">
-              <Shield className="w-5 h-5" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="Gestión Integral SGI Logo Footer"
+              className="w-10 h-10 object-contain"
+            />
             <span className="font-headline font-bold text-lg text-white">
               Gestión Integral SGI S.A.S
             </span>
