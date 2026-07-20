@@ -99,7 +99,7 @@ export const Footer: React.FC = () => {
       </div>
 
       {/* Bottom Legal bar */}
-      <div className="border-t border-white/10 py-6 text-center text-xs text-[#d8e3fb]/70 px-4 flex flex-col md:flex-row justify-between items-center max-w-[1280px] mx-auto gap-2">
+      <div className="border-t border-white/10 py-6 pb-24 md:pb-6 text-center text-xs text-[#d8e3fb]/70 px-4 flex flex-col md:flex-row justify-between items-center max-w-[1280px] mx-auto gap-2">
         <p>© 2026 Gestión Integral SGI S.A.S. Todos los derechos reservados.</p>
         <p className="text-[11px] opacity-80">
           Desarrollado por <span className="font-semibold text-white">Waloyo Group</span> — <i>Tecnología resiliente. Operación continua.</i>

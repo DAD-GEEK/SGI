@@ -157,8 +157,8 @@ export const Navbar: React.FC = () => {
         </div>
       )}
 
-      {/* Bottom Navigation Bar (Exclusiva para Móviles < 768px como en la plantilla móvil) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#c2c6d4]/80 shadow-[0_-4px_16px_rgba(30,41,59,0.08)] z-50 py-1.5 px-4 flex justify-around items-center">
+      {/* Bottom Navigation Bar (Exclusiva para Móviles < 768px con soporte para Safe Area / OS Navigation Bar) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#c2c6d4]/80 shadow-[0_-4px_16px_rgba(30,41,59,0.08)] z-50 pt-1.5 pb-safe px-4 flex justify-around items-center">
         <Link
           to="/"
           className={`flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 transition-colors ${
@@ -206,7 +206,7 @@ export const Navbar: React.FC = () => {
           </span>
           <span className="text-[10px] font-medium leading-none mt-1">WhatsApp</span>
         </a>
-      </div>
+      </nav>
     </header>
   );
 };
