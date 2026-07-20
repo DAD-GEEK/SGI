@@ -14,6 +14,9 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - **Navegación Móvil y Safe Area Insets**:
   - Implementado el componente de **Bottom Navigation Bar** flotante para dispositivos móviles (`< 768px`) en `src/components/Navbar.tsx`.
   - Configurado el soporte para barras del sistema operativo móvil (`pb-safe`, `pt-safe`, y `viewport-fit=cover` en `index.html`).
+- **Fidelidad Pixel-Perfect de Plantilla Móvil (`platillas diseño/version mobile/`)**:
+  - Reestructurada la vista de Inicio en [Home.tsx](file:///D:/Waloyo/WaloyoGroup/apps/client/SGI/src/pages/Home.tsx) para renderizar de forma nativa la plantilla móvil `gesti_n_integral_sgi_home_m_vil/code.html` en viewports `< 768px`.
+  - Incorporado el titular móvil `SU ASESOR... SU ALIADO`, botón de `Acceso Software/CRM` táctil, tarjetas de Misión/Visión con barra de acento vertical e indicadores de confianza (`10+ Años`, `100% Compromiso`).
 - **Implementación de Plantillas de Diseño (1 a 1)**:
   - **`Home.tsx`**: Landing comercial responsiva con Hero corporativo, sección de Misión/Visión, Bento Grid de especialidades, barra de estadísticas y CTA directo a WhatsApp.
   - **`Services.tsx`**: Vista de servicios en detalle (SG-SST Decreto 1072 & Res. 0312, SGC ISO 9001, SGI Integrado y Auditorías Internas).
