@@ -14,7 +14,7 @@ export const Navbar: React.FC = () => {
         {/* Brand Logo & Name */}
         <Link to="/" className="flex items-center gap-3 group">
           <img
-            src="/logo.png"
+            src="/logo-limpio.png"
             alt="Gestión Integral SGI Logo"
             className="w-10 h-10 md:w-11 md:h-11 object-contain group-hover:scale-105 transition-transform"
           />

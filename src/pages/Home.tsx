@@ -21,7 +21,7 @@ export const Home: React.FC = () => {
         <div className="max-w-[1280px] mx-auto px-10 py-20 relative z-10 w-full text-white">
           <div className="max-w-3xl space-y-6">
             <div className="inline-flex items-center gap-2.5 bg-[#055bb2]/40 border border-[#a9c7ff]/30 text-[#d6e3ff] px-4 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md">
-              <img src="/logo.png" alt="SGI Logo" className="w-5 h-5 object-contain" />
+              <img src="/logo-limpio.png" alt="SGI Logo" className="w-5 h-5 object-contain" />
               <span>Sistemas de Gestión Integrados • Res. 0312 & Dec. 1072</span>
             </div>
 
@@ -61,7 +61,7 @@ export const Home: React.FC = () => {
       <section className="md:hidden relative bg-[#f2f4f6] px-4 py-12 text-center overflow-hidden flex flex-col justify-center items-center">
         <div className="relative z-10 space-y-5 max-w-md mx-auto">
           <div className="flex justify-center mb-2">
-            <img src="/logo.png" alt="SGI Logo Mobile" className="w-16 h-16 object-contain" />
+            <img src="/logo-limpio.png" alt="SGI Logo Mobile" className="w-16 h-16 object-contain" />
           </div>
           <h1 className="text-[36px] sm:text-[40px] leading-tight text-[#191c1e] font-bold font-headline">
             SU ASESOR... <br />

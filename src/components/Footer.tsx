@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
         <div className="space-y-4 col-span-1">
           <div className="flex items-center gap-3">
             <img
-              src="/logo.png"
+              src="/logo-limpio.png"
               alt="Gestión Integral SGI Logo Footer"
               className="w-10 h-10 object-contain"
             />
