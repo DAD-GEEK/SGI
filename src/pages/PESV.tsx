@@ -1,5 +1,6 @@
 import React from 'react';
 import { Car, MessageSquare, CheckCircle } from 'lucide-react';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const PESV: React.FC = () => {
   return (
@@ -159,7 +160,7 @@ export const PESV: React.FC = () => {
               rel="noopener noreferrer"
               className="w-full inline-flex items-center justify-center gap-2 bg-[#16A34A] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-[#15803D] transition-colors shadow-md"
             >
-              <MessageSquare className="w-5 h-5" />
+              <WhatsAppIcon className="w-5 h-5 fill-current" />
               Solicitar Cotización por WhatsApp
             </a>
           </div>

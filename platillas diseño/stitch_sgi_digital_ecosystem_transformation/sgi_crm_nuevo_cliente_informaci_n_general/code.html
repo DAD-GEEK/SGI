@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agregar Cliente</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "error": "#ba1a1a",
+                      "secondary": "#545f73",
+                      "surface-container": "#eceef0",
+                      "on-tertiary-container": "#fdfcff",
+                      "on-secondary-fixed-variant": "#3c475a",
+                      "background": "#f7f9fb",
+                      "on-secondary-fixed": "#111c2d",
+                      "surface-bright": "#f7f9fb",
+                      "surface-container-high": "#e6e8ea",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "on-secondary-container": "#586377",
+                      "on-error": "#ffffff",
+                      "surface-container-low": "#f2f4f6",
+                      "primary-fixed": "#d6e3ff",
+                      "surface-dim": "#d8dadc",
+                      "surface-variant": "#e0e3e5",
+                      "tertiary-fixed": "#d3e4fe",
+                      "on-surface-variant": "#424752",
+                      "secondary-fixed": "#d8e3fb",
+                      "on-secondary": "#ffffff",
+                      "on-surface": "#191c1e",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#38485d",
+                      "on-tertiary-fixed": "#0b1c30",
+                      "outline-variant": "#c2c6d4",
+                      "error-container": "#ffdad6",
+                      "surface-container-highest": "#e0e3e5",
+                      "secondary-container": "#d5e0f8",
+                      "on-background": "#191c1e",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#a9c7ff",
+                      "on-primary-fixed-variant": "#00468c",
+                      "on-error-container": "#93000a",
+                      "surface-container-lowest": "#ffffff",
+                      "surface": "#f7f9fb",
+                      "primary": "#055bb2",
+                      "on-primary-container": "#fefcff",
+                      "inverse-surface": "#2d3133",
+                      "tertiary": "#4d5d73",
+                      "outline": "#727783",
+                      "inverse-primary": "#a9c7ff",
+                      "tertiary-fixed-dim": "#b7c8e1",
+                      "primary-container": "#3374cd",
+                      "on-primary-fixed": "#001b3e",
+                      "tertiary-container": "#66768d",
+                      "surface-tint": "#0d5db5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "40px",
+                      "container-max": "1280px",
+                      "unit": "8px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Manrope"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Manrope"
+                      ],
+                      "headline-md": [
+                              "Manrope"
+                      ],
+                      "headline-lg": [
+                              "Manrope"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        .elevation-1 {
+            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.05);
+        }
+        .form-input {
+            background-color: #f1f5f9;
+            border: 1px solid transparent;
+            transition: all 0.2s ease-in-out;
+        }
+        .form-input:focus {
+            background-color: #ffffff;
+            border-color: #055bb2;
+            box-shadow: 0 0 0 2px rgba(5, 91, 178, 0.2);
+            outline: none;
+        }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #055bb2;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #055bb2;
+        }
+        .toggle-checkbox {
+            right: 0;
+            z-index: 1;
+            border-color: #e2e8f0;
+            transition: all 0.3s;
+        }
+        .toggle-label {
+            width: 3rem;
+            height: 1.5rem;
+            background-color: #cbd5e1;
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .toggle-label::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 1.25rem;
+            height: 1.25rem;
+            background-color: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .toggle-checkbox:checked + .toggle-label::after {
+            transform: translateX(1.5rem);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface h-screen overflow-hidden flex flex-col md:flex-row">
+<!-- App Container -->
+<div class="flex-1 flex flex-col h-full overflow-hidden w-full max-w-[1280px] mx-auto bg-surface-bright relative">
+<!-- Top App Bar - For structural balance, not functional nav as per context suppression -->
+<header class="h-16 px-margin-desktop flex items-center justify-between border-b border-surface-variant flex-shrink-0 bg-surface-bright">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">Agregar Cliente</h1>
+</div>
+<div class="flex items-center gap-4">
+<img alt="Reference Top" class="h-8 object-contain opacity-50 hidden md:block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD56WiGeNfaOX5c_zYompbwh7luOIbimkohwefZxvliFTifmeQG9zZcO_FqDNJBlL4uIi-i0UDCkzmmyyPF5WGnvMiTpYVEhAqaDweDNvZFtoiEftQOG4HP3c5MMT5Bs50FKxknfx4lebVdzriiWqSa8wbNcXkGwbPgTv6MydpBwX5fZ4W8ALY-sd_3C_TKIWn4jvBpRRwfDmW0hThKbC-Veexj1PsnJivEBb5ciXboOvht51h2Iw41xAwDHzWyxz49XQ"/>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto p-margin-mobile md:p-margin-desktop">
+<div class="max-w-4xl mx-auto space-y-gutter">
+<!-- Tabs -->
+<div class="flex border-b border-surface-variant mb-6">
+<button class="px-6 py-3 font-label-md text-label-md border-b-2 border-primary text-primary font-bold">
+                        Información general
+                    </button>
+<button class="px-6 py-3 font-label-md text-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors">
+                        Contratos
+                    </button>
+<button class="px-6 py-3 font-label-md text-label-md border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors">
+                        Contactos
+                    </button>
+</div>
+<!-- Form Card -->
+<div class="bg-surface-container-lowest rounded-xl elevation-1 p-gutter">
+<form class="space-y-6">
+<!-- Grid Layout for Inputs -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-gutter gap-y-6">
+<!-- Identificación -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Identificación *</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">badge</span>
+</div>
+<input class="form-input w-full pl-10 pr-4 py-2.5 rounded-lg text-body-md placeholder-outline-variant" placeholder="Ej. 900123456" required="" type="text"/>
+</div>
+</div>
+<!-- Dígito de verificación -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Dígito de verificación</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">pin</span>
+</div>
+<input class="form-input w-full pl-10 pr-4 py-2.5 rounded-lg text-body-md placeholder-outline-variant" placeholder="Ej. 1" type="text"/>
+</div>
+</div>
+<!-- Nombre completo -->
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Nombre completo o Razón Social *</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">domain</span>
+</div>
+<input class="form-input w-full pl-10 pr-4 py-2.5 rounded-lg text-body-md placeholder-outline-variant" placeholder="Ej. Empresa Tecnológica S.A.S" required="" type="text"/>
+</div>
+</div>
+<!-- Teléfono -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Teléfono</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">phone</span>
+</div>
+<input class="form-input w-full pl-10 pr-4 py-2.5 rounded-lg text-body-md placeholder-outline-variant" placeholder="+57 (___) _______" type="tel"/>
+</div>
+</div>
+<!-- Email -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Email</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">mail</span>
+</div>
+<input class="form-input w-full pl-10 pr-4 py-2.5 rounded-lg text-body-md placeholder-outline-variant" placeholder="contacto@empresa.com" type="email"/>
+</div>
+</div>
+<!-- Dirección -->
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Dirección</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">location_on</span>
+</div>
+<input class="form-input w-full pl-10 pr-4 py-2.5 rounded-lg text-body-md placeholder-outline-variant" placeholder="Cra 15 # 93 - 60, Piso 5" type="text"/>
+</div>
+</div>
+<!-- Ciudad (Dropdown) -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Ciudad</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+<span class="material-symbols-outlined text-outline">location_city</span>
+</div>
+<select class="form-input w-full pl-10 pr-10 py-2.5 rounded-lg text-body-md appearance-none">
+<option disabled="" selected="" value="">Seleccione una ciudad</option>
+<option value="bogota">Bogotá, D.C.</option>
+<option value="medellin">Medellín</option>
+<option value="cali">Cali</option>
+<option value="barranquilla">Barranquilla</option>
+</select>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Página web -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Página web</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">language</span>
+</div>
+<input class="form-input w-full pl-10 pr-4 py-2.5 rounded-lg text-body-md placeholder-outline-variant" placeholder="https://www.empresa.com" type="url"/>
+</div>
+</div>
+<!-- Fecha de ingreso (Datepicker) -->
+<div class="flex flex-col gap-2">
+<label class="font-label-md text-label-md text-on-surface-variant">Fecha de ingreso</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">calendar_today</span>
+</div>
+<input class="form-input w-full pl-10 pr-4 py-2.5 rounded-lg text-body-md text-on-surface" type="date"/>
+</div>
+</div>
+<!-- ¿Activo? Toggle -->
+<div class="flex flex-col gap-2 justify-center">
+<label class="font-label-md text-label-md text-on-surface-variant mb-1">Estado</label>
+<div class="flex items-center gap-3">
+<div class="relative inline-block w-12 mr-2 align-middle select-none">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer opacity-0" id="active-toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="active-toggle"></label>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface">¿Activo?</span>
+</div>
+</div>
+</div>
+<div class="w-full flex justify-center mt-6">
+<img alt="Reference Bottom" class="h-16 object-contain opacity-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV6oHkeChn7wzRXaFVz3kUwzpRosR2ggHQQCNW0zVXw6DqEZgd_vBG0qj5NKwePnzZxsDPY4sXhz9b34UDHJpUBpVCog8tGnZpcgWPqnZtUeJ6k18Xe35NwE47UQcwklkykUJCh7ZeranwdEAkgFj5cHypXF-O4LbpMOTUKnkCkXm9SRvUZw8K-xoFds7sF8jDGBNy_x8B2OB0uqSIAsfZ6pyGlOb3Wspwe0Qz9e12BgrpItNNd_J3KsuhykfiMbB4hQ"/>
+</div>
+<!-- Actions -->
+<div class="pt-6 border-t border-surface-variant flex justify-end gap-4 mt-8">
+<button class="px-6 py-[11px] rounded-lg border border-outline text-on-surface font-label-md text-label-md hover:bg-surface-container-low transition-colors" type="button">
+                                Cancelar
+                            </button>
+<button class="px-6 py-[11px] rounded-lg bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container hover:shadow-md transition-all flex items-center gap-2" type="submit">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                                Guardar
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</main>
+</div>
+</body></html>

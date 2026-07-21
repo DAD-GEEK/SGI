@@ -1,6 +1,7 @@
 import React from 'react';
-import { Shield, CheckCircle2, Award, ArrowRight, Play, PhoneCall, Activity, LogIn, Target, Eye, HeartHandshake, Scale, Lock, Sparkles } from 'lucide-react';
+import { Shield, CheckCircle2, Award, ArrowRight, Play, Activity, LogIn, Target, Eye, HeartHandshake, Scale, Lock, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const Home: React.FC = () => {
   return (
@@ -45,9 +46,9 @@ export const Home: React.FC = () => {
                 href="https://wa.me/573112490072?text=Hola%2C%20quisiera%20agendar%20una%20consultoria"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 border border-white/40 bg-white/10 backdrop-blur-md text-white px-8 py-3.5 rounded-lg font-semibold text-sm hover:bg-white/20 transition-all"
+                className="inline-flex items-center justify-center gap-2 border border-[#16A34A]/50 bg-[#16A34A]/20 backdrop-blur-md text-white px-8 py-3.5 rounded-lg font-semibold text-sm hover:bg-[#16A34A]/30 transition-all"
               >
-                <PhoneCall className="w-4 h-4" />
+                <WhatsAppIcon className="w-4.5 h-4.5 fill-current text-[#16A34A]" />
                 Agendar Consultoría
               </a>
             </div>
@@ -73,13 +74,15 @@ export const Home: React.FC = () => {
           </p>
 
           <div className="pt-2 w-full">
-            <button
-              onClick={() => alert('Portal de Clientes SGI: Módulo en desarrollo.')}
+            <a
+              href="http://localhost:3005/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-[#055bb2] text-white font-semibold text-sm rounded-lg py-3 px-6 w-full flex items-center justify-center gap-2 shadow-md hover:bg-[#3374cd] transition-all active:scale-[0.98]"
             >
               <LogIn className="w-5 h-5" />
               Acceso Software/CRM
-            </button>
+            </a>
           </div>
         </div>
 
@@ -404,8 +407,9 @@ export const Home: React.FC = () => {
               href="https://wa.me/573112490072?text=Hola%20SGI%2C%20quiero%20solicitar%20un%20diagnostico%20gratuito"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#16A34A] text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-sm hover:bg-[#15803D] transition-colors shadow-lg flex-shrink-0 w-full md:w-auto text-center"
+              className="bg-[#16A34A] text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl font-bold text-sm hover:bg-[#15803D] transition-colors shadow-lg flex-shrink-0 w-full md:w-auto text-center inline-flex items-center justify-center gap-2.5"
             >
+              <WhatsAppIcon className="w-5 h-5 fill-current" />
               Contactar por WhatsApp
             </a>
           </div>

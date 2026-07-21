@@ -1,6 +1,7 @@
 import React from 'react';
-import { Shield, CheckCircle, Award, Car, Layers, FileSpreadsheet, ArrowRight, MessageSquare } from 'lucide-react';
+import { Shield, CheckCircle, Award, Car, Layers, FileSpreadsheet, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const Services: React.FC = () => {
   return (
@@ -180,7 +181,7 @@ export const Services: React.FC = () => {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-[#16A34A] text-white px-8 py-3.5 rounded-xl font-bold text-sm hover:bg-[#15803D] transition-colors shadow-lg"
           >
-            <MessageSquare className="w-5 h-5" />
+            <WhatsAppIcon className="w-5 h-5 fill-current" />
             Contactar por WhatsApp
           </a>
         </div>

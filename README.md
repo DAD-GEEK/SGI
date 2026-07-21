@@ -41,7 +41,14 @@ apps/client/SGI/
 ├── ConsultorSGI/         # Código legacy referencia (.NET C# / SQL Server)
 ├── docs/                 # Documentación técnica y arquitectura
 │   ├── plan_sgi.md       # Plan Maestro de Onboarding e Ingeniería
-│   └── arquitectura_sgi.md # Documento de Arquitectura y Migración
+│   ├── plan_sgi_crm.md   # Plan Maestro del Software CRM Desacoplado
+│   ├── arquitectura_sgi.md # Documento de Arquitectura y Migración 5 Capas
+│   ├── agenda_sgi_legacy.md # Documentación detallada y modelo de datos de AgendaSGI (.NET)
+│   ├── consultor_sgi_legacy.md # Documentación detallada de auditorías Res. 0312 / ISO de ConsultorSGI (.NET)
+│   ├── sgi_database_unified_mapping.md # Auditoría de duplicidades y mapa de unificación de BD
+│   ├── sgi_unified_db_schema.sql # Script SQL oficial con el modelo relacional unificado en PostgreSQL 15
+│   ├── sgi_architecture_division.md # Especificación de división de responsabilidades (Spring Boot vs CRM)
+│   └── sgi_data_migration_plan.md # Plan Maestro de Migración ETL de backups .bak (MS SQL -> PostgreSQL)
 ├── platillas diseño/     # Diseños fuente en HTML/CSS y capturas de pantalla
 ├── src/
 │   ├── components/       # Componentes reutilizables (Navbar, Footer, etc.)

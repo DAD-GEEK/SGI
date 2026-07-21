@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SGI Unified Core - Contactos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "secondary": "#545f73",
+                        "surface-container": "#eceef0",
+                        "on-tertiary-container": "#fdfcff",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "background": "#f7f9fb",
+                        "on-secondary-fixed": "#111c2d",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-high": "#e6e8ea",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-secondary-container": "#586377",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f2f4f6",
+                        "primary-fixed": "#d6e3ff",
+                        "surface-dim": "#d8dadc",
+                        "surface-variant": "#e0e3e5",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-surface-variant": "#424752",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "outline-variant": "#c2c6d4",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary-container": "#d5e0f8",
+                        "on-background": "#191c1e",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#a9c7ff",
+                        "on-primary-fixed-variant": "#00468c",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f7f9fb",
+                        "primary": "#055bb2",
+                        "on-primary-container": "#fefcff",
+                        "inverse-surface": "#2d3133",
+                        "tertiary": "#4d5d73",
+                        "outline": "#727783",
+                        "inverse-primary": "#a9c7ff",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "primary-container": "#3374cd",
+                        "on-primary-fixed": "#001b3e",
+                        "tertiary-container": "#66768d",
+                        "surface-tint": "#0d5db5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Manrope"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Subtle shadow for Level 1 Elevation */
+        .elevation-1 {
+            box-shadow: 0 4px 12px rgba(30, 41, 59, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col md:flex-row">
+<!-- SideNavBar (Desktop) / Hidden on Mobile -->
+<nav class="hidden md:flex bg-secondary-fixed dark:bg-on-secondary-fixed-variant docked left-0 h-full w-64 shadow-md fixed left-0 top-0 flex flex-col z-50">
+<div class="px-4 py-6">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold">
+                    SGI
+                </div>
+<div>
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-secondary-fixed dark:text-on-secondary-fixed-variant">CRM Module</h1>
+<p class="font-label-md text-label-md text-on-secondary-fixed-variant dark:text-secondary-fixed-dim">Enterprise Management</p>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary transition-colors py-2 px-4 rounded-lg font-label-md text-label-md mb-8 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Entry
+            </button>
+<ul class="space-y-1">
+<li>
+<a class="text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-on-secondary-fixed/10 mx-2 my-1 flex items-center px-4 py-3 rounded-lg font-label-md text-label-md transition-all" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+                        Dashboard
+                    </a>
+</li>
+<li>
+<a class="bg-primary text-on-primary rounded-lg mx-2 my-1 flex items-center px-4 py-3 font-label-md text-label-md transition-all" href="#">
+<span class="material-symbols-outlined mr-3">groups</span>
+                        Customers
+                    </a>
+</li>
+<li>
+<a class="text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-on-secondary-fixed/10 mx-2 my-1 flex items-center px-4 py-3 rounded-lg font-label-md text-label-md transition-all" href="#">
+<span class="material-symbols-outlined mr-3">contact_phone</span>
+                        Contacts
+                    </a>
+</li>
+<li>
+<a class="text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-on-secondary-fixed/10 mx-2 my-1 flex items-center px-4 py-3 rounded-lg font-label-md text-label-md transition-all" href="#">
+<span class="material-symbols-outlined mr-3">description</span>
+                        Contracts
+                    </a>
+</li>
+</ul>
+</div>
+<div class="mt-auto px-4 py-6">
+<ul class="space-y-1">
+<li>
+<a class="text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-on-secondary-fixed/10 mx-2 my-1 flex items-center px-4 py-3 rounded-lg font-label-md text-label-md transition-all" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+                        Settings
+                    </a>
+</li>
+<li>
+<a class="text-on-secondary-fixed-variant dark:text-secondary-fixed-dim hover:bg-on-secondary-fixed/10 mx-2 my-1 flex items-center px-4 py-3 rounded-lg font-label-md text-label-md transition-all" href="#">
+<span class="material-symbols-outlined mr-3">logout</span>
+                        Logout
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-inverse-surface flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 z-40 bg-surface-container-low dark:bg-inverse-surface shadow-sm docked full-width top-0">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface hover:bg-surface-container-high transition-colors p-2 rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary hidden md:block">SGI Unified Core</h2>
+</div>
+<div class="flex items-center gap-2 md:gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="bg-surface-container-low border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary rounded-full py-2 pl-10 pr-4 text-body-sm font-body-sm text-on-surface w-64 transition-all outline-none" placeholder="Search..." type="text"/>
+</div>
+<button class="text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors p-2 rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors p-2 rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors p-2 rounded-full cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container overflow-hidden cursor-pointer ml-2 border-2 border-transparent hover:border-primary transition-all">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A small, professional headshot of a corporate user, smiling subtly, wearing modern business attire, set against a neutral, well-lit light gray background, matching the clean corporate UI style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbtsNTCfb49o-_x122JEyOwsF8zLPR1tzOQGKbpYeAh2d0nLf24cgYZDCaWpgG-fudcK8Q_eevaLllIajhnXWIAbpUKQa7ln_8lf_uABnWu_365fWJzJF7wRT6WFnYIY4YYhO3UcqC61P_2qHLKWHLgYpskQluFLUDWY5zqo08LAUR7pl26tDnhblsjEgKjSkCcuQlqbLJurXAnVc0VnmzlJpb9as40upFJL2tyXg-A1W6d1ZE6t9U"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-margin-mobile md:p-margin-desktop max-w-container-max mx-auto w-full flex-1">
+<!-- Breadcrumbs & Header -->
+<div class="mb-gutter">
+<div class="flex items-center text-body-sm font-body-sm text-outline mb-2">
+<a class="hover:text-primary transition-colors" href="#">Customers</a>
+<span class="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">TechCorp Inc.</a>
+<span class="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
+<span class="text-on-surface">Edit Customer</span>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-background mb-1">TechCorp Inc.</h2>
+<div class="flex items-center gap-2">
+<span class="px-2 py-1 rounded-full bg-primary-container/20 text-primary-container font-label-md text-label-md">Active</span>
+<span class="text-body-sm font-body-sm text-on-surface-variant">ID: CUS-8924</span>
+</div>
+</div>
+<button class="px-4 py-2 bg-transparent border border-outline text-on-surface rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                        Save Changes
+                    </button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="flex border-b border-outline-variant mb-gutter overflow-x-auto hide-scrollbar">
+<button class="px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors whitespace-nowrap">
+                    General Info
+                </button>
+<button class="px-4 py-3 font-label-md text-label-md text-primary border-b-2 border-primary whitespace-nowrap">
+                    Contactos
+                </button>
+<button class="px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors whitespace-nowrap">
+                    Addresses
+                </button>
+<button class="px-4 py-3 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low transition-colors whitespace-nowrap">
+                    Financials
+                </button>
+</div>
+<!-- Reference Image Section (Requested to include) -->
+<div class="mb-gutter rounded-xl overflow-hidden elevation-1 bg-surface-container-lowest">
+<img alt="Reference for Contacts Table Redesign" class="w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCipXd5URKkpFe2zniVzf_kduGl4uD9RdgzzMalgXuY1D5JUbUpi3aTsF9Dw3896syaRt4aAQmGudO7mVIyg1tWfKTgn8-8uHWQHJjTrhKiLYZTSxPXodjMSvKtARL5cg-xsbJkv9yTAIS2skr8hpOQDzw_ZSOJadmGTtbvU0rHMU4z_WTW3vX28RsiPzpS8HQ3ipbNRMNQ3WyXUG2WSpf9USjGTMs7kTjrMJtAW01RPYPxZABQxMCsRf6YCpH9-DFXxg"/>
+</div>
+<!-- Contacts Section -->
+<div class="bg-surface-container-lowest rounded-xl elevation-1 overflow-hidden">
+<!-- Add Contact Form Area -->
+<div class="p-6 border-b border-surface-container-high bg-surface-bright">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">person_add</span>
+                        Agregar contacto
+                    </h3>
+<form class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-end">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface-variant" for="nombre">Nombre <span class="text-error">*</span></label>
+<input class="bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" id="nombre" placeholder="Ej. Juan Pérez" type="text"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface-variant" for="cargo">Cargo <span class="text-error">*</span></label>
+<input class="bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" id="cargo" placeholder="Ej. Gerente de Ventas" type="text"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface-variant" for="telefono">Teléfono fijo</label>
+<input class="bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" id="telefono" placeholder="Ej. (555) 123-4567" type="tel"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface-variant" for="celular">Celular</label>
+<input class="bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" id="celular" placeholder="Ej. +1 555 987 6543" type="tel"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface-variant" for="email">Email <span class="text-error">*</span></label>
+<input class="bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" id="email" placeholder="Ej. juan.perez@empresa.com" type="email"/>
+</div>
+<div class="flex justify-end lg:justify-start">
+<button class="px-6 py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:bg-primary-container transition-colors flex items-center gap-2 h-[42px]" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                                Agregar
+                            </button>
+</div>
+</form>
+</div>
+<!-- Contacts Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-surface-container-high">
+<th class="py-3 px-6 font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Nombre</th>
+<th class="py-3 px-6 font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Cargo</th>
+<th class="py-3 px-6 font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Teléfono fijo</th>
+<th class="py-3 px-6 font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Celular</th>
+<th class="py-3 px-6 font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Email</th>
+<th class="py-3 px-6 font-label-md text-label-md text-on-surface-variant whitespace-nowrap text-right">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high">
+<tr class="hover:bg-surface-container-lowest/50 transition-colors">
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface">Ana López</td>
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface-variant">Directora de Operaciones</td>
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface-variant">(555) 234-5678</td>
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface-variant">+1 555 876 5432</td>
+<td class="py-4 px-6 font-body-md text-body-md text-primary hover:underline cursor-pointer">ana.lopez@techcorp.com</td>
+<td class="py-4 px-6 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 text-outline hover:text-primary hover:bg-surface-container-high rounded transition-colors" title="Editar">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-outline hover:text-error hover:bg-error-container rounded transition-colors" title="Eliminar">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest/50 transition-colors">
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface">Carlos Ruiz</td>
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface-variant">Jefe de Compras</td>
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface-variant">(555) 345-6789</td>
+<td class="py-4 px-6 font-body-md text-body-md text-on-surface-variant"></td>
+<td class="py-4 px-6 font-body-md text-body-md text-primary hover:underline cursor-pointer">carlos.ruiz@techcorp.com</td>
+<td class="py-4 px-6 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 text-outline hover:text-primary hover:bg-surface-container-high rounded transition-colors" title="Editar">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-outline hover:text-error hover:bg-error-container rounded transition-colors" title="Eliminar">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Empty State (Hidden, but good practice for CRM) -->
+<!-- 
+                    <div class="py-12 flex flex-col items-center justify-center text-center">
+                        <div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-4">
+                            <span class="material-symbols-outlined text-[32px] text-outline">group_off</span>
+                        </div>
+                        <h4 class="font-headline-sm text-headline-sm text-on-surface mb-2">No hay contactos agregados</h4>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm">Utiliza el formulario de arriba para agregar los contactos relevantes para este cliente.</p>
+                    </div> 
+                    -->
+</div>
+</div>
+</div>
+</main>
+<style>
+        /* Utilities for hiding scrollbar but keeping functionality */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

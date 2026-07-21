@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, MessageSquare } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -76,15 +77,17 @@ export const Navbar: React.FC = () => {
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-[#16A34A] text-white px-4 py-2 rounded-lg font-semibold text-xs hover:bg-[#15803D] transition-colors shadow-sm"
           >
-            <MessageSquare className="w-4 h-4" />
+            <WhatsAppIcon className="w-4 h-4 fill-current" />
             WhatsApp
           </a>
-          <button
-            onClick={() => alert('Portal de Clientes SGI: Módulo en desarrollo.')}
-            className="bg-[#055bb2] text-white px-5 py-2.5 rounded-lg font-semibold text-xs hover:bg-[#3374cd] transition-colors shadow-xs"
+          <a
+            href="http://localhost:3005/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#055bb2] text-white px-5 py-2.5 rounded-lg font-semibold text-xs hover:bg-[#3374cd] transition-colors shadow-xs inline-flex items-center gap-1.5"
           >
             Acceso Software/CRM
-          </button>
+          </a>
         </div>
 
         {/* Mobile Toggle Button */}
@@ -143,7 +146,7 @@ export const Navbar: React.FC = () => {
               rel="noopener noreferrer"
               className="w-full flex items-center justify-center gap-2 bg-[#16A34A] text-white py-3 rounded-lg font-semibold text-sm shadow-sm"
             >
-              <MessageSquare className="w-5 h-5" />
+              <WhatsAppIcon className="w-5 h-5 fill-current" />
               WhatsApp Consultoría
             </a>
             <button

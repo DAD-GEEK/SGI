@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SGI Unified Core - Dialogs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "secondary": "#545f73",
+                        "surface-container": "#eceef0",
+                        "on-tertiary-container": "#fdfcff",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "background": "#f7f9fb",
+                        "on-secondary-fixed": "#111c2d",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-high": "#e6e8ea",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-secondary-container": "#586377",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f2f4f6",
+                        "primary-fixed": "#d6e3ff",
+                        "surface-dim": "#d8dadc",
+                        "surface-variant": "#e0e3e5",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-surface-variant": "#424752",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "outline-variant": "#c2c6d4",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary-container": "#d5e0f8",
+                        "on-background": "#191c1e",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#a9c7ff",
+                        "on-primary-fixed-variant": "#00468c",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f7f9fb",
+                        "primary": "#055bb2",
+                        "on-primary-container": "#fefcff",
+                        "inverse-surface": "#2d3133",
+                        "tertiary": "#4d5d73",
+                        "outline": "#727783",
+                        "inverse-primary": "#a9c7ff",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "primary-container": "#3374cd",
+                        "on-primary-fixed": "#001b3e",
+                        "tertiary-container": "#66768d",
+                        "surface-tint": "#0d5db5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Manrope"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-screen w-screen overflow-hidden flex bg-surface-container-low">
+<!-- Mock Navigation Shell (Left Sidebar for CRM context) -->
+<nav class="fixed left-0 top-0 h-full flex flex-col z-50 bg-secondary-fixed w-64 shadow-md transition-transform duration-200 ease-in-out hidden md:flex">
+<!-- Brand / Header -->
+<div class="px-6 pt-8 pb-6 border-b border-secondary-fixed-dim/20">
+<h1 class="font-headline-sm text-headline-sm font-bold text-on-secondary-fixed">SGI Unified Core</h1>
+<p class="font-body-sm text-body-sm text-on-secondary-fixed-variant mt-1">CRM Module</p>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 py-6 space-y-1">
+<a class="text-on-secondary-fixed-variant hover:bg-primary-container/10 transition-all mx-2 my-1 flex items-center px-4 py-3 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="bg-primary text-on-primary rounded-lg mx-2 my-1 flex items-center px-4 py-3" href="#">
+<span class="material-symbols-outlined mr-3" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="font-label-md text-label-md">Customers</span>
+</a>
+<a class="text-on-secondary-fixed-variant hover:bg-primary-container/10 transition-all mx-2 my-1 flex items-center px-4 py-3 rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3">contact_phone</span>
+<span class="font-label-md text-label-md">Contacts</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas (Behind Modals) -->
+<main class="ml-0 md:ml-64 flex-1 h-full flex flex-col relative z-0">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-margin-desktop h-16 bg-surface shadow-sm z-10 border-b border-surface-variant">
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined md:hidden cursor-pointer">menu</span>
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface hidden md:block">Customer Directory</h2>
+</div>
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:bg-surface-container-high p-2 rounded-full transition-colors">notifications</span>
+<img class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a corporate manager smiling slightly, bright white background, crisp lighting, high quality corporate modern style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMzb8jT0UmPeVJ4-riE8XkcEykCoSTrsooIxuwmlrqCIM30n_Py3MoyIhV39NBnZpK3pmrlYGbKhi_mkqstXqtTJ1BeP8ScxJN3KtTlDHUgTQca9kB3QqNO6jMrKJzz78_l56jvS06DarwO9oFGdJ3pyMjGxeYW2Fr76yC35PkRXG5uQFwcy56X7Y18mCDJgrdW0VxotIuKgqd4axydCLqO4oOnyRerKMU4SbQufO8j59q9Vcu9MQM"/>
+</div>
+</header>
+<!-- Dummy Content -->
+<div class="p-margin-desktop flex-1 overflow-y-auto">
+<div class="bg-white rounded-lg p-6 shadow-[0_4px_12px_rgba(30,41,59,0.05)] border border-surface-variant">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Active Customers</h3>
+<button class="bg-primary text-on-primary px-[24px] py-[11px] rounded-lg font-label-md text-label-md hover:bg-primary-container transition-colors shadow-sm">Add Customer</button>
+</div>
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-surface-variant">
+<th class="pb-3 font-label-md text-label-md text-on-surface-variant font-semibold">Name</th>
+<th class="pb-3 font-label-md text-label-md text-on-surface-variant font-semibold">Company</th>
+<th class="pb-3 font-label-md text-label-md text-on-surface-variant font-semibold">Status</th>
+<th class="pb-3 font-label-md text-label-md text-on-surface-variant font-semibold">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-surface-variant/50 hover:bg-surface-container-lowest transition-colors">
+<td class="py-4 font-body-sm text-body-sm text-on-surface">Acme Corp</td>
+<td class="py-4 font-body-sm text-body-sm text-on-surface-variant">Industrial Supplies</td>
+<td class="py-4"><span class="px-2 py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded-full font-label-md text-label-md text-[10px]">Active</span></td>
+<td class="py-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary mr-2">edit</span>
+<span class="material-symbols-outlined text-error cursor-pointer hover:text-error-container">delete</span>
+</td>
+</tr>
+<tr class="border-b border-surface-variant/50 bg-surface-container-high/20">
+<td class="py-4 font-body-sm text-body-sm text-on-surface">Global Tech</td>
+<td class="py-4 font-body-sm text-body-sm text-on-surface-variant">Software</td>
+<td class="py-4"><span class="px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full font-label-md text-label-md text-[10px]">Pending</span></td>
+<td class="py-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-not-allowed mr-2">edit</span>
+<span class="material-symbols-outlined text-error cursor-pointer">delete</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Reference Images Container -->
+<div class="mt-8 flex gap-6 overflow-x-auto opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+<div class="flex-shrink-0 w-[415px]">
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Original Alert (Reference)</p>
+<img alt="Legacy Alert Dialog" class="w-full rounded border border-surface-variant shadow-sm object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGGbS2fJ0AiFo-OV4_WezMf4uuWgXyiOlBg8gealBAyRKST2_hRQOIE1sJLkMQ4DCgHfXgnMbY2EiMC5WRRpbO8MdDF1bKJdik6FtuWEvYeJDnGXTjMgRWZ2GUYpObtyy1z5dPS-S7mrW8LZhvM7-2Uq0ATWtjeFoAb3j0AWvT3vc4-w23XMDbBfAxygHklaMt9UKth8PVkzUS4sKUJSyOynGg5xxOKxk02EL8qVb6hKt7GtLyEcVSycBSuzf_vVwByw"/>
+</div>
+<div class="flex-shrink-0 w-[461px]">
+<p class="font-label-md text-label-md text-on-surface-variant mb-2">Original Confirm (Reference)</p>
+<img alt="Legacy Confirm Dialog" class="w-full rounded border border-surface-variant shadow-sm object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4ii_Vv-gBRb_W0-_hRFvZJBS5pmiemPfyNjH0dQQP442MfMxh0-8b0HT400E2TTyEbuVjxBU10ZhR8Qbpn4inR3G8fWhqjd9D7LOKvbpdbvVkoCln_5js5NbYbCD3CAEGnBoHZb0uEyX3TgXJUrXq0npsLfF1dQQp6SnKf6YNIV2VpiOSxjeRp3kxs4K_aGIMjnrWCjp4QHrWY-Tf64SimGVOXbx8u0B3KxEFGrkNbheLf1CvU1NnwuEePySDiidPcQ"/>
+</div>
+</div>
+</div>
+</main>
+<!-- Overlay & Modals Container -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-inverse-surface/60 backdrop-blur-sm p-4">
+<div class="flex flex-col md:flex-row gap-8 w-full max-w-5xl justify-center items-start">
+<!-- Redesigned Confirmation Dialog (Eliminación) -->
+<div class="bg-white w-full max-w-md rounded-xl shadow-[0_8px_24px_rgba(30,41,59,0.1)] border border-surface-variant overflow-hidden flex flex-col transform transition-all hover:-translate-y-1">
+<!-- Header -->
+<div class="bg-surface-container-low px-6 py-4 border-b border-surface-variant flex items-center justify-between">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Eliminación</h2>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface transition-colors">close</span>
+</div>
+<!-- Body -->
+<div class="p-6 flex flex-col items-center text-center space-y-4">
+<div class="w-16 h-16 rounded-full bg-error-container flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-error text-4xl" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface max-w-[280px]">
+                        ¿Está seguro que desea eliminar el registro?
+                    </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                        Esta acción no se puede deshacer y los datos asociados se perderán permanentemente.
+                    </p>
+</div>
+<!-- Footer / Actions -->
+<div class="bg-surface-bright px-6 py-4 border-t border-surface-variant flex justify-end space-x-3">
+<button class="px-[24px] py-[11px] rounded-lg font-label-md text-label-md border border-outline text-on-surface hover:bg-surface-container-low transition-colors bg-transparent">
+                        No
+                    </button>
+<button class="px-[24px] py-[11px] rounded-lg font-label-md text-label-md bg-error text-on-error hover:bg-error-container hover:text-on-error-container transition-colors shadow-sm">
+                        Si, eliminar
+                    </button>
+</div>
+</div>
+<!-- Redesigned Alert Dialog (Error) -->
+<div class="bg-white w-full max-w-sm rounded-xl shadow-[0_8px_24px_rgba(30,41,59,0.1)] border border-surface-variant overflow-hidden flex flex-col transform transition-all hover:-translate-y-1">
+<!-- Header -->
+<div class="bg-error px-6 py-4 flex items-center">
+<span class="material-symbols-outlined text-on-error mr-2">error</span>
+<h2 class="font-headline-sm text-headline-sm text-on-error">Error del Sistema</h2>
+</div>
+<!-- Body -->
+<div class="p-6 flex flex-col items-center text-center space-y-4">
+<span class="material-symbols-outlined text-error text-5xl opacity-80 mb-2">cancel</span>
+<p class="font-body-md text-body-md text-on-surface font-semibold">
+                        Registro no eliminado
+                    </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                        El servidor encontró un problema al procesar la solicitud o el registro tiene dependencias activas.
+                    </p>
+</div>
+<!-- Footer / Actions -->
+<div class="bg-surface-bright px-6 py-4 border-t border-surface-variant flex justify-center">
+<button class="w-full px-[24px] py-[11px] rounded-lg font-label-md text-label-md bg-primary text-on-primary hover:bg-primary-container transition-colors shadow-sm">
+                        OK
+                    </button>
+</div>
+</div>
+</div>
+</div>
+</body></html>
