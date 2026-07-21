@@ -1,0 +1,18 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Production build outputs
+dist
+dist-crm
+
+# System files
+.DS_Store
+*.pem
+.env*.local
+
+# IDE
+.vscode
+.idea
+*.suo
+*.user
