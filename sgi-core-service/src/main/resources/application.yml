@@ -1,0 +1,33 @@
+server:
+  port: 8084
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: sgi-core-service
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/waloyodb?currentSchema=sgi
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: sgi
+
+logging:
+  level:
+    root: INFO
+    com.waloyo.sgi: DEBUG
+    org.hibernate.SQL: DEBUG
