@@ -1,3 +1,4 @@
+# SGI Core Service Engine - Enterprise Release
 server:
   port: 8084
   servlet:

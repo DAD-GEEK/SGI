@@ -1,3 +1,4 @@
+// SGI CRM & Client Portal - Enterprise Release
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from './pages/Login';
