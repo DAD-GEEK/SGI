@@ -34,3 +34,7 @@ dist-ssr
 
 # Vite
 *.tsbuildinfo
+
+# Java & Maven Build Outputs
+target/
+*.class
