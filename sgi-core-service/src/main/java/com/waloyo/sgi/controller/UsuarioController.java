@@ -31,20 +31,23 @@ public class UsuarioController {
     @GetMapping("/verificar-estado")
     public ResponseEntity<?> verificarEstado(@RequestParam String email) {
         return usuarioRepository.findByEmail(email)
-                .map(usuario -> ResponseEntity.ok(java.util.Map.of(
-                        "id", usuario.getId().toString(),
-                        "email", usuario.getEmail(),
-                        "nombreCompleto", usuario.getNombreCompleto() != null ? usuario.getNombreCompleto() : "",
-                        "tipoDocumento", usuario.getTipoDocumento() != null ? usuario.getTipoDocumento() : "CC",
-                        "documento", usuario.getDocumento() != null ? usuario.getDocumento() : "",
-                        "pais", usuario.getPais() != null ? usuario.getPais() : "Colombia (+57)",
-                        "telefonoMovil", usuario.getTelefonoMovil() != null ? usuario.getTelefonoMovil() : "",
-                        "activo", Boolean.TRUE.equals(usuario.getActivo()),
-                        "mustChangePassword", Boolean.TRUE.equals(usuario.getMustChangePassword()),
-                        "rol", usuario.getRol() != null ? usuario.getRol() : "CONSULTOR",
-                        "modulosPermitidos", usuario.getModulosPermitidos() != null ? usuario.getModulosPermitidos() : ""
+                .map(usuario -> ResponseEntity.ok(java.util.Map.ofEntries(
+                        java.util.Map.entry("id", usuario.getId().toString()),
+                        java.util.Map.entry("email", usuario.getEmail()),
+                        java.util.Map.entry("nombreCompleto", usuario.getNombreCompleto() != null ? usuario.getNombreCompleto() : ""),
+                        java.util.Map.entry("tipoDocumento", usuario.getTipoDocumento() != null ? usuario.getTipoDocumento() : "CC"),
+                        java.util.Map.entry("documento", usuario.getDocumento() != null ? usuario.getDocumento() : ""),
+                        java.util.Map.entry("pais", usuario.getPais() != null ? usuario.getPais() : "Colombia (+57)"),
+                        java.util.Map.entry("telefonoMovil", usuario.getTelefonoMovil() != null ? usuario.getTelefonoMovil() : ""),
+                        java.util.Map.entry("activo", Boolean.TRUE.equals(usuario.getActivo())),
+                        java.util.Map.entry("mustChangePassword", Boolean.TRUE.equals(usuario.getMustChangePassword())),
+                        java.util.Map.entry("rol", usuario.getRol() != null ? usuario.getRol() : "CONSULTOR"),
+                        java.util.Map.entry("modulosPermitidos", usuario.getModulosPermitidos() != null ? usuario.getModulosPermitidos() : "")
                 )))
-                .orElse(ResponseEntity.ok(java.util.Map.of("mustChangePassword", false, "activo", true)));
+                .orElse(ResponseEntity.ok(java.util.Map.ofEntries(
+                        java.util.Map.entry("mustChangePassword", false),
+                        java.util.Map.entry("activo", true)
+                )));
     }
 
     @PostMapping("/confirmar-clave")

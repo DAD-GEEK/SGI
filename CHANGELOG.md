@@ -23,6 +23,8 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - **Documentación del submódulo**: Se dejó el changelog con trazabilidad completa del último bloque de trabajo y del estado final antes del commit y push.
 
 ### Fixed
+- **Normalización defensiva de la API SGI (`crm/src/config/apiConfig.ts`)**: Corregida la resolución de `VITE_SGI_API_URL` para usar `localhost` en desarrollo y devolver `/api` por defecto cuando la variable no está configurada, evitando errores de routing y 404.
+- **Compatibilidad del endpoint de verificación de usuarios (`sgi-core-service/src/main/java/com/waloyo/sgi/controller/UsuarioController.java`)**: Reemplazado el uso de `Map.of` por `Map.ofEntries` para soportar respuestas con valores nulos sin romper la serialización JSON del backend.
 - **Validación programática de formularios**: Se corrigieron validaciones de email, teléfono, documento y nombres, evitando datos inconsistentes en la base de datos y mejorando la UX del usuario.
 - **Expulsión inmediata de cuentas inactivas**: Arreglado el flujo para cerrar sesión al detectar cuentas desactivadas y mostrar mensajes corporativos claro al usuario.
 - **Reenvío de credenciales**: Corregido el flujo para generar claves temporales, marcar `mustChangePassword` y notificar la nueva credencial de forma fiable.
