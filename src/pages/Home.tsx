@@ -75,7 +75,7 @@ export const Home: React.FC = () => {
 
           <div className="pt-2 w-full">
             <a
-              href="http://localhost:3005/"
+              href="https://sgi-crm.web.app/login"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-[#055bb2] text-white font-semibold text-sm rounded-lg py-3 px-6 w-full flex items-center justify-center gap-2 shadow-md hover:bg-[#3374cd] transition-all active:scale-[0.98]"

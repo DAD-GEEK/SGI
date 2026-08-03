@@ -1,4 +1,4 @@
-// SGI Commercial Landing Page - Enterprise Release
+// SGI Commercial Landing Page - Enterprise Release | redeploy: 2026-08-02 sgi-waloyo
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';

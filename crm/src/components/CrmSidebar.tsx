@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   Users,
   Building2,
   ClipboardCheck,
-  FileSpreadsheet,
   Settings,
   LogOut,
   Calendar,
   ShieldCheck,
   ChevronLeft,
-  Pin
+  Pin,
+  Lock,
+  AlertTriangle
 } from 'lucide-react';
+import { supabase } from '../config/supabaseClient';
+import { API_BASE_URL } from '../config/apiConfig';
 
 interface CrmSidebarProps {
   activeTab?: string;
@@ -21,182 +24,269 @@ interface CrmSidebarProps {
 export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
   const [isPinned, setIsPinned] = useState<boolean>(true);
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [securityModal, setSecurityModal] = useState<{ title: string; message: string; isDeactivated?: boolean } | null>(null);
+
+  const [userProfile, setUserProfile] = useState<{
+    nombre: string;
+    email: string;
+    rol: string;
+    modulos: string[];
+    activo: boolean;
+  }>({
+    nombre: 'Dra. Amanda Durango',
+    email: 'admin@gestionintegralsgi.com.co',
+    rol: 'ADMIN',
+    modulos: ['dashboard', 'clientes', 'agenda', 'consultor', 'usuarios'],
+    activo: true
+  });
+
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isActive = (path: string, tabName?: string) => {
-    if (activeTab && tabName) return activeTab === tabName;
+  useEffect(() => {
+    const syncUserProfile = async () => {
+      try {
+        const storedUserRaw = localStorage.getItem('sgi_user');
+        let storedUser = storedUserRaw ? JSON.parse(storedUserRaw) : null;
+
+        // Auto-inicializar sgi_user y loginTimestamp si falta para garantizar medicion
+        if (!storedUser || !storedUser.loginTimestamp) {
+          storedUser = storedUser || {};
+          storedUser.loginTimestamp = Date.now();
+          localStorage.setItem('sgi_user', JSON.stringify(storedUser));
+        }
+
+        // 1. Validar límite configurable de sesión (Defecto: 4 horas)
+        const configuredLimit = parseFloat(localStorage.getItem('sgi_session_limit_hours') || '4');
+        const MAX_SESSION_MS = Math.round(configuredLimit * 60 * 60 * 1000);
+
+        if (storedUser && storedUser.loginTimestamp) {
+          const elapsed = Date.now() - storedUser.loginTimestamp;
+          if (elapsed > MAX_SESSION_MS) {
+            const timeLabel = configuredLimit < 0.01 ? '10 segundos (Modo Pruebas)' : `${configuredLimit} hora(s)`;
+            localStorage.removeItem('sgi_user');
+            await supabase.auth.signOut();
+            setSecurityModal({
+              title: 'Sesión Expirada por Seguridad',
+              message: `Su sesión de ${timeLabel} ha expirado por políticas de seguridad del sistema. Por favor ingrese sus credenciales nuevamente.`
+            });
+            return;
+          }
+        }
+
+        const { data } = await supabase.auth.getUser();
+        const activeEmail = data?.user?.email || (storedUser ? storedUser.email : null);
+
+        if (activeEmail) {
+          const res = await fetch(`${API_BASE_URL}/usuarios/verificar-estado?email=${encodeURIComponent(activeEmail)}`);
+          if (res.ok) {
+            const info = await res.json();
+
+            // 2. Desactivación inmediata por Administrador
+            if (info.activo === false) {
+              localStorage.removeItem('sgi_user');
+              await supabase.auth.signOut();
+              setSecurityModal({
+                title: 'Acceso Desactivado',
+                message: 'Su cuenta de asesor ha sido desactivada. Comuníquese con el administrador para restablecer su acceso.',
+                isDeactivated: true
+              });
+              return;
+            }
+
+            const modulosList = info.modulosPermitidos
+              ? info.modulosPermitidos.split(',')
+              : ['dashboard', 'clientes', 'agenda', 'consultor'];
+
+            setUserProfile({
+              nombre: info.nombreCompleto || activeEmail.split('@')[0],
+              email: activeEmail,
+              rol: info.rol || 'CONSULTOR',
+              modulos: modulosList,
+              activo: info.activo ?? true
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('Fallback perfil sidebar:', e);
+      }
+    };
+
+    syncUserProfile();
+    const interval = setInterval(syncUserProfile, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const isExpanded = isPinned || isHovered;
+
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem('sgi_user');
+      await supabase.auth.signOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      navigate('/login');
+    }
+  };
+
+  const isActive = (path: string) => {
+    if (activeTab && path.includes(activeTab)) return true;
     return location.pathname === path;
   };
 
-  // Determine if sidebar is currently expanded (either pinned or temporarily hovered)
-  const isExpanded = isPinned || isHovered;
-
-  const togglePin = () => {
-    setIsPinned(!isPinned);
+  const canAccessModule = (moduleKey: string) => {
+    if (userProfile.rol === 'ADMIN' || userProfile.rol === 'ADMIN_TI') return true;
+    return userProfile.modulos.includes(moduleKey);
   };
 
   return (
     <aside
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`bg-[#0b1c30] text-white flex-shrink-0 flex flex-col justify-between border-r border-[#3c475a] min-h-screen transition-all duration-300 ease-in-out z-40 ${
-        isExpanded ? 'w-full md:w-64' : 'w-20'
+      className={`relative h-screen bg-[#0b1c30] text-white flex flex-col justify-between shadow-2xl transition-all duration-300 z-40 select-none ${
+        isExpanded ? 'w-64' : 'w-20'
       }`}
     >
-      <div className="p-4 space-y-6">
-        {/* Header: Logo, Brand & Pin / Expand Button */}
-        <div className="flex items-center justify-between pb-2 border-b border-white/10">
-          <Link to="/dashboard" className="flex items-center gap-3 group overflow-hidden">
-            <img
-              src="/logo-limpio.png"
-              alt="SGI Logo"
-              className="w-9 h-9 object-contain shrink-0 group-hover:scale-105 transition-transform"
-            />
+      {/* Modal Corporativo de Seguridad del Sistema */}
+      {securityModal && (
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-[9999]">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 space-y-4 text-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${securityModal.isDeactivated ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>
+                {securityModal.isDeactivated ? <AlertTriangle className="w-6 h-6" /> : <Lock className="w-6 h-6" />}
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-slate-900">{securityModal.title}</h3>
+                <p className="text-xs text-slate-500 font-semibold">Gobernanza & Seguridad SGI</p>
+              </div>
+            </div>
+            <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200 font-medium">
+              {securityModal.message}
+            </p>
+            <div className="pt-2">
+              <button
+                onClick={() => {
+                  setSecurityModal(null);
+                  navigate('/login');
+                }}
+                className="w-full py-3 bg-[#1E3A8A] text-white rounded-xl text-xs font-bold hover:bg-[#1E3A8A]/90 transition-all shadow-md cursor-pointer"
+              >
+                Reingresar al Sistema SGI
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Header & Logo */}
+      <div>
+        <div className="p-4 flex items-center justify-between border-b border-white/10">
+          <div className="flex items-center gap-3 overflow-hidden">
+            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center p-1 shrink-0">
+              <img src="/logo-limpio.png" alt="SGI Logo" className="w-full h-full object-contain" />
+            </div>
             {isExpanded && (
-              <div className="flex flex-col whitespace-nowrap transition-opacity duration-200">
-                <span className="font-bold text-base font-headline text-white leading-tight">
-                  SGI CRM B2B
-                </span>
-                <span className="text-[10px] text-[#a9c7ff] uppercase tracking-wider font-semibold">
-                  Gestión & Auditoría
-                </span>
+              <div className="flex flex-col">
+                <span className="font-bold text-sm tracking-wide text-white font-headline">SGI CRM</span>
+                <span className="text-[10px] text-[#a9c7ff] font-semibold">Gestión Integral SST</span>
               </div>
             )}
-          </Link>
-
-          {/* Toggle / Pin Button */}
+          </div>
           <button
-            onClick={togglePin}
-            title={isPinned ? 'Fijar colapsado' : 'Fijar expandido'}
-            className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            onClick={() => setIsPinned(!isPinned)}
+            className={`p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors ${
+              !isExpanded && 'hidden'
+            }`}
+            title={isPinned ? 'Desanclar barra lateral' : 'Anclar barra lateral'}
           >
-            {isPinned ? <ChevronLeft className="w-5 h-5" /> : <Pin className="w-4 h-4 text-amber-400" />}
+            {isPinned ? <Pin className="w-4 h-4 text-sky-400 fill-sky-400" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="space-y-1.5">
-          {isExpanded && (
-            <span className="block px-3 text-[10px] font-bold text-[#a9c7ff]/70 uppercase tracking-widest mb-2 transition-opacity">
-              Navegación Principal
-            </span>
+        {/* Navigation Items (RBAC Dynamic Filtering) */}
+        <nav className="p-3 space-y-1.5">
+          {canAccessModule('dashboard') && (
+            <Link
+              to="/dashboard"
+              title="Dashboard General"
+              className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                isActive('/dashboard') ? 'bg-[#055bb2] text-white shadow-sm' : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              <LayoutDashboard className="w-4 h-4 shrink-0" />
+              {isExpanded && <span>Dashboard General</span>}
+            </Link>
           )}
 
-          <Link
-            to="/dashboard"
-            title="Dashboard Principal"
-            className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-              isActive('/dashboard')
-                ? 'bg-[#055bb2] text-white shadow-sm'
-                : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
-            }`}
-          >
-            <LayoutDashboard className="w-4 h-4 shrink-0" />
-            {isExpanded && <span>Dashboard Principal</span>}
-          </Link>
-
-          {/* Consultor SGI */}
-          <Link
-            to="/consultor"
-            title="Consultor SGI"
-            className={`flex items-center ${!isExpanded ? 'justify-center' : 'justify-between'} px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-              isActive('/consultor')
-                ? 'bg-[#055bb2] text-white shadow-sm'
-                : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="w-4 h-4 text-[#10B981] shrink-0" />
-              {isExpanded && <span>Consultor SGI</span>}
-            </div>
-            {isExpanded && (
-              <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
-                Web
-              </span>
-            )}
-          </Link>
-
-          {/* Agenda SGI */}
-          <Link
-            to="/agenda"
-            title="Agenda SGI"
-            className={`flex items-center ${!isExpanded ? 'justify-center' : 'justify-between'} px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
-              isActive('/agenda')
-                ? 'bg-[#055bb2] text-white shadow-sm'
-                : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <Calendar className="w-4 h-4 text-[#38bdf8] shrink-0" />
-              {isExpanded && <span>Agenda SGI</span>}
-            </div>
-            {isExpanded && (
-              <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300">
-                Web
-              </span>
-            )}
-          </Link>
-
-          {isExpanded && (
-            <span className="block px-3 text-[10px] font-bold text-[#a9c7ff]/70 uppercase tracking-widest pt-4 mb-2 transition-opacity">
-              Módulos B2B (Fase 1)
-            </span>
+          {canAccessModule('clientes') && (
+            <Link
+              to="/clientes"
+              title="Gestión de Clientes"
+              className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                isActive('/clientes') ? 'bg-[#055bb2] text-white shadow-sm' : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              <Building2 className="w-4 h-4 shrink-0" />
+              {isExpanded && <span>Gestión de Clientes</span>}
+            </Link>
           )}
 
-          <Link
-            to="/clientes"
-            title="Clientes"
-            className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-              isActive('/clientes', 'clientes')
-                ? 'bg-[#055bb2] text-white shadow-sm'
-                : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
-            }`}
-          >
-            <Building2 className="w-4 h-4 text-amber-400 shrink-0" />
-            {isExpanded && <span>Clientes</span>}
-          </Link>
+          {canAccessModule('agenda') && (
+            <Link
+              to="/agenda"
+              title="Agenda de Citas"
+              className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                isActive('/agenda') ? 'bg-[#055bb2] text-white shadow-sm' : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              <Calendar className="w-4 h-4 shrink-0" />
+              {isExpanded && <span>Agenda SGI & Citas</span>}
+            </Link>
+          )}
 
-          <Link
-            to="/usuarios"
-            title="Asesores & Equipo"
-            className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-              isActive('/usuarios', 'usuarios')
-                ? 'bg-[#055bb2] text-white shadow-sm'
-                : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
-            }`}
-          >
-            <Users className="w-4 h-4 text-indigo-300 shrink-0" />
-            {isExpanded && <span>Asesores & Equipo</span>}
-          </Link>
+          {canAccessModule('consultor') && (
+            <Link
+              to="/consultor"
+              title="Módulo Consultor (SG-SST/PESV)"
+              className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                isActive('/consultor') ? 'bg-[#055bb2] text-white shadow-sm' : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              <ClipboardCheck className="w-4 h-4 shrink-0" />
+              {isExpanded && <span>Módulo Consultor</span>}
+            </Link>
+          )}
+
+          {canAccessModule('usuarios') && (
+            <Link
+              to="/usuarios"
+              title="Asesores, Equipos & Seguridad"
+              className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                isActive('/usuarios') ? 'bg-[#055bb2] text-white shadow-sm' : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
+              }`}
+            >
+              <Users className="w-4 h-4 shrink-0" />
+              {isExpanded && <span>Asesores & Seguridad</span>}
+            </Link>
+          )}
 
           <a
-            href="#auditorias"
-            title="Auditorías & PHVA"
-            onClick={(e) => e.preventDefault()}
-            className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white transition-colors opacity-60`}
+            href="https://app.gestionintegralsgi.com.co"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Plataforma SG-SST Externa"
+            className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white transition-all`}
           >
-            <ClipboardCheck className="w-4 h-4 shrink-0" />
-            {isExpanded && <span>Auditorías & PHVA</span>}
-          </a>
-
-          <a
-            href="#compromisos"
-            title="Actas de Compromisos"
-            onClick={(e) => e.preventDefault()}
-            className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white transition-colors opacity-60`}
-          >
-            <FileSpreadsheet className="w-4 h-4 shrink-0" />
-            {isExpanded && <span>Actas de Compromisos</span>}
+            <ShieldCheck className="w-4 h-4 shrink-0 text-sky-400" />
+            {isExpanded && <span>Plataforma SGI Ext.</span>}
           </a>
 
           <Link
             to="/perfil"
             title="Perfil & Preferencias"
             className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-              isActive('/perfil')
-                ? 'bg-[#055bb2] text-white shadow-sm'
-                : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
+              isActive('/perfil') ? 'bg-[#055bb2] text-white shadow-sm' : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
             }`}
           >
             <Settings className="w-4 h-4 shrink-0" />
@@ -209,17 +299,19 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
       <div className="p-4 border-t border-white/10 space-y-3">
         <div className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-2`}>
           <div className="w-9 h-9 rounded-full bg-[#055bb2] text-white flex items-center justify-center font-bold text-xs shrink-0">
-            AD
+            {userProfile.nombre.substring(0, 2).toUpperCase()}
           </div>
           {isExpanded && (
             <div className="flex flex-col overflow-hidden transition-opacity">
-              <span className="text-xs font-bold text-white truncate">Dra. Amanda Durango</span>
-              <span className="text-[10px] text-[#a9c7ff] truncate">Consultora Senior SGI</span>
+              <span className="text-xs font-bold text-white truncate">{userProfile.nombre}</span>
+              <span className="text-[10px] text-[#a9c7ff] truncate">
+                {userProfile.rol === 'ADMIN_TI' ? '👑 Admin TI' : userProfile.rol === 'ADMIN' ? 'Admin SGI' : 'Consultor SGI'}
+              </span>
             </div>
           )}
         </div>
         <button
-          onClick={() => navigate('/login')}
+          onClick={handleLogout}
           title="Cerrar Sesión"
           className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-white/5 hover:bg-red-500/20 text-red-300 hover:text-red-200 text-xs font-semibold transition-colors cursor-pointer"
         >

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Building2, Search, Plus, Mail, Phone, MapPin, CheckCircle, Edit, Trash2, X, ChevronLeft, ChevronRight, Zap, FileText, Users, Hash, Calendar, Globe, UserCheck } from 'lucide-react';
 import { CrmSidebar } from '../components/CrmSidebar';
+import { API_BASE_URL } from '../config/apiConfig';
 
 interface Cliente {
   id: string;
@@ -170,7 +171,7 @@ const ClientesView: React.FC = () => {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await fetch('http://localhost:8084/api/clientes');
+        const response = await fetch(`${API_BASE_URL}/clientes`);
         if (response.ok) {
           const data = await response.json();
           setClientes(data);
@@ -186,7 +187,7 @@ const ClientesView: React.FC = () => {
 
     let eventSource: EventSource | null = null;
     try {
-      eventSource = new EventSource('http://localhost:8084/api/clientes/stream');
+      eventSource = new EventSource(`${API_BASE_URL}/clientes/stream`);
 
       eventSource.addEventListener('clientes-update', (event: MessageEvent) => {
         try {
@@ -215,7 +216,7 @@ const ClientesView: React.FC = () => {
   const fetchContratosPorCliente = async (clienteId: string) => {
     setLoadingContratos(true);
     try {
-      const res = await fetch(`http://localhost:8084/api/contratos/cliente/${clienteId}`);
+      const res = await fetch(`${API_BASE_URL}/contratos/cliente/${clienteId}`);
       if (res.ok) {
         const data = await res.json();
         setContratosCliente(data);
@@ -231,7 +232,7 @@ const ClientesView: React.FC = () => {
   const fetchContactosPorCliente = async (clienteId: string) => {
     setLoadingContactos(true);
     try {
-      const res = await fetch(`http://localhost:8084/api/contactos/cliente/${clienteId}`);
+      const res = await fetch(`${API_BASE_URL}/contactos/cliente/${clienteId}`);
       if (res.ok) {
         const data = await res.json();
         setContactosCliente(data);
@@ -322,7 +323,7 @@ const ClientesView: React.FC = () => {
     if (!targetId) return;
 
     try {
-      const res = await fetch('http://localhost:8084/api/contratos', {
+      const res = await fetch(`${API_BASE_URL}/contratos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...newContrato, clienteId: targetId })
@@ -343,7 +344,7 @@ const ClientesView: React.FC = () => {
     if (!targetId) return;
 
     try {
-      const res = await fetch('http://localhost:8084/api/contactos', {
+      const res = await fetch(`${API_BASE_URL}/contactos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...newContacto, clienteId: targetId })
@@ -360,7 +361,7 @@ const ClientesView: React.FC = () => {
   const handleCreateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:8084/api/clientes', {
+      const res = await fetch(`${API_BASE_URL}/clientes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -369,14 +370,14 @@ const ClientesView: React.FC = () => {
         const createdClient = await res.json();
         
         for (const ctr of contratosCliente) {
-          await fetch('http://localhost:8084/api/contratos', {
+          await fetch(`${API_BASE_URL}/contratos`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...ctr, clienteId: createdClient.id })
           });
         }
         for (const cnt of contactosCliente) {
-          await fetch('http://localhost:8084/api/contactos', {
+          await fetch(`${API_BASE_URL}/contactos`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...cnt, clienteId: createdClient.id })
@@ -394,7 +395,7 @@ const ClientesView: React.FC = () => {
     e.preventDefault();
     if (!selectedCliente) return;
     try {
-      const res = await fetch(`http://localhost:8084/api/clientes/${selectedCliente.id}`, {
+      const res = await fetch(`${API_BASE_URL}/clientes/${selectedCliente.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -410,7 +411,7 @@ const ClientesView: React.FC = () => {
   const handleDelete = async (id: string, nombre: string) => {
     if (window.confirm(`¿Está seguro de cambiar el estado a INACTIVO para el cliente ${nombre}?`)) {
       try {
-        await fetch(`http://localhost:8084/api/clientes/${id}`, { method: 'DELETE' });
+        await fetch(`${API_BASE_URL}/clientes/${id}`, { method: 'DELETE' });
       } catch (err) {
         console.error('Error al desactivar cliente:', err);
       }

@@ -8,6 +8,7 @@ import { ConsultorView } from './pages/ConsultorView';
 import { AgendaView } from './pages/AgendaView';
 import ClientesView from './pages/ClientesView';
 import UsuariosView from './pages/UsuariosView';
+import { ChangePassword } from './pages/ChangePassword';
 
 export const App: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ export const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/cambiar-password" element={<ChangePassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/consultor" element={<ConsultorView />} />
         <Route path="/agenda" element={<AgendaView />} />

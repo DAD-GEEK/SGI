@@ -18,8 +18,14 @@ public class UsuarioEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Column(name = "tipo_documento", length = 20)
+    private String tipoDocumento;
+
     @Column(nullable = false, unique = true, length = 20)
     private String documento;
+
+    @Column(length = 50)
+    private String pais;
 
     @Column(name = "nombre_completo", nullable = false, length = 255)
     private String nombreCompleto;
@@ -39,6 +45,13 @@ public class UsuarioEntity {
     @Builder.Default
     @Column(nullable = false)
     private Boolean activo = true;
+
+    @Builder.Default
+    @Column(name = "must_change_password")
+    private Boolean mustChangePassword = false;
+
+    @Column(name = "modulos_permitidos", length = 500)
+    private String modulosPermitidos;
 
     @Column(name = "creado_en", insertable = false, updatable = false)
     private OffsetDateTime creadoEn;

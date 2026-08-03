@@ -14,7 +14,18 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOriginPatterns("*")
+                        .allowedOriginPatterns(
+                                "http://localhost:*",
+                                "http://127.0.0.1:*",
+                                "https://sgi-crm.web.app",
+                                "https://sgi-crm.firebaseapp.com",
+                                "https://sgi-landing.web.app",
+                                "https://sgi-landing.firebaseapp.com",
+                                "https://sgi-waloyo.web.app",
+                                "https://sgi-waloyo.firebaseapp.com",
+                                "https://app.gestionintegralsgi.com.co",
+                                "https://gestionintegralsgi.com.co"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true);

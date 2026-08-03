@@ -81,7 +81,7 @@ export const Navbar: React.FC = () => {
             WhatsApp
           </a>
           <a
-            href="http://localhost:3005/"
+            href="https://sgi-crm.web.app/login"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-[#055bb2] text-white px-5 py-2.5 rounded-lg font-semibold text-xs hover:bg-[#3374cd] transition-colors shadow-xs inline-flex items-center gap-1.5"
@@ -149,15 +149,15 @@ export const Navbar: React.FC = () => {
               <WhatsAppIcon className="w-5 h-5 fill-current" />
               WhatsApp Consultoría
             </a>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                alert('Portal de Clientes SGI: Módulo en desarrollo.');
-              }}
-              className="w-full bg-[#055bb2] text-white py-3 rounded-lg font-semibold text-sm shadow-xs"
+            <a
+              href="https://sgi-crm.web.app/login"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full bg-[#055bb2] text-white py-3 rounded-lg font-semibold text-sm shadow-xs flex items-center justify-center gap-2"
             >
               Acceso Software / CRM
-            </button>
+            </a>
           </div>
         </div>
       )}
