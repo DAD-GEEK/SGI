@@ -7,16 +7,26 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 ## [Sin Versionar] - 2026-08-03
 
 ### Added
-- **Auditoría de cambios no comiteados en SGI**: Se revisó el estado real del submódulo y se verificó que existen cambios sin confirmar en la landing pública, el CRM y el microservicio `sgi-core-service`.
-- **Documentación de gobernanza del submódulo**: Quedó registrada la revisión del estado actual del submódulo y la validación de compilación correspondiente antes de preparar un commit formal.
-- **Seguimiento de cambios de seguridad y autenticación**: Se documentan las actualizaciones de CORS, reenvío de credenciales, activación de sesiones, y manejo de cambios de contraseña en SGI CRM.
+- **Gobernanza y documentación final del estado SGI**: Se cerró la revisión del submódulo con registro explícito de la auditoría de cambios no comiteados, validación de compilación y trazabilidad de los cambios de autenticación, usuarios, permisos y sesión.
+- **Autenticación corporativa SGI CRM**: Implementado el flujo de login con Supabase Auth usando email y contraseña, validaciones de formulario, recordatorio del correo y bloqueo de acceso para usuarios inactivos.
+- **Cambio obligatorio de contraseña**: Añadida la pantalla de primer acceso y cambio de clave temporal `ChangePassword.tsx`, con requisitos de complejidad y validación OWASP en tiempo real.
+- **Gestión de usuarios y colaboradores**: Se consolidó en `UsuariosView.tsx` la creación, edición, activación, desactivación, eliminación, reenvío de contraseñas temporales y control del estado de cada asesor.
+- **RBAC y permisos por módulo**: Se dejó documentado y funcional el control de roles `ADMIN_TI`, `ADMIN` y `CONSULTOR`, con asignación granular de módulos permitidos y sincronización en el sidebar.
+- **Gobernanza de sesiones**: Se implementó la expiración de sesión por tiempo configurable, cierre inmediato por inactividad, modal corporativo y validación continua cada segundo.
+- **Normalización de configuración API**: Añadido `apiConfig.ts` y `supabaseClient.ts` para centralizar la conexión y evitar URLs con errores de formato en desarrollo y producción.
 
 ### Changed
-- **Estado de trabajo del submódulo**: Actualizado el historial del proyecto con la revisión de archivos modificados pendientes: `CHANGELOG.md`, `crm/package.json`, `crm/package-lock.json`, `crm/src/App.tsx`, `crm/src/pages/Login.tsx`, `crm/src/pages/Profile.tsx`, `crm/src/pages/UsuariosView.tsx`, `crm/src/pages/ChangePassword.tsx`, `src/App.tsx`, `src/components/Navbar.tsx`, `src/pages/Home.tsx` y backend `sgi-core-service`.
-- **Validación de compilación**: Ejecutado `npm run build` en el frontend SGI para comprobar que la compilación se mantiene operativa antes de cualquier commit.
+- **Perfil de usuario y seguridad**: Se mejoró la edición de perfil con restricciones por rol, permitiendo al `ADMIN_TI` ajustes completos y manteniendo la política de solo lectura para consultores y administradores limitados.
+- **Backend `sgi-core-service`**: Se ajustó `UsuarioController.java` para soportar edición, eliminación, reactivación, reenvío de credenciales, validación de clave y control de sesión por cuenta.
+- **CORS y dominios**: Se reforzó la seguridad restringiendo orígenes permitidos a los dominios corporativos y entornos locales, evitando comodines abiertos.
+- **Landing e integración SGI**: Se actualizó la navegación y la landing para apuntar a la experiencia CRM y mantener una integración coherente entre landing pública y panel administrativo.
+- **Documentación del submódulo**: Se dejó el changelog con trazabilidad completa del último bloque de trabajo y del estado final antes del commit y push.
 
 ### Fixed
-- **Cobertura documental del estado actual**: Se actualizó el changelog para reflejar la revisión y el bloque de validación previo al commit, sin alterar la lógica funcional del submódulo.
+- **Validación programática de formularios**: Se corrigieron validaciones de email, teléfono, documento y nombres, evitando datos inconsistentes en la base de datos y mejorando la UX del usuario.
+- **Expulsión inmediata de cuentas inactivas**: Arreglado el flujo para cerrar sesión al detectar cuentas desactivadas y mostrar mensajes corporativos claro al usuario.
+- **Reenvío de credenciales**: Corregido el flujo para generar claves temporales, marcar `mustChangePassword` y notificar la nueva credencial de forma fiable.
+- **Estado de compilación**: Se ejecutó validación final de compilación del frontend SGI antes de cerrar el conjunto de cambios.
 
 ---
 
