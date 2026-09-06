@@ -21,7 +21,7 @@ RUN apk add --no-cache curl
 RUN addgroup -S waloyogroup && adduser -S waloyo -G waloyogroup
 
 # Copiar el ejecutable compilado desde la fase anterior
-COPY --from=builder /app/target/sgi-core-service-1.0.0.jar app.jar
+COPY --from=builder /app/target/*.jar app.jar
 
 # Cambiar permisos al usuario no privilegiado
 RUN chown -R waloyo:waloyogroup /app

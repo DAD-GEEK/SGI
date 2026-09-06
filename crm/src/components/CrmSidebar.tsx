@@ -44,19 +44,23 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const syncUserProfile = async () => {
+    let eventSource: EventSource | null = null;
+    let fallbackInterval: number | null = null;
+    let reconnectTimer: number | null = null;
+
+    const syncUserProfile = async (): Promise<void> => {
       try {
         const storedUserRaw = localStorage.getItem('sgi_user');
         let storedUser = storedUserRaw ? JSON.parse(storedUserRaw) : null;
 
-        // Auto-inicializar sgi_user y loginTimestamp si falta para garantizar medicion
+        // Auto-inicializar sgi_user y loginTimestamp si falta
         if (!storedUser || !storedUser.loginTimestamp) {
           storedUser = storedUser || {};
           storedUser.loginTimestamp = Date.now();
           localStorage.setItem('sgi_user', JSON.stringify(storedUser));
         }
 
-        // 1. Validar límite configurable de sesión (Defecto: 4 horas)
+        // Validar límite configurable de sesión (Defecto: 4 horas)
         const configuredLimit = parseFloat(localStorage.getItem('sgi_session_limit_hours') || '4');
         const MAX_SESSION_MS = Math.round(configuredLimit * 60 * 60 * 1000);
 
@@ -75,46 +79,117 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
         }
 
         const { data } = await supabase.auth.getUser();
+        // Obtener token de sesión
+        let accessToken: string | null = null;
+        try {
+          const sessionRes = await supabase.auth.getSession();
+          accessToken = sessionRes?.data?.session?.access_token ?? null;
+        } catch (error) {
+          // Log error de sesión pero continuar
+          console.warn('No se pudo obtener token de sesión:', error instanceof Error ? error.message : 'Error desconocido');
+        }
+
         const activeEmail = data?.user?.email || (storedUser ? storedUser.email : null);
 
-        if (activeEmail) {
-          const res = await fetch(`${API_BASE_URL}/usuarios/verificar-estado?email=${encodeURIComponent(activeEmail)}`);
-          if (res.ok) {
-            const info = await res.json();
+        if (activeEmail && !eventSource) {
+          // intentar conectar SSE
+          try {
+            const tokenParam = accessToken ? `&token=${encodeURIComponent(accessToken)}` : '';
+            eventSource = new EventSource(`${API_BASE_URL}/usuarios/stream-estado?email=${encodeURIComponent(activeEmail)}${tokenParam}`);
 
-            // 2. Desactivación inmediata por Administrador
-            if (info.activo === false) {
-              localStorage.removeItem('sgi_user');
-              await supabase.auth.signOut();
-              setSecurityModal({
-                title: 'Acceso Desactivado',
-                message: 'Su cuenta de asesor ha sido desactivada. Comuníquese con el administrador para restablecer su acceso.',
-                isDeactivated: true
-              });
-              return;
+            eventSource.onopen = () => {
+              // limpiar fallback
+              if (fallbackInterval) { window.clearInterval(fallbackInterval); fallbackInterval = null; }
+            };
+
+            eventSource.onmessage = async (e) => {
+              try {
+                const info = e.data ? JSON.parse(e.data) : null;
+                if (!info) return;
+
+                if (info.activo === false) {
+                  localStorage.removeItem('sgi_user');
+                  await supabase.auth.signOut();
+                  setSecurityModal({
+                    title: 'Acceso Desactivado',
+                    message: 'Su cuenta de asesor ha sido desactivada. Comuníquese con el administrador para restablecer su acceso.',
+                    isDeactivated: true
+                  });
+                  return;
+                }
+
+                const modulosList = info.modulosPermitidos
+                  ? info.modulosPermitidos.split(',')
+                  : ['dashboard', 'clientes', 'agenda', 'consultor'];
+
+                setUserProfile({
+                  nombre: info.nombreCompleto || activeEmail.split('@')[0],
+                  email: activeEmail,
+                  rol: info.rol || 'CONSULTOR',
+                  modulos: modulosList,
+                  activo: info.activo ?? true
+                });
+              } catch (err) {
+                console.warn('SSE parse error:', err);
+              }
+            };
+
+            eventSource.onerror = () => {
+              // al primer error, cerramos y activamos fallback
+              try {
+                if (eventSource) {
+                  eventSource.close();
+                  eventSource = null;
+                }
+              } catch (closeError) {
+                console.warn('Error al cerrar EventSource:', closeError instanceof Error ? closeError.message : 'Error desconocido');
+              }
+              if (!fallbackInterval) fallbackInterval = window.setInterval(() => { void syncUserProfile(); }, 60000);
+              // reconexión simple
+              if (reconnectTimer) window.clearTimeout(reconnectTimer);
+              reconnectTimer = window.setTimeout(() => { void syncUserProfile(); }, 5000);
+            };
+          } catch (error) {
+            // SSE no disponible, usar fallback polling
+            console.warn('Error al crear EventSource:', error instanceof Error ? error.message : 'Error desconocido');
+            if (!fallbackInterval) {
+              fallbackInterval = window.setInterval(() => { void syncUserProfile(); }, 60000);
             }
-
-            const modulosList = info.modulosPermitidos
-              ? info.modulosPermitidos.split(',')
-              : ['dashboard', 'clientes', 'agenda', 'consultor'];
-
-            setUserProfile({
-              nombre: info.nombreCompleto || activeEmail.split('@')[0],
-              email: activeEmail,
-              rol: info.rol || 'CONSULTOR',
-              modulos: modulosList,
-              activo: info.activo ?? true
-            });
           }
         }
       } catch (e) {
         console.warn('Fallback perfil sidebar:', e);
+        // fallback si ocurre error
+        if (!fallbackInterval) fallbackInterval = window.setInterval(() => { void syncUserProfile(); }, 60000);
       }
     };
 
-    syncUserProfile();
-    const interval = setInterval(syncUserProfile, 1000);
-    return () => clearInterval(interval);
+    // iniciar la primera carga / conexión
+    void syncUserProfile();
+
+    // Visibility API: cuando la pestaña vuelve visible, re-intentar conexión
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        void syncUserProfile();
+      } else {
+        // ahorrar recursos si está en background
+        try { if (eventSource) { eventSource.close(); eventSource = null; } } catch(e){}
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      try {
+        if (eventSource) {
+          eventSource.close();
+        }
+      } catch (error) {
+        console.warn('Error al cerrar EventSource en cleanup:', error instanceof Error ? error.message : 'Error desconocido');
+      }
+      if (fallbackInterval) window.clearInterval(fallbackInterval);
+      if (reconnectTimer) window.clearTimeout(reconnectTimer);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, []);
 
   const isExpanded = isPinned || isHovered;
@@ -135,9 +210,21 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
     return location.pathname === path;
   };
 
-  const canAccessModule = (moduleKey: string) => {
-    if (userProfile.rol === 'ADMIN' || userProfile.rol === 'ADMIN_TI') return true;
-    return userProfile.modulos.includes(moduleKey);
+  const getRolLabel = (): string => {
+    switch (userProfile.rol) {
+      case 'ADMIN_TI':
+        return '👑 Admin TI';
+      case 'ADMIN':
+        return 'Admin SGI';
+      default:
+        return 'Consultor SGI';
+    }
+  };
+
+  
+  const canAccessModule = (modulo: string): boolean => {
+    if (userProfile.rol === 'ADMIN_TI' || userProfile.rol === 'ADMIN') return true;
+    return userProfile.modulos.includes(modulo);
   };
 
   return (
@@ -150,7 +237,7 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
     >
       {/* Modal Corporativo de Seguridad del Sistema */}
       {securityModal && (
-        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-[9999]">
+        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-9999">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 space-y-4 text-slate-800 animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center gap-3">
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 ${securityModal.isDeactivated ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>
@@ -304,9 +391,9 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
           {isExpanded && (
             <div className="flex flex-col overflow-hidden transition-opacity">
               <span className="text-xs font-bold text-white truncate">{userProfile.nombre}</span>
-              <span className="text-[10px] text-[#a9c7ff] truncate">
-                {userProfile.rol === 'ADMIN_TI' ? '👑 Admin TI' : userProfile.rol === 'ADMIN' ? 'Admin SGI' : 'Consultor SGI'}
-              </span>
+               <span className="text-[10px] text-[#a9c7ff] truncate">
+                 {getRolLabel()}
+               </span>
             </div>
           )}
         </div>

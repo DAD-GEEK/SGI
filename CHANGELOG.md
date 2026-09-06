@@ -4,7 +4,16 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
-## [Sin Versionar] - 2026-08-03
+## [1.1.0] - 2026-09-05
+
+### 🏗️ DevOps & Infraestructura On-Premise
+- **sgi-core-service (Contenerización On-Premise)**: Configurada la ejecución soberana en Docker sobre el clúster local PostgreSQL (`waloyo-postgres-prod`), consumiendo de forma aislada el esquema `sgi` y exponiendo el puerto interno 8084.
+- **Preparación de Despliegue Zero-Trust**: Ruteo preparado hacia `sgi-api.waloyogroup.com` mediante Cloudflare Tunnels sin requerir apertura de puertos ni IPs públicas.
+- **Desmonte de Render en CI/CD**: Eliminada la dependencia del deploy hook de Render; el pipeline de GitHub Actions despliega el servicio directamente en el servidor físico local vía Self-Hosted Runner.
+
+---
+
+## [1.0.0] - 2026-08-03
 
 ### Added
 - **Gobernanza y documentación final del estado SGI**: Se cerró la revisión del submódulo con registro explícito de la auditoría de cambios no comiteados, validación de compilación y trazabilidad de los cambios de autenticación, usuarios, permisos y sesión.

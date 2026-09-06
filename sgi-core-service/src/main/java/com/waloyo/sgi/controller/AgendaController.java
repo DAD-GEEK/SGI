@@ -4,9 +4,14 @@ import com.waloyo.sgi.entity.AgendaEventoEntity;
 import com.waloyo.sgi.repository.AgendaEventoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -17,10 +22,21 @@ import java.util.UUID;
 public class AgendaController {
 
     private final AgendaEventoRepository agendaEventoRepository;
+    private final Sinks.Many<AgendaEventoEntity> agendaSink = Sinks.many().multicast().onBackpressureBuffer();
 
     @GetMapping
     public ResponseEntity<List<AgendaEventoEntity>> listarTodos() {
         return ResponseEntity.ok(agendaEventoRepository.findAll());
+    }
+
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ServerSentEvent<List<AgendaEventoEntity>>> agendaStream() {
+        return Flux.interval(Duration.ofSeconds(2))
+                .map(seq -> ServerSentEvent.<List<AgendaEventoEntity>>builder()
+                        .id(String.valueOf(seq))
+                        .event("agenda-update")
+                        .data(agendaEventoRepository.findAll())
+                        .build());
     }
 
     @GetMapping("/{id}")
@@ -39,7 +55,9 @@ public class AgendaController {
 
     @PostMapping
     public ResponseEntity<AgendaEventoEntity> crearEvento(@RequestBody AgendaEventoEntity evento) {
-        return ResponseEntity.ok(agendaEventoRepository.save(evento));
+        AgendaEventoEntity saved = agendaEventoRepository.save(evento);
+        agendaSink.tryEmitNext(saved);
+        return ResponseEntity.ok(saved);
     }
 
     @PutMapping("/{id}")
@@ -51,7 +69,9 @@ public class AgendaController {
                     evento.setFechaInicio(eventoDetails.getFechaInicio());
                     evento.setFechaFin(eventoDetails.getFechaFin());
                     evento.setEstado(eventoDetails.getEstado());
-                    return ResponseEntity.ok(agendaEventoRepository.save(evento));
+                    AgendaEventoEntity updated = agendaEventoRepository.save(evento);
+                    agendaSink.tryEmitNext(updated);
+                    return ResponseEntity.ok(updated);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
