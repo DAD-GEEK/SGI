@@ -26,6 +26,7 @@ import java.util.UUID;
 public class UsuarioController {
 
     private final UsuarioRepository usuarioRepository;
+    private final com.waloyo.sgi.repository.AgendaEventoRepository agendaEventoRepository;
     private final UsuarioStatusPublisher statusPublisher;
     private final AuthService authService;
     private final UsuarioPayloadService payloadService;
@@ -218,13 +219,22 @@ public class UsuarioController {
 
     private ResponseEntity<Map<String, Object>> handleEliminarUsuario(UsuarioEntity usuario) {
         String email = usuario.getEmail();
+        UUID usuarioId = usuario.getId();
+
+        // 1. Desvincular / eliminar eventos asociados en la agenda para no violar FK
+        List<com.waloyo.sgi.entity.AgendaEventoEntity> eventos = agendaEventoRepository.findByAsesorId(usuarioId);
+        if (!eventos.isEmpty()) {
+            agendaEventoRepository.deleteAll(eventos);
+        }
+
+        // 2. Eliminar el usuario
         usuarioRepository.delete(usuario);
         Map<String, Object> payload = payloadService.buildDeactivatedPayload(usuario);
         statusPublisher.publish(email, payload);
 
         return ResponseEntity.ok(Map.of(
                 UsuarioConstants.STATUS, UsuarioConstants.SUCCESS,
-                UsuarioConstants.MESSAGE, "Usuario eliminado definitivamente de la base de datos."
+                UsuarioConstants.MESSAGE, "Usuario y sus registros asociados eliminados definitivamente de la base de datos."
         ));
     }
 

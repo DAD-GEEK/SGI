@@ -14,6 +14,14 @@ interface Usuario {
   modulosPermitidos?: string;
 }
 
+interface AgendaEvento {
+  id: string;
+  titulo: string;
+  fechaInicio: string;
+  fechaFin: string;
+  estado: string;
+}
+
 const UsuariosView: React.FC = () => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -24,6 +32,8 @@ const UsuariosView: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [usuarioToToggle, setUsuarioToToggle] = useState<Usuario | null>(null);
   const [usuarioToDelete, setUsuarioToDelete] = useState<Usuario | null>(null);
+  const [eventosToDelete, setEventosToDelete] = useState<AgendaEvento[]>([]);
+  const [loadingEventosToDelete, setLoadingEventosToDelete] = useState<boolean>(false);
   const [usuarioToResend, setUsuarioToResend] = useState<Usuario | null>(null);
 
   // Configuración de Sesión del Sistema (Solo Admin TI)
@@ -301,6 +311,23 @@ const UsuariosView: React.FC = () => {
     }
   };
 
+  const openDeleteModal = async (u: Usuario) => {
+    setUsuarioToDelete(u);
+    setEventosToDelete([]);
+    setLoadingEventosToDelete(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/agenda/asesor/${u.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setEventosToDelete(data);
+      }
+    } catch (err) {
+      console.error('Error al consultar eventos del asesor:', err);
+    } finally {
+      setLoadingEventosToDelete(false);
+    }
+  };
+
   const confirmDeleteUsuario = async () => {
     if (!usuarioToDelete) return;
 
@@ -309,8 +336,9 @@ const UsuariosView: React.FC = () => {
         method: 'DELETE'
       });
       if (res.ok) {
-        showToast(`Usuario ${usuarioToDelete.nombreCompleto} eliminado permanentemente de la base de datos.`);
+        showToast(`Usuario ${usuarioToDelete.nombreCompleto} y sus eventos asociados eliminados permanentemente.`);
         setUsuarioToDelete(null);
+        setEventosToDelete([]);
         fetchUsuarios();
       }
     } catch (err) {
@@ -524,7 +552,7 @@ const UsuariosView: React.FC = () => {
                             <Power className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => setUsuarioToDelete(u)}
+                            onClick={() => openDeleteModal(u)}
                             title="Eliminar Definitivamente del Sistema"
                             className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                           >
@@ -669,10 +697,52 @@ const UsuariosView: React.FC = () => {
                 ¿Está seguro de eliminar de forma permanente al usuario <strong className="text-slate-900">{usuarioToDelete.nombreCompleto}</strong> (`{usuarioToDelete.email}`)? Esta acción borra completamente el registro de la base de datos.
               </p>
 
+              {/* Advertencia Explícita de Eventos de Agenda Asociados */}
+              <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl space-y-2">
+                <div className="flex items-center gap-2 text-amber-900 font-bold text-xs">
+                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>Eliminación en Cascada de Agenda</span>
+                </div>
+                <p className="text-xs text-amber-800 leading-relaxed">
+                  Para mantener la integridad de la base de datos sin errores de clave foránea, al eliminar este asesor <strong className="text-amber-950">se borrarán automáticamente todos los eventos de agenda vinculados a su cuenta</strong>.
+                </p>
+
+                {loadingEventosToDelete ? (
+                  <div className="text-xs text-amber-700 italic pt-1 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 animate-spin" />
+                    Consultando eventos de agenda asociados...
+                  </div>
+                ) : eventosToDelete.length > 0 ? (
+                  <div className="pt-1 space-y-1.5">
+                    <div className="text-xs font-semibold text-amber-900 flex justify-between">
+                      <span>Eventos que se eliminarán:</span>
+                      <span className="bg-amber-200 text-amber-900 px-1.5 py-0.2 rounded font-mono text-[11px]">{eventosToDelete.length}</span>
+                    </div>
+                    <div className="max-h-28 overflow-y-auto space-y-1 pr-1">
+                      {eventosToDelete.map((ev) => (
+                        <div key={ev.id} className="p-1.5 bg-white/80 border border-amber-200/60 rounded text-[11px] text-slate-700 flex justify-between items-center gap-2">
+                          <span className="font-medium truncate">{ev.titulo || 'Sin Título'}</span>
+                          <span className="text-[10px] text-slate-500 shrink-0 font-mono">
+                            {ev.fechaInicio ? new Date(ev.fechaInicio).toLocaleDateString() : ''}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-xs text-emerald-800 font-medium pt-1">
+                    ✓ Este asesor no tiene citas ni eventos registrados en su agenda.
+                  </p>
+                )}
+              </div>
+
               <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"
-                  onClick={() => setUsuarioToDelete(null)}
+                  onClick={() => {
+                    setUsuarioToDelete(null);
+                    setEventosToDelete([]);
+                  }}
                   className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm font-semibold hover:bg-slate-50 cursor-pointer"
                 >
                   Cancelar
@@ -680,7 +750,8 @@ const UsuariosView: React.FC = () => {
                 <button
                   type="button"
                   onClick={confirmDeleteUsuario}
-                  className="px-5 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 shadow-sm cursor-pointer"
+                  disabled={loadingEventosToDelete}
+                  className="px-5 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 disabled:opacity-50 shadow-sm cursor-pointer"
                 >
                   Eliminar Definitivamente
                 </button>

@@ -53,6 +53,11 @@ public class AgendaController {
         return ResponseEntity.ok(agendaEventoRepository.findByRangoFechas(inicio, fin));
     }
 
+    @GetMapping("/asesor/{asesorId}")
+    public ResponseEntity<List<AgendaEventoEntity>> obtenerPorAsesor(@PathVariable UUID asesorId) {
+        return ResponseEntity.ok(agendaEventoRepository.findByAsesorId(asesorId));
+    }
+
     @PostMapping
     public ResponseEntity<AgendaEventoEntity> crearEvento(@RequestBody AgendaEventoEntity evento) {
         AgendaEventoEntity saved = agendaEventoRepository.save(evento);

@@ -8,6 +8,9 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ### 🧹 Refactorización & Arquitectura de Repositorios
 - **Desacoplamiento de Proyectos Legacy**: Removidas las referencias y punteros anidados de `AgendaSGI` y `ConsultorSGI` del repositorio de SGI, independizándolos como submódulos autónomos directos del holding. Resuelto el fallo de recursión Git en CI/CD (`actions/checkout@v4`).
+- **WelcomeController & Telemetría API (`/` y `/api/health`)**: Implementada la pantalla visual de telemetría institucional y el endpoint `/api/health` para consultar el estado del esquema PostgreSQL y el total de clientes (`totalClientesSGI: 67`).
+- **Blindaje de Integridad Referencial en Eliminación (`UsuarioController`)**: Corregido error SQL 23503 en `DELETE /api/usuarios/{id}` desvinculando y eliminando previamente los eventos asociados en `sgi.agenda_eventos` para prevenir violaciones de foreign key.
+- **Previsualización de Eventos de Agenda en CRM (`UsuariosView.tsx` & `AgendaController`)**: Añadido endpoint `GET /api/agenda/asesor/{asesorId}` y cuadro de advertencia reactivo en el modal de eliminación del CRM, informando al administrador sobre la eliminación en cascada y listando los eventos específicos vinculados al consultor.
 
 ---
 
