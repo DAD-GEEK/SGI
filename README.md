@@ -37,8 +37,8 @@ El proyecto adopta formalmente la especificación **SGI Unified Core** definida 
 
 ```
 apps/client/SGI/
-├── AgendaSGI/            # Código legacy referencia (.NET C# / SQL Server)
-├── ConsultorSGI/         # Código legacy referencia (.NET C# / SQL Server)
+├── crm/                  # Portal moderno CRM & gestión de consultores (React + Vite + Tailwind)
+├── sgi-core-service/     # Microservicio backend On-Premise (Spring Boot / Java 21 / PostgreSQL schema sgi)
 ├── docs/                 # Documentación técnica y arquitectura
 │   ├── plan_sgi.md       # Plan Maestro de Onboarding e Ingeniería
 │   ├── plan_sgi_crm.md   # Plan Maestro del Software CRM Desacoplado
