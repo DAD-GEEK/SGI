@@ -4,6 +4,13 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.2.0] - 2026-09-05
+
+### 🧹 Refactorización & Arquitectura de Repositorios
+- **Desacoplamiento de Proyectos Legacy**: Removidas las referencias y punteros anidados de `AgendaSGI` y `ConsultorSGI` del repositorio de SGI, independizándolos como submódulos autónomos directos del holding. Resuelto el fallo de recursión Git en CI/CD (`actions/checkout@v4`).
+
+---
+
 ## [1.1.0] - 2026-09-05
 
 ### 🏗️ DevOps & Infraestructura On-Premise
