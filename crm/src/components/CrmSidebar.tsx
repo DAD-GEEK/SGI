@@ -12,10 +12,12 @@ import {
   ChevronLeft,
   Pin,
   Lock,
+  Clock,
   AlertTriangle
 } from 'lucide-react';
 import { supabase } from '../config/supabaseClient';
 import { API_BASE_URL } from '../config/apiConfig';
+import { performCompleteLogout } from '../utils/authUtils';
 
 interface CrmSidebarProps {
   activeTab?: string;
@@ -25,6 +27,7 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
   const [isPinned, setIsPinned] = useState<boolean>(true);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [securityModal, setSecurityModal] = useState<{ title: string; message: string; isDeactivated?: boolean } | null>(null);
+  const [redirectCountdown, setRedirectCountdown] = useState<number>(15);
 
   const [userProfile, setUserProfile] = useState<{
     nombre: string;
@@ -32,16 +35,85 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
     rol: string;
     modulos: string[];
     activo: boolean;
-  }>({
-    nombre: 'Dra. Amanda Durango',
-    email: 'admin@gestionintegralsgi.com.co',
-    rol: 'ADMIN',
-    modulos: ['dashboard', 'clientes', 'agenda', 'consultor', 'usuarios'],
-    activo: true
+  }>(() => {
+    try {
+      const storedRaw = localStorage.getItem('sgi_user');
+      if (storedRaw) {
+        const u = JSON.parse(storedRaw);
+        return {
+          nombre: u.nombre || u.email?.split('@')[0] || 'Usuario SGI',
+          email: u.email || '',
+          rol: u.rol || u.role || 'CONSULTOR',
+          modulos: u.modulos || ['dashboard', 'clientes', 'agenda', 'consultor'],
+          activo: u.activo ?? true
+        };
+      }
+    } catch {}
+    return {
+      nombre: 'Usuario SGI',
+      email: '',
+      rol: 'CONSULTOR',
+      modulos: ['dashboard', 'clientes', 'agenda', 'consultor'],
+      activo: true
+    };
   });
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Temporizador de auto-redirección a los 15 segundos al expirar sesión
+  useEffect(() => {
+    if (!securityModal) return;
+
+    setRedirectCountdown(15);
+    const interval = setInterval(() => {
+      setRedirectCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setSecurityModal(null);
+          void performCompleteLogout().then(() => {
+            navigate('/login', { replace: true });
+          });
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [securityModal, navigate]);
+
+  // Monitoreo continuo de sesión cada 1 segundo (Soporta Modo Pruebas 10s y Límites Dinámicos)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (securityModal) return;
+
+      const storedUserRaw = localStorage.getItem('sgi_user');
+      if (!storedUserRaw) return;
+
+      try {
+        const storedUser = JSON.parse(storedUserRaw);
+        if (!storedUser || !storedUser.loginTimestamp) return;
+
+        const configuredLimit = parseFloat(localStorage.getItem('sgi_session_limit_hours') || '4');
+        const MAX_SESSION_MS = Math.round(configuredLimit * 60 * 60 * 1000);
+        const elapsed = Date.now() - storedUser.loginTimestamp;
+
+        if (elapsed >= MAX_SESSION_MS) {
+          const timeLabel = configuredLimit < 0.01 ? '10 segundos (Modo Pruebas)' : `${configuredLimit} hora(s)`;
+          void performCompleteLogout();
+          setSecurityModal({
+            title: 'Sesión Expirada por Seguridad',
+            message: `Su sesión de ${timeLabel} ha expirado por políticas de seguridad del sistema. Por favor ingrese sus credenciales nuevamente.`
+          });
+        }
+      } catch (err) {
+        console.error('Error evaluando expiración de sesión:', err);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [securityModal]);
 
   useEffect(() => {
     let eventSource: EventSource | null = null;
@@ -51,25 +123,24 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
     const syncUserProfile = async (): Promise<void> => {
       try {
         const storedUserRaw = localStorage.getItem('sgi_user');
-        let storedUser = storedUserRaw ? JSON.parse(storedUserRaw) : null;
+        const storedUser = storedUserRaw ? JSON.parse(storedUserRaw) : null;
 
-        // Auto-inicializar sgi_user y loginTimestamp si falta
-        if (!storedUser || !storedUser.loginTimestamp) {
-          storedUser = storedUser || {};
-          storedUser.loginTimestamp = Date.now();
-          localStorage.setItem('sgi_user', JSON.stringify(storedUser));
+        // Si no hay credenciales locales, forzar cierre y redirección a login
+        if (!storedUser || !storedUser.email) {
+          await performCompleteLogout();
+          navigate('/login', { replace: true });
+          return;
         }
 
-        // Validar límite configurable de sesión (Defecto: 4 horas)
+        // Validar límite configurable de sesión
         const configuredLimit = parseFloat(localStorage.getItem('sgi_session_limit_hours') || '4');
         const MAX_SESSION_MS = Math.round(configuredLimit * 60 * 60 * 1000);
 
-        if (storedUser && storedUser.loginTimestamp) {
+        if (storedUser.loginTimestamp) {
           const elapsed = Date.now() - storedUser.loginTimestamp;
-          if (elapsed > MAX_SESSION_MS) {
+          if (elapsed >= MAX_SESSION_MS) {
             const timeLabel = configuredLimit < 0.01 ? '10 segundos (Modo Pruebas)' : `${configuredLimit} hora(s)`;
-            localStorage.removeItem('sgi_user');
-            await supabase.auth.signOut();
+            await performCompleteLogout();
             setSecurityModal({
               title: 'Sesión Expirada por Seguridad',
               message: `Su sesión de ${timeLabel} ha expirado por políticas de seguridad del sistema. Por favor ingrese sus credenciales nuevamente.`
@@ -108,8 +179,7 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
                 if (!info) return;
 
                 if (info.activo === false) {
-                  localStorage.removeItem('sgi_user');
-                  await supabase.auth.signOut();
+                  await performCompleteLogout();
                   setSecurityModal({
                     title: 'Acceso Desactivado',
                     message: 'Su cuenta de asesor ha sido desactivada. Comuníquese con el administrador para restablecer su acceso.',
@@ -196,12 +266,11 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
 
   const handleLogout = async () => {
     try {
-      localStorage.removeItem('sgi_user');
-      await supabase.auth.signOut();
-      navigate('/login');
+      await performCompleteLogout();
+      navigate('/login', { replace: true });
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
-      navigate('/login');
+      navigate('/login', { replace: true });
     }
   };
 
@@ -251,15 +320,29 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
             <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200 font-medium">
               {securityModal.message}
             </p>
+
+            {/* Contador visual de auto-redirección de seguridad */}
+            <div className="flex items-center justify-between p-3 bg-amber-50 rounded-xl border border-amber-200/70 text-xs font-semibold text-amber-800">
+              <span className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-amber-600 animate-pulse" />
+                Redirección automática por seguridad:
+              </span>
+              <span className="bg-amber-200 text-amber-900 px-2.5 py-0.5 rounded-full font-bold">
+                {redirectCountdown}s
+              </span>
+            </div>
+
             <div className="pt-2">
               <button
-                onClick={() => {
+                onClick={async () => {
                   setSecurityModal(null);
-                  navigate('/login');
+                  await performCompleteLogout();
+                  navigate('/login', { replace: true });
                 }}
-                className="w-full py-3 bg-[#1E3A8A] text-white rounded-xl text-xs font-bold hover:bg-[#1E3A8A]/90 transition-all shadow-md cursor-pointer"
+                className="w-full py-3 bg-[#1E3A8A] text-white rounded-xl text-xs font-bold hover:bg-[#1E3A8A]/90 transition-all shadow-md cursor-pointer flex items-center justify-center gap-2"
               >
-                Reingresar al Sistema SGI
+                <span>Reingresar al Sistema SGI</span>
+                <span className="text-[11px] opacity-80 font-normal">({redirectCountdown}s)</span>
               </button>
             </div>
           </div>

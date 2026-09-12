@@ -85,7 +85,7 @@ export const ChangePassword: React.FC = () => {
 
       setSuccess(true);
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/dashboard', { replace: true });
       }, 1500);
 
     } catch (err: any) {

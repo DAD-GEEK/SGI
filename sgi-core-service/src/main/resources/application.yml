@@ -1,4 +1,5 @@
-# SGI Core Service Engine - Enterprise Release
+# SGI Core Service Engine - Production Profile (Default)
+# Consume única y exclusivamente variables inyectadas por GitHub Secrets / Docker Compose
 server:
   port: ${PORT:8084}
   servlet:
@@ -8,9 +9,9 @@ spring:
   application:
     name: sgi-core-service
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://127.0.0.1:5434/postgres?currentSchema=sgi}
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:postgres}?currentSchema=sgi
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -21,17 +22,17 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         default_schema: sgi
 
 logging:
   level:
     root: INFO
-    com.waloyo.sgi: DEBUG
-    org.hibernate.SQL: DEBUG
+    com.waloyo.sgi: INFO
+    org.hibernate.SQL: ERROR
 
 supabase:
   url: ${SUPABASE_URL:https://bmgfqxribkrhbzqvhsjp.supabase.co}
@@ -49,10 +50,9 @@ sgi:
     mssql:
       host: ${MSSQL_HOST:server163.tecnoweb.net}
       port: ${MSSQL_PORT:1433}
-      user: ${MSSQL_USER:}
-      password: ${MSSQL_PASSWORD:}
+      user: ${MSSQL_USER}
+      password: ${MSSQL_PASSWORD}
       db-agenda: ${MSSQL_DB_AGENDA:gestioni_datosNet}
       db-consultor: ${MSSQL_DB_CONSULTOR:gestioni_consultorNet}
       trust-server-certificate: ${MSSQL_TRUST_SERVER_CERTIFICATE:true}
       login-timeout-sec: ${MSSQL_LOGIN_TIMEOUT:15}
-
