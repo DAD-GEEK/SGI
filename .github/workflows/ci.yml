@@ -1,4 +1,4 @@
-name: ?? Integraci?n Continua (CI) - Gesti?n Integral SGI
+name: Integracion Continua (CI) - Gestion Integral SGI
 
 on:
   push:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   changes:
-    name: ?? Detectar Componentes Modificados
+    name: Detectar Componentes Modificados
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -21,7 +21,7 @@ jobs:
       crm: ${{ steps.filter.outputs.crm }}
       core: ${{ steps.filter.outputs.core }}
     steps:
-      - name: Descargar C?digo
+      - name: Descargar Codigo
         uses: actions/checkout@v4
 
       - name: Evaluar Filtro de Rutas
@@ -41,13 +41,13 @@ jobs:
               - 'sgi-core-service/**'
 
   validate-landing:
-    name: ?? Validar SGI Landing Comercial
+    name: Validar SGI Landing Comercial
     needs: changes
     if: ${{ needs.changes.outputs.landing == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Descargar C?digo
+      - name: Descargar Codigo
         uses: actions/checkout@v4
 
       - name: Configurar Node.js
@@ -61,19 +61,19 @@ jobs:
         run: npm ci
 
       - name: Validar Formato y Linter
-        run: npm run lint || echo "No hay lint configurado a?n"
+        run: npm run lint || echo "No hay lint configurado aun"
 
       - name: Compilar Frontend (Vite)
         run: npm run build
 
   validate-crm:
-    name: ?? Validar SGI CRM & Portal
+    name: Validar SGI CRM y Portal
     needs: changes
     if: ${{ needs.changes.outputs.crm == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Descargar C?digo
+      - name: Descargar Codigo
         uses: actions/checkout@v4
 
       - name: Configurar Node.js
@@ -88,7 +88,7 @@ jobs:
         working-directory: crm
 
       - name: Validar Formato y Linter
-        run: npm run lint || echo "No hay lint configurado a?n"
+        run: npm run lint || echo "No hay lint configurado aun"
         working-directory: crm
 
       - name: Compilar Frontend (Vite)
@@ -96,13 +96,13 @@ jobs:
         working-directory: crm
 
   validate-core-service:
-    name: ?? Validar SGI Core Service (Spring Boot)
+    name: Validar SGI Core Service (Spring Boot)
     needs: changes
     if: ${{ needs.changes.outputs.core == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Descargar C?digo
+      - name: Descargar Codigo
         uses: actions/checkout@v4
 
       - name: Configurar Java JDK 17
@@ -112,7 +112,7 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
-      - name: Otorgar Permisos de Ejecuci?n al Wrapper de Maven
+      - name: Otorgar Permisos de Ejecucion al Wrapper de Maven
         run: chmod +x mvnw
         working-directory: sgi-core-service
 
