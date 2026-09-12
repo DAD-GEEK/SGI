@@ -27,10 +27,14 @@ dist-ssr
 # Database backups
 *.bak
 
-# Environment variables
+# Environment variables & Local Spring Boot profiles
 .env
 .env.local
 .env.*.local
+application-local.yml
+application-local.yaml
+application-local.properties
+application*.local.*
 
 # Vite
 *.tsbuildinfo
