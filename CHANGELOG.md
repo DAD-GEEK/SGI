@@ -4,6 +4,15 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.4.3] - 2026-09-12
+
+### 🔍 Observabilidad & Monitoreo de Errores (Sentry)
+- **Monitoreo en Tiempo Real en SGI CRM (`crm/src/main.tsx` & `crm/package.json`)**:
+  - Incorporada la suite de observabilidad `@sentry/react` en el CRM de asesores para captura de excepciones no controladas y auditoría de llamadas fallidas.
+  - Inicialización limpia y condicional con `import.meta.env.VITE_SENTRY_DSN` y `Sentry.browserTracingIntegration()`, garantizando cero llaves o DSNs hardcodeados en el repositorio.
+
+---
+
 ## [1.4.2] - 2026-09-12
 
 ### 🛡️ Blindaje Reactivo SSE, Prevención de "Out of Memory" & Cierre de Sesión Atómico (SGI CRM & Core)
