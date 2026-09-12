@@ -4,6 +4,80 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.4.3] - 2026-09-12
+
+### 🔍 Observabilidad & Monitoreo de Errores (Sentry)
+- **Monitoreo en Tiempo Real en SGI CRM (`crm/src/main.tsx` & `crm/package.json`)**:
+  - Incorporada la suite de observabilidad `@sentry/react` en el CRM de asesores para captura de excepciones no controladas y auditoría de llamadas fallidas.
+  - Inicialización limpia y condicional con `import.meta.env.VITE_SENTRY_DSN` y `Sentry.browserTracingIntegration()`, garantizando cero llaves o DSNs hardcodeados en el repositorio.
+
+---
+
+## [1.4.2] - 2026-09-12
+
+### 🛡️ Blindaje Reactivo SSE, Prevención de "Out of Memory" & Cierre de Sesión Atómico (SGI CRM & Core)
+- **Eliminación Definitiva de Fugas de Memoria ("Out of Memory") (`CrmSidebar.tsx`)**:
+  - Implementada política de cierre inmediato (`eventSource.close()`) al primer error de conexión con el backend para evitar tormentas de reconexión descontroladas del motor nativo del navegador.
+  - Centralizada la purga de temporizadores (`clearTimers`) en manejadores de error y desmontaje de React, garantizando que nunca se acumulen timers zombis concurrentes en memoria.
+  - Pausa automática de flujos reactivos cuando la pestaña pasa a segundo plano (`document.visibilityState !== 'visible'`).
+- **Cierre de Sesión Atómico y No Bloqueante (`authUtils.ts` & `CrmSidebar.tsx`)**:
+  - Desacoplamiento total entre la limpieza síncrona de credenciales (`localStorage.removeItem('sgi_user')`) y la revocación de tokens en Supabase Auth, ejecutada en microtask diferido (`setTimeout(..., 0)`).
+  - Desconexión forzosa del socket `EventSource` vía referencia mutable (`useRef`) previo a la redirección para no dejar conexiones colgadas en estado `Pending`.
+  - Navegación pura en memoria SPA (`navigate('/login', { replace: true })`), eliminando recargas completas de ventana (`window.location.href`) que causaban congelamiento de interfaz.
+- **Aprovisionamiento Dual Automatizado en Supabase Auth (`UsuarioController.java` & `AuthService.java`)**:
+  - Inyección de `service-role-key` y llamada automatizada a Supabase Auth (`/auth/v1/admin/users`) al registrar asesores en el CRM para que queden creados simultáneamente en Supabase y en la base de datos PostgreSQL de SGI.
+- **Limpieza de Configuración y Cron Job Local de 15 Minutos (`SgiSyncProperties.java` & `application-local.yml`)**:
+  - Removidos todos los valores quemados en código Java en `SgiSyncProperties.java`, delegando 100% la parametrización a los archivos de configuración y variables de entorno.
+  - Expresión cron en `application-local.yml` corregida formalmente a 6 campos (`0 */15 * * * *`) para ejecutar la replicación incremental de BD cada 15 minutos en local.
+- **Mitigación Integral de Vulnerabilidades ReDoS (Expresiones Regulares con Backtracking Superlineal) (`apiConfig.ts`, `ClientesView.tsx`, `UsuariosView.tsx`)**:
+  - Reemplazado recorte de slashes por bucle determinista `while (cleaned.endsWith('/'))`.
+  - Reemplazado formateo de NIT (`formatNit`) con lookahead anidado por algoritmo aritmético en bloques de 3 dígitos sin expresiones regulares.
+  - Reemplazado `emailRegex` negado por validación desacoplada con `split('@')`, eliminando al 100% los 3 Security Hotspots de SonarQube (regla S5852).
+- **Instrumentación de JaCoCo y Suite Exhaustiva de Pruebas Unitarias (`pom.xml`, `UsuarioControllerTest.java`, `ClienteControllerTest.java`, `AuthServiceTest.java`, `SgiSyncPropertiesTest.java`, `UnifiedTransformServiceTest.java`, `RawMirrorServiceTest.java`)**:
+  - Integrado `jacoco-maven-plugin` para emitir reportes XML (`target/site/jacoco/jacoco.xml`) e importación directa en SonarQube On-Premise.
+  - 14 pruebas unitarias automatizadas con 0 fallos cubriendo controladores, servicios de autenticación y pipeline ETL de replicación de bases de datos.
+
+---
+
+## [1.4.1] - 2026-09-12
+
+### ⚡ Corrección de Cierre de Sesión & Aceleración de Carga (SGI CRM)
+- **Descongelamiento Inmediato en Cierre de Sesión (`authUtils.ts`)**: Añadido límite estricto de tiempo asíncrono (`Promise.race` con timeout de 800ms) al invalidar la sesión en Supabase (`supabase.auth.signOut`). Previene cuelgues o bloqueos indefinidos del navegador cuando el usuario se encuentra en modo fallback/demo o si el endpoint remoto de Supabase no responde.
+- **Redirección Robusta al Login (`CrmSidebar.tsx`)**: Refactorizado `handleLogout()` para invocar la purga de credenciales y ejecutar inmediatamente `window.location.href = '/login'`, eliminando el estado congelado del DOM y reseteando limpiamente las subscripciones y contextos de React.
+- **Aceleración de Arranque y Login (`Login.tsx` & `CrmSidebar.tsx`)**:
+  - Incorporado `AbortSignal.timeout(1500)` en la verificación de estado HTTP del usuario (`/api/usuarios/verificar-estado`).
+  - Eliminación total de puertas traseras o accesos simulados en desarrollo (`Login.tsx`). El acceso al CRM exige estricta e indispensablemente autenticación válida y confirmada en Supabase Auth (`supabase.auth.signInWithPassword`). Cero bypasses no autorizados.
+  - Añadido timeout de 1 segundo a las llamadas asíncronas de sesión (`supabase.auth.getUser` y `supabase.auth.getSession`) en la barra lateral para renderizar instantáneamente el Dashboard sin pausas perceptibles.
+  - **Corrección de Longitud de Documento en ETL Reactivo (`UsuarioEntity.java` & `UnifiedTransformService.java`)**: Solucionado el error SQL `value too long for type character varying(20)` al replicar usuarios desde `gestioni_consultorNet.AspNetUsers`. Se expandió `documento` a `character varying(100)` y se aplicó truncamiento defensivo a 90 caracteres para UUIDs o identificadores extensos legados.
+  - **Acceso Universal Garantizado para Super Admin (`ADMIN_TI` & `ADMIN`)**: Actualizado `Login.tsx` y `CrmSidebar.tsx` para que cualquier usuario con rol `ADMIN_TI` o `ADMIN` reciba acceso automático, irrestricto y perpetuo a todos los módulos existentes (`dashboard`, `clientes`, `agenda`, `consultor`, `usuarios`) y a cualquier módulo futuro que se incorpore en el sistema.
+
+---
+
+## [1.4.0] - 2026-09-12
+
+### 🔄 Replicación de Base de Datos, ETL Reactivo & Watermark Incremental (sgi-core-service)
+- **Motor de Replicación Reactiva y Extracción Incremental (`MssqlExtractionService.java` & WebFlux)**: Implementado servicio reactivo (`Flux<RawRecord>`) que conecta dinámicamente vía JDBC a Microsoft SQL Server (`gestioni_datosNet` y `gestioni_consultorNet` en `server163.tecnoweb.net:1433`) extrayendo de forma incremental solo registros modificados con base en marcas temporales (`FechaModificacion`, `FechaCreacion`, `FechaRegistro`).
+- **Esquema Espejo Idéntico Raw (`sgi_raw` / `RawMirrorService.java`)**: Creación dinámica y desacoplada del esquema `sgi_raw` en PostgreSQL, persistiendo réplicas 1:1 de las tablas legadas de Agenda y Consultor como respaldo vivo sin impactar el rendimiento del CRM.
+- **Transformación Unificada y Sanitización B2B (`UnifiedTransformService.java`)**: Filtrado estricto por lista blanca de NITs reales colombianos (>= 8 dígitos), mapeo de estados legados (`OpcEstado`) y sincronización automática hacia `sgi.terceros_clientes` y `sgi.usuarios_consultores`.
+- **Orquestador Programado Resiliente con Reintentos (`DatabaseSyncScheduler.java`)**: Cronjob configurable vía secretos (`SGI_SYNC_CRON: 0 0 */1 * * *` / `0 0 */3 * * *`), política reactiva de 3 reintentos espaciados cada 5 minutos (`delay-ms: 300000`) y congelamiento de marca temporal (`last_successful_sync`) en caso de fallo para evitar pérdida de datos en la siguiente ventana programada.
+- **Control de Marcas de Agua (`SyncWatermarkEntity.java` & `SyncWatermarkRepository.java`)**: Auditoría y control transaccional por tabla en `sgi.sync_watermarks` registrando estado, registros procesados y mensajes de error.
+- **Endpoints de Monitoreo y Disparo Manual (`SyncController.java`)**: Habilitados `GET /api/sync/status` (telemetría en vivo) y `POST /api/sync/trigger` (ejecución manual reactiva).
+
+---
+
+## [1.3.0] - 2026-09-08
+
+### 🔒 Seguridad, Autenticación & Gobernanza de Sesiones (SGI CRM)
+- **Corrección de Supabase Anon Key (`supabaseClient.ts`)**: Solucionado el error HTTP 401 (`Invalid API key`) al autenticar con Supabase Auth (`/auth/v1/token?grant_type=password`) reemplazando el valor truncado de respaldo por la clave pública anónima formal del proyecto `bmgfqxribkrhbzqvhsjp`. Añadida plantilla `.env.example` e ignorado `.env` en Git.
+- **Blindaje contra Retroceso del Navegador (`ProtectedRoute.tsx` & `App.tsx`)**: Implementado componente guardián `ProtectedRoute` envolviendo todas las rutas privadas (`/dashboard`, `/consultor`, `/agenda`, `/clientes`, `/usuarios`, `/perfil`, `/cambiar-password`). Previene el reingreso al presionar "Atrás" en el navegador tras cerrar sesión o expirar el token, limpiando `bfcache` (`pageshow`) y escuchando eventos `SIGNED_OUT` en tiempo real.
+- **Eliminación de Auto-Inicialización Insegura (`CrmSidebar.tsx`)**: Removida la lógica que re-creaba usuarios inexistentes con perfil simulado de administrador al navegar a rutas privadas.
+- **Cierre Integral de Sesión Multicapa (`authUtils.ts`)**: Implementada función `performCompleteLogout()` que purga `sgi_user` (localStorage/sessionStorage), elimina tokens persistidos de Supabase (`sb-*-auth-token`) e invalida la sesión remota en Supabase Auth (`scope: global/local`).
+- **Temporizador de Auto-Redirección a 15 Segundos en Expiración de Sesión (`CrmSidebar.tsx`)**: Integrado contador regresivo de 15 segundos visible en el modal corporativo de seguridad ("Sesión Expirada por Seguridad" y "Acceso Desactivado"). Si el usuario no interactúa pulsando "Reingresar al Sistema SGI", el sistema lo redirige de forma automática e inmediata al login mediante `navigate('/login', { replace: true })`.
+- **Monitoreo Continuo de Expiración cada 1 Segundo (`CrmSidebar.tsx`)**: Incorporado chequeo en segundo plano cada 1000ms que evalúa `sgi_session_limit_hours` con soporte reactivo exacto para `⏱️ 10 Segundos (Modo Pruebas)` y expiraciones dinámicas en vivo.
+- **Soporte de URL Supabase en Microservicio (`application.yml` & `AuthService.java`)**: Configurada propiedad `supabase.url` con fallback dinámico para la validación de tokens en el endpoint reactivo SSE `/stream-estado`.
+
+---
+
 ## [1.2.0] - 2026-09-05
 
 ### 🧹 Refactorización & Arquitectura de Repositorios

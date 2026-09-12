@@ -9,6 +9,7 @@ dist-crm
 # System files
 .DS_Store
 *.pem
+.env
 .env*.local
 
 # IDE

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Lock, Mail, ArrowRight, AlertCircle, HelpCircle } from 'lucide-react';
 import { supabase } from '../config/supabaseClient';
@@ -13,6 +13,27 @@ export const Login: React.FC = () => {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkActiveSession = () => {
+      const storedUserRaw = localStorage.getItem('sgi_user');
+      if (storedUserRaw) {
+        try {
+          const storedUser = JSON.parse(storedUserRaw);
+          const configuredLimit = parseFloat(localStorage.getItem('sgi_session_limit_hours') || '4');
+          const MAX_SESSION_MS = Math.round(configuredLimit * 60 * 60 * 1000);
+          if (
+            storedUser.email &&
+            storedUser.loginTimestamp &&
+            Date.now() - storedUser.loginTimestamp < MAX_SESSION_MS
+          ) {
+            navigate('/dashboard', { replace: true });
+          }
+        } catch {}
+      }
+    };
+    checkActiveSession();
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,9 +58,11 @@ export const Login: React.FC = () => {
     }
 
     try {
-      // 1. Verificar primero en la API Spring Boot si el usuario está ACTIVO o INACTIVO
+      // 1. Verificar primero en la API Spring Boot si el usuario está ACTIVO o INACTIVO (timeout de 1.5s para no congelar la UI)
       try {
-        const checkRes = await fetch(`${API_BASE_URL}/usuarios/verificar-estado?email=${encodeURIComponent(email)}`);
+        const checkRes = await fetch(`${API_BASE_URL}/usuarios/verificar-estado?email=${encodeURIComponent(email)}`, {
+          signal: AbortSignal.timeout(1500)
+        });
         if (checkRes.ok) {
           const userStatus = await checkRes.json();
           if (userStatus.activo === false) {
@@ -48,7 +71,7 @@ export const Login: React.FC = () => {
           if (userStatus.mustChangePassword) {
             // Guardar sesión previa para flujo de cambio de clave
             localStorage.setItem('sgi_user', JSON.stringify({ email, loginTimestamp: Date.now() }));
-            navigate('/cambiar-password');
+            navigate('/cambiar-password', { replace: true });
             return;
           }
         }
@@ -56,35 +79,80 @@ export const Login: React.FC = () => {
         if (err.message && err.message.includes('desactivada')) {
           throw err;
         }
-        console.warn('Backend API estado check fallback:', err);
+        console.warn('Backend API estado check fallback (continuando login):', err);
       }
 
-      // 2. Intentar inicio de sesión con Supabase Auth (Email + Password)
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
+      // 2. Intentar inicio de sesión con Supabase Auth (Email + Password) con timeout holgado de 10s
+      const authPromise = supabase.auth.signInWithPassword({
         email,
         password
       });
+      const timeoutPromise = new Promise<{ data: any; error: any }>((_, reject) =>
+        setTimeout(() => reject(new Error('SUPABASE_TIMEOUT')), 10000)
+      );
+
+      let data: any = null;
+      let authError: any = null;
+
+      try {
+        const res = await Promise.race([authPromise, timeoutPromise]);
+        data = res.data;
+        authError = res.error;
+      } catch (err: any) {
+        if (err.message === 'SUPABASE_TIMEOUT') {
+          authError = { message: 'El servicio de autenticación tardó en responder. Por favor intente nuevamente.' };
+        } else {
+          authError = err;
+        }
+      }
 
       if (authError) {
-        // Modo fallback demo / desarrollo si aún no se ha registrado en Supabase Auth
-        if (email.includes('@gestionintegralsgi.com.co') || email.includes('waloyogroup') || email.includes('admin')) {
-          localStorage.setItem('sgi_user', JSON.stringify({ email, role: 'ADMIN_TI', loginTimestamp: Date.now() }));
-          navigate('/dashboard');
-          return;
-        }
-        throw new Error(authError.message === 'Invalid login credentials' ? 'Correo o contraseña incorrectos. Verifique sus datos.' : authError.message);
+        throw new Error(
+          authError.message === 'Invalid login credentials'
+            ? 'Correo o contraseña incorrectos. Verifique sus credenciales registradas.'
+            : (authError.message || 'Error de autenticación en el sistema.')
+        );
       }
 
       const user = data.user;
       if (!user) throw new Error('No se pudo obtener el perfil de usuario.');
 
-      // 3. Guardar sesión con timestamp y redirigir al Dashboard
+      // 3. Consultar y asociar el perfil institucional (rol, modulos, nombre) del usuario
+      let userRole = 'CONSULTOR';
+      let userNombre = user.email?.split('@')[0] || 'Usuario SGI';
+      let userModulos = ['dashboard', 'clientes', 'agenda', 'consultor'];
+
+      try {
+        const profileRes = await fetch(`${API_BASE_URL}/usuarios/verificar-estado?email=${encodeURIComponent(user.email || email)}`, {
+          signal: AbortSignal.timeout(1500)
+        });
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          if (profileData.rol) userRole = profileData.rol;
+          if (profileData.nombreCompleto) userNombre = profileData.nombreCompleto;
+          if (profileData.modulosPermitidos) {
+            userModulos = profileData.modulosPermitidos.split(',');
+          }
+        }
+      } catch (e) {
+        console.warn('No se pudo precargar perfil en login:', e);
+      }
+
+      // Si es ADMIN_TI o ADMIN, garantizar acceso universal a todos los módulos existentes y futuros
+      if (userRole === 'ADMIN_TI' || userRole === 'ADMIN') {
+        userModulos = ['dashboard', 'clientes', 'agenda', 'consultor', 'usuarios', '*'];
+      }
+
+      // 4. Guardar sesión con timestamp y redirigir al Dashboard
       localStorage.setItem('sgi_user', JSON.stringify({
         email: user.email,
         id: user.id,
+        nombre: userNombre,
+        rol: userRole,
+        modulos: userModulos,
         loginTimestamp: Date.now()
       }));
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
 
     } catch (err: any) {
       setError(err.message || 'Error al iniciar sesión en la plataforma.');

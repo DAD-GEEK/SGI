@@ -98,7 +98,14 @@ const formatNit = (nit: string): string => {
   if (!nit) return '';
   const digits = nit.replace(/\D/g, '');
   if (digits.length >= 8) {
-    return digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const parts: string[] = [];
+    let end = digits.length;
+    while (end > 0) {
+      const start = Math.max(0, end - 3);
+      parts.unshift(digits.slice(start, end));
+      end = start;
+    }
+    return parts.join('.');
   }
   return nit;
 };

@@ -20,7 +20,10 @@ const normalizeApiUrl = (url: string): string => {
     return '/api';
   }
 
-  let cleaned = trimmed.replace(/\/+$/, '');
+  let cleaned = trimmed;
+  while (cleaned.endsWith('/')) {
+    cleaned = cleaned.slice(0, -1);
+  }
   if (!cleaned.endsWith('/api')) {
     cleaned += '/api';
   }
