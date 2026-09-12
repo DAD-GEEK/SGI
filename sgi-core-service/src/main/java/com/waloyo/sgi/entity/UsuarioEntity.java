@@ -18,10 +18,10 @@ public class UsuarioEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "tipo_documento", length = 20)
+    @Column(name = "tipo_documento", length = 50)
     private String tipoDocumento;
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(nullable = false, unique = true, length = 100)
     private String documento;
 
     @Column(length = 50)

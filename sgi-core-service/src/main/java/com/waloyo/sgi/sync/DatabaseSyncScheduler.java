@@ -43,8 +43,8 @@ public class DatabaseSyncScheduler {
 
     @EventListener(ApplicationReadyEvent.class)
     public void onStartup() {
-        log.info("🚀 [SGI-SYNC-SCHEDULER] Motor de Sincronización Reactiva Inicializado.");
-        log.info("⏱️ [SGI-SYNC-SCHEDULER] Configuración -> Cron: {}, MaxAttempts: {}, DelayMs: {} ms",
+        log.info("[SGI-SYNC-SCHEDULER] Motor de Sincronizacion Reactiva Inicializado.");
+        log.info("[SGI-SYNC-SCHEDULER] Configuracion -> Cron: {}, MaxAttempts: {}, DelayMs: {} ms",
                 syncProperties.getSync().getCron(),
                 syncProperties.getSync().getRetry().getMaxAttempts(),
                 syncProperties.getSync().getRetry().getDelayMs());
@@ -53,20 +53,20 @@ public class DatabaseSyncScheduler {
     @Scheduled(cron = "${sgi.sync.cron:0 0 */1 * * *}")
     public void runScheduledSync() {
         if (!syncProperties.getSync().isEnabled()) {
-            log.info("⏸️ [SGI-SYNC-SCHEDULER] Sincronización desactivada por configuración (sgi.sync.enabled=false).");
+            log.info("[SGI-SYNC-SCHEDULER] Sincronizacion desactivada por configuracion (sgi.sync.enabled=false).");
             return;
         }
 
         if (!isSyncRunning.compareAndSet(false, true)) {
-            log.warn("⚠️ [SGI-SYNC-SCHEDULER] Ya existe una sincronización en curso. Omitiendo ejecución concurrente.");
+            log.warn("[SGI-SYNC-SCHEDULER] Ya existe una sincronizacion en curso. Omitiendo ejecucion concurrente.");
             return;
         }
 
         executeSyncWithRetry()
                 .doFinally(signalType -> isSyncRunning.set(false))
                 .subscribe(
-                        success -> log.info("🏁 [SGI-SYNC-SCHEDULER] Ciclo de sincronización finalizado exitosamente."),
-                        error -> log.error("🚨 [SGI-SYNC-SCHEDULER] Ciclo de sincronización finalizado con error definitivo: {}", error.getMessage())
+                        success -> log.info("[SGI-SYNC-SCHEDULER] Ciclo de sincronizacion finalizado exitosamente."),
+                        error -> log.error("[SGI-SYNC-SCHEDULER] Ciclo de sincronizacion finalizado con error definitivo: {}", error.getMessage())
                 );
     }
 
@@ -91,12 +91,12 @@ public class DatabaseSyncScheduler {
         return executeFullSyncPipeline()
                 .retryWhen(reactor.util.retry.Retry.fixedDelay(maxAttempts, java.time.Duration.ofMillis(delayMs))
                         .doBeforeRetry(retrySignal -> {
-                            log.warn("🔄 [SGI-SYNC-RETRY] Intento fallido #{} de {}. Reintentando en {} ms. Error: {}",
+                            log.warn("[SGI-SYNC-RETRY] Intento fallido #{} de {}. Reintentando en {} ms. Error: {}",
                                     retrySignal.totalRetries() + 1, maxAttempts, delayMs, retrySignal.failure().getMessage());
                         })
                 )
                 .onErrorResume(e -> {
-                    log.error("💥 [SGI-SYNC-FATAL] Se agotaron los {} reintentos. La sincronización se suspende hasta el próximo ciclo cron. Error: {}",
+                    log.error("[SGI-SYNC-FATAL] Se agotaron los {} reintentos. La sincronizacion se suspende hasta el proximo ciclo cron. Error: {}",
                             maxAttempts, e.getMessage());
                     return Mono.empty();
                 });
@@ -134,7 +134,7 @@ public class DatabaseSyncScheduler {
             AtomicInteger processedCount = new AtomicInteger(0);
             AtomicBoolean schemaInitialized = new AtomicBoolean(false);
 
-            log.info("⏳ [SGI-SYNC] Iniciando tabla {}.{} (Watermark: {})", target.db, target.table, lastSync);
+            log.info("[SGI-SYNC] Iniciando tabla {}.{} (Watermark: {})", target.db, target.table, lastSync);
 
             return extractionService.extractIncremental(target.db, target.table, lastSync)
                     .concatMap(rawRecord -> {
@@ -155,14 +155,14 @@ public class DatabaseSyncScheduler {
                         watermarkEntity.setRegistrosProcesados(processedCount.get());
                         watermarkEntity.setMensajeError(null);
                         watermarkRepository.save(watermarkEntity);
-                        log.info("🎉 [SGI-SYNC] Finalizada tabla {}.{} -> {} registros procesados.",
+                        log.info("[SGI-SYNC] Finalizada tabla {}.{} -> {} registros procesados.",
                                 target.db, target.table, processedCount.get());
                     }))
                     .onErrorResume(e -> {
                         watermarkEntity.setEstado("FALLIDO");
                         watermarkEntity.setMensajeError(e.getMessage());
                         watermarkRepository.save(watermarkEntity);
-                        log.error("❌ [SGI-SYNC] Error en tabla {}.{}: {}", target.db, target.table, e.getMessage());
+                        log.error("[SGI-SYNC] Error en tabla {}.{}: {}", target.db, target.table, e.getMessage());
                         return Mono.<Void>error(e);
                     });
         });

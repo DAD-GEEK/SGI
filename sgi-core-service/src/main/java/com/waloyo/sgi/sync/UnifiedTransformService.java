@@ -40,7 +40,7 @@ public class UnifiedTransformService {
         Map<String, Object> data = record.getData();
         String nitRaw = getFirstNonNullString(data, "NIT", "Nit", "Documento", "Identificacion");
         if (nitRaw == null || !isValidNit(nitRaw)) {
-            log.trace("⏩ [ETL-TRANSFORM] Cliente descartado por NIT ficticio o inválido: {}", nitRaw);
+            log.trace("[ETL-TRANSFORM] Cliente descartado por NIT ficticio o invalido: {}", nitRaw);
             return;
         }
 
@@ -74,7 +74,7 @@ public class UnifiedTransformService {
             cliente.setEmailContacto(email);
             cliente.setPersonaContacto(contacto);
             cliente.setActivo(activo);
-            log.debug("🔄 [ETL-TRANSFORM] Actualizando cliente existente: {} (NIT: {})", razonSocial, nit);
+            log.debug("[ETL-TRANSFORM] Actualizando cliente existente: {} (NIT: {})", razonSocial, nit);
         } else {
             cliente = ClienteEntity.builder()
                 .nit(nit)
@@ -85,7 +85,7 @@ public class UnifiedTransformService {
                 .personaContacto(contacto)
                 .activo(activo)
                 .build();
-            log.debug("✨ [ETL-TRANSFORM] Creando nuevo cliente: {} (NIT: {})", razonSocial, nit);
+            log.debug("[ETL-TRANSFORM] Creando nuevo cliente: {} (NIT: {})", razonSocial, nit);
         }
 
         clienteRepository.save(cliente);
@@ -100,6 +100,9 @@ public class UnifiedTransformService {
 
         String docRaw = getFirstNonNullString(data, "Documento", "Cedula", "Nit", "Id");
         String doc = docRaw != null ? cleanNit(docRaw) : email;
+        if (doc != null && doc.length() > 90) {
+            doc = doc.substring(0, 90);
+        }
         String nombre = getFirstNonNullString(data, "Nombre", "NombreCompleto", "Nombres");
         if (nombre == null || nombre.trim().isEmpty()) {
             nombre = email.split("@")[0];
@@ -110,7 +113,7 @@ public class UnifiedTransformService {
         if (optUsuario.isPresent()) {
             usuario = optUsuario.get();
             usuario.setNombreCompleto(nombre.trim());
-            log.debug("🔄 [ETL-TRANSFORM] Actualizando consultor existente: {}", email);
+            log.debug("[ETL-TRANSFORM] Actualizando consultor existente: {}", email);
         } else {
             usuario = UsuarioEntity.builder()
                 .documento(doc)
@@ -119,14 +122,14 @@ public class UnifiedTransformService {
                 .rol("ASESOR_SENIOR")
                 .activo(true)
                 .build();
-            log.debug("✨ [ETL-TRANSFORM] Creando nuevo consultor: {}", email);
+            log.debug("[ETL-TRANSFORM] Creando nuevo consultor: {}", email);
         }
 
         usuarioRepository.save(usuario);
     }
 
     private boolean isValidNit(String nitRaw) {
-        String digits = nitRaw.replaceAll("[^0-9]", "");
+        String digits = nitRaw.replaceAll("\\D", "");
         if (digits.length() < 8) return false;
         return !digits.matches("^(0+|1+|9+|12345678|123456789)$");
     }

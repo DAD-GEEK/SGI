@@ -38,12 +38,12 @@ public class SgiSyncProperties {
     @Getter
     @Setter
     public static class Mssql {
-        private String host = "server163.tecnoweb.net";
+        private String host;
         private int port = 1433;
-        private String user = "";
-        private String password = "";
-        private String dbAgenda = "gestioni_datosNet";
-        private String dbConsultor = "gestioni_consultorNet";
+        private String user;
+        private String password;
+        private String dbAgenda;
+        private String dbConsultor;
         private boolean trustServerCertificate = true;
         private int loginTimeoutSec = 15;
 

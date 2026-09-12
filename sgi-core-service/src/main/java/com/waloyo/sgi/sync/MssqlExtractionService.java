@@ -25,10 +25,10 @@ public class MssqlExtractionService {
             SgiSyncProperties.Mssql mssqlConfig = syncProperties.getDatasource().getMssql();
             String jdbcUrl = mssqlConfig.buildJdbcUrl(dbName);
 
-            log.info("🔌 [ETL-EXTRACT] Iniciando extracción de {}.{} con watermark: {}", dbName, tableName, watermark);
+            log.info("[ETL-EXTRACT] Iniciando extraccion de {}.{} con watermark: {}", dbName, tableName, watermark);
 
             if (mssqlConfig.getUser() == null || mssqlConfig.getUser().trim().isEmpty()) {
-                log.warn("⚠️ [ETL-EXTRACT] Credenciales de MS SQL Server no configuradas (MSSQL_USER vacía). Omitiendo extracción de {}.{}", dbName, tableName);
+                log.warn("[ETL-EXTRACT] Credenciales de MS SQL Server no configuradas (MSSQL_USER vacia). Omitiendo extraccion de {}.{}", dbName, tableName);
                 sink.complete();
                 return;
             }
@@ -49,7 +49,7 @@ public class MssqlExtractionService {
                     query = String.format("SELECT * FROM %s ORDER BY 1 ASC", tableName);
                 }
 
-                log.debug("🔍 [ETL-EXTRACT] Query SQL ejecutada: {}", query);
+                log.debug("[ETL-EXTRACT] Query SQL ejecutada: {}", query);
 
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
                     if (watermark != null && (hasModCol || hasCreCol || hasRegCol)) {
@@ -99,12 +99,12 @@ public class MssqlExtractionService {
                             count++;
                         }
 
-                        log.info("✅ [ETL-EXTRACT] Extraídos exitosamente {} registros de {}.{}", count, dbName, tableName);
+                        log.info("[ETL-EXTRACT] Extraidos exitosamente {} registros de {}.{}", count, dbName, tableName);
                         sink.complete();
                     }
                 }
             } catch (Exception e) {
-                log.error("❌ [ETL-EXTRACT] Error extrayendo datos de {}.{}: {}", dbName, tableName, e.getMessage());
+                log.error("[ETL-EXTRACT] Error extrayendo datos de {}.{}: {}", dbName, tableName, e.getMessage());
                 sink.error(e);
             }
         }).subscribeOn(Schedulers.boundedElastic());

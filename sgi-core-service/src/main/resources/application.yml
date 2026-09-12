@@ -36,6 +36,7 @@ logging:
 
 supabase:
   url: ${SUPABASE_URL:https://bmgfqxribkrhbzqvhsjp.supabase.co}
+  service-role-key: ${SUPABASE_SERVICE_ROLE_KEY:}
 
 sgi:
   sync:

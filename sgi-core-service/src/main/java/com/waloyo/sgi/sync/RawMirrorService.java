@@ -16,6 +16,7 @@ import java.util.Map;
 @Slf4j
 public class RawMirrorService {
 
+    private static final String NON_WORD_REGEX = "\\W";
     private final JdbcTemplate jdbcTemplate;
 
     public RawMirrorService(JdbcTemplate jdbcTemplate) {
@@ -35,13 +36,13 @@ public class RawMirrorService {
             createSql.append("_raw_synced_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP");
 
             for (String colName : sampleRow.keySet()) {
-                String safeCol = colName.replaceAll("[^a-zA-Z0-9_]", "_").toLowerCase();
+                String safeCol = colName.replaceAll(NON_WORD_REGEX, "_").toLowerCase();
                 createSql.append(String.format(", %s TEXT", safeCol));
             }
             createSql.append(");");
 
             jdbcTemplate.execute(createSql.toString());
-            log.debug("📁 [RAW-MIRROR] Certificada tabla espejo: sgi_raw.{}", sanitizedTable);
+            log.debug("[RAW-MIRROR] Certificada tabla espejo: sgi_raw.{}", sanitizedTable);
         }).subscribeOn(Schedulers.boundedElastic()).then();
     }
 
@@ -63,7 +64,7 @@ public class RawMirrorService {
             values.add(record.getPrimaryKey());
 
             for (Map.Entry<String, Object> entry : row.entrySet()) {
-                String safeCol = entry.getKey().replaceAll("[^a-zA-Z0-9_]", "_").toLowerCase();
+                String safeCol = entry.getKey().replaceAll(NON_WORD_REGEX, "_").toLowerCase();
                 cols.add(safeCol);
                 placeholders.add("?");
                 values.add(entry.getValue() != null ? String.valueOf(entry.getValue()) : null);
@@ -82,7 +83,7 @@ public class RawMirrorService {
 
     private String sanitizeTableName(String sourceDb, String sourceTable) {
         String prefix = sourceDb.toLowerCase().contains("consultor") ? "consultor" : "agenda";
-        String cleanTable = sourceTable.replaceAll("[^a-zA-Z0-9_]", "_").toLowerCase();
+        String cleanTable = sourceTable.replaceAll(NON_WORD_REGEX, "_").toLowerCase();
         return String.format("%s_%s", prefix, cleanTable);
     }
 }

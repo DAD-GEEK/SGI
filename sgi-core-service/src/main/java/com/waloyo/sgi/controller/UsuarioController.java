@@ -104,6 +104,9 @@ public class UsuarioController {
         updateUsuarioFromDTO(usuario, usuarioReq);
         usuarioRepository.save(usuario);
 
+        // Aprovisionar simultáneamente en Supabase Auth con Service Role Key
+        authService.provisionUserInSupabase(usuario.getEmail(), null).subscribe();
+
         Map<String, Object> payload = payloadService.buildUsuarioPayload(usuario);
         statusPublisher.publish(usuario.getEmail(), payload);
 
