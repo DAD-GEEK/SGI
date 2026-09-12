@@ -6,10 +6,12 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 
 ## [1.4.3] - 2026-09-12
 
-### 🔍 Observabilidad & Monitoreo de Errores (Sentry)
+### 🔍 Observabilidad, Monitoreo de Errores & CD Automatizado (Sentry & Repository Dispatch)
 - **Monitoreo en Tiempo Real en SGI CRM (`crm/src/main.tsx` & `crm/package.json`)**:
   - Incorporada la suite de observabilidad `@sentry/react` en el CRM de asesores para captura de excepciones no controladas y auditoría de llamadas fallidas.
   - Inicialización limpia y condicional con `import.meta.env.VITE_SENTRY_DSN` y `Sentry.browserTracingIntegration()`, garantizando cero llaves o DSNs hardcodeados en el repositorio.
+- **Automatización de Despliegue Continuo Remoto (`.github/workflows/trigger-waloyo-cd.yml`)**:
+  - Implementado workflow emisor de webhook `repository_dispatch` (evento `sgi-deploy`) hacia el monorepo WaloyoGroup para disparar el despliegue selectivo de SGI Core, CRM o Landing ante cada push/merge en la rama `master`.
 
 ---
 
