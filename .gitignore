@@ -42,3 +42,7 @@ application*.local.*
 # Java & Maven Build Outputs
 target/
 *.class
+
+# SonarQube
+.scannerwork/
+sonar-project.properties

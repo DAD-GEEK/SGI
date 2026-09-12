@@ -163,8 +163,15 @@ const UsuariosView: React.FC = () => {
     }
 
     // 2. Validación de Correo Electrónico (Estructura RFC Válida)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!usuarioForm.email || !emailRegex.test(usuarioForm.email.trim())) {
+    const emailVal = (usuarioForm.email || '').trim();
+    const atParts = emailVal.split('@');
+    const isValidEmail = atParts.length === 2 && 
+      atParts[0].length > 0 && 
+      atParts[1].includes('.') && 
+      !atParts[1].startsWith('.') && 
+      !atParts[1].endsWith('.') && 
+      !/\s/.test(emailVal);
+    if (!isValidEmail) {
       showToast('Ingrese un correo electrónico corporativo válido (ej: usuario@empresa.com).', 'error');
       return false;
     }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -28,6 +28,7 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [securityModal, setSecurityModal] = useState<{ title: string; message: string; isDeactivated?: boolean } | null>(null);
   const [redirectCountdown, setRedirectCountdown] = useState<number>(15);
+  const eventSourceRef = useRef<EventSource | null>(null);
 
   const [userProfile, setUserProfile] = useState<{
     nombre: string;
@@ -40,11 +41,16 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
       const storedRaw = localStorage.getItem('sgi_user');
       if (storedRaw) {
         const u = JSON.parse(storedRaw);
+        const isAdmin = u.rol === 'ADMIN_TI' || u.role === 'ADMIN_TI' || u.rol === 'ADMIN' || u.role === 'ADMIN';
+        const defaultModulos = isAdmin
+          ? ['dashboard', 'clientes', 'agenda', 'consultor', 'usuarios', '*']
+          : (u.modulos || ['dashboard', 'clientes', 'agenda', 'consultor']);
+
         return {
           nombre: u.nombre || u.email?.split('@')[0] || 'Usuario SGI',
           email: u.email || '',
           rol: u.rol || u.role || 'CONSULTOR',
-          modulos: u.modulos || ['dashboard', 'clientes', 'agenda', 'consultor'],
+          modulos: defaultModulos,
           activo: u.activo ?? true
         };
       }
@@ -119,8 +125,22 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
     let eventSource: EventSource | null = null;
     let fallbackInterval: number | null = null;
     let reconnectTimer: number | null = null;
+    let isComponentMounted = true;
+
+    const clearTimers = () => {
+      if (fallbackInterval) {
+        window.clearInterval(fallbackInterval);
+        fallbackInterval = null;
+      }
+      if (reconnectTimer) {
+        window.clearTimeout(reconnectTimer);
+        reconnectTimer = null;
+      }
+    };
 
     const syncUserProfile = async (): Promise<void> => {
+      if (!isComponentMounted) return;
+
       try {
         const storedUserRaw = localStorage.getItem('sgi_user');
         const storedUser = storedUserRaw ? JSON.parse(storedUserRaw) : null;
@@ -128,7 +148,9 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
         // Si no hay credenciales locales, forzar cierre y redirección a login
         if (!storedUser || !storedUser.email) {
           await performCompleteLogout();
-          navigate('/login', { replace: true });
+          if (isComponentMounted) {
+            navigate('/login', { replace: true });
+          }
           return;
         }
 
@@ -141,56 +163,73 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
           if (elapsed >= MAX_SESSION_MS) {
             const timeLabel = configuredLimit < 0.01 ? '10 segundos (Modo Pruebas)' : `${configuredLimit} hora(s)`;
             await performCompleteLogout();
-            setSecurityModal({
-              title: 'Sesión Expirada por Seguridad',
-              message: `Su sesión de ${timeLabel} ha expirado por políticas de seguridad del sistema. Por favor ingrese sus credenciales nuevamente.`
-            });
+            if (isComponentMounted) {
+              setSecurityModal({
+                title: 'Sesión Expirada por Seguridad',
+                message: `Su sesión de ${timeLabel} ha expirado por políticas de seguridad del sistema. Por favor ingrese sus credenciales nuevamente.`
+              });
+            }
             return;
           }
         }
 
-        const { data } = await supabase.auth.getUser();
+        // Obtener usuario/sesión con timeout protector de 1s para no retrasar el render inicial de la barra
+        const userPromise = supabase.auth.getUser();
+        const timeoutPromise = new Promise<{ data: { user: any } }>((resolve) =>
+          setTimeout(() => resolve({ data: { user: null } }), 1000)
+        );
+        const { data } = await Promise.race([userPromise, timeoutPromise]);
+
         // Obtener token de sesión
         let accessToken: string | null = null;
         try {
-          const sessionRes = await supabase.auth.getSession();
+          const sessionPromise = supabase.auth.getSession();
+          const sessionTimeout = new Promise<{ data: { session: any } }>((resolve) =>
+            setTimeout(() => resolve({ data: { session: null } }), 1000)
+          );
+          const sessionRes = await Promise.race([sessionPromise, sessionTimeout]);
           accessToken = sessionRes?.data?.session?.access_token ?? null;
-        } catch (error) {
-          // Log error de sesión pero continuar
-          console.warn('No se pudo obtener token de sesión:', error instanceof Error ? error.message : 'Error desconocido');
+        } catch {
+          // Silencioso para evitar saturación de logs
         }
 
         const activeEmail = data?.user?.email || (storedUser ? storedUser.email : null);
 
-        if (activeEmail && !eventSource) {
+        if (activeEmail && !eventSource && isComponentMounted) {
           // intentar conectar SSE
           try {
             const tokenParam = accessToken ? `&token=${encodeURIComponent(accessToken)}` : '';
             eventSource = new EventSource(`${API_BASE_URL}/usuarios/stream-estado?email=${encodeURIComponent(activeEmail)}${tokenParam}`);
+            eventSourceRef.current = eventSource;
 
             eventSource.onopen = () => {
-              // limpiar fallback
-              if (fallbackInterval) { window.clearInterval(fallbackInterval); fallbackInterval = null; }
+              clearTimers();
             };
 
             eventSource.onmessage = async (e) => {
+              if (!isComponentMounted) return;
               try {
                 const info = e.data ? JSON.parse(e.data) : null;
                 if (!info) return;
 
                 if (info.activo === false) {
                   await performCompleteLogout();
-                  setSecurityModal({
-                    title: 'Acceso Desactivado',
-                    message: 'Su cuenta de asesor ha sido desactivada. Comuníquese con el administrador para restablecer su acceso.',
-                    isDeactivated: true
-                  });
+                  if (isComponentMounted) {
+                    setSecurityModal({
+                      title: 'Acceso Desactivado',
+                      message: 'Su cuenta de asesor ha sido desactivada. Comuníquese con el administrador para restablecer su acceso.',
+                      isDeactivated: true
+                    });
+                  }
                   return;
                 }
 
-                const modulosList = info.modulosPermitidos
-                  ? info.modulosPermitidos.split(',')
-                  : ['dashboard', 'clientes', 'agenda', 'consultor'];
+                const isUserAdmin = info.rol === 'ADMIN_TI' || info.rol === 'ADMIN';
+                const modulosList = isUserAdmin
+                  ? ['dashboard', 'clientes', 'agenda', 'consultor', 'usuarios', '*']
+                  : (info.modulosPermitidos
+                      ? info.modulosPermitidos.split(',')
+                      : ['dashboard', 'clientes', 'agenda', 'consultor']);
 
                 setUserProfile({
                   nombre: info.nombreCompleto || activeEmail.split('@')[0],
@@ -199,65 +238,93 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
                   modulos: modulosList,
                   activo: info.activo ?? true
                 });
-              } catch (err) {
-                console.warn('SSE parse error:', err);
+              } catch {
+                // Parse ignorado
               }
             };
 
             eventSource.onerror = () => {
-              // al primer error, cerramos y activamos fallback
+              // Cerrar el stream fallido de inmediato para evitar que el navegador reintente sin control
               try {
                 if (eventSource) {
                   eventSource.close();
                   eventSource = null;
                 }
-              } catch (closeError) {
-                console.warn('Error al cerrar EventSource:', closeError instanceof Error ? closeError.message : 'Error desconocido');
+                if (eventSourceRef.current) {
+                  eventSourceRef.current.close();
+                  eventSourceRef.current = null;
+                }
+              } catch {}
+
+              clearTimers();
+
+              // Reconexión con backoff suave solo si la pestaña está activa y montada
+              if (isComponentMounted && document.visibilityState === 'visible') {
+                reconnectTimer = window.setTimeout(() => {
+                  if (isComponentMounted) {
+                    void syncUserProfile();
+                  }
+                }, 10000); // 10s de espera espaciada
               }
-              if (!fallbackInterval) fallbackInterval = window.setInterval(() => { void syncUserProfile(); }, 60000);
-              // reconexión simple
-              if (reconnectTimer) window.clearTimeout(reconnectTimer);
-              reconnectTimer = window.setTimeout(() => { void syncUserProfile(); }, 5000);
             };
-          } catch (error) {
-            // SSE no disponible, usar fallback polling
-            console.warn('Error al crear EventSource:', error instanceof Error ? error.message : 'Error desconocido');
-            if (!fallbackInterval) {
-              fallbackInterval = window.setInterval(() => { void syncUserProfile(); }, 60000);
+          } catch {
+            clearTimers();
+            if (isComponentMounted) {
+              reconnectTimer = window.setTimeout(() => {
+                if (isComponentMounted) void syncUserProfile();
+              }, 15000);
             }
           }
         }
-      } catch (e) {
-        console.warn('Fallback perfil sidebar:', e);
-        // fallback si ocurre error
-        if (!fallbackInterval) fallbackInterval = window.setInterval(() => { void syncUserProfile(); }, 60000);
+      } catch {
+        clearTimers();
       }
     };
 
-    // iniciar la primera carga / conexión
+    // Iniciar conexión inicial
     void syncUserProfile();
 
-    // Visibility API: cuando la pestaña vuelve visible, re-intentar conexión
+    // Visibility API: cuando la pestaña vuelve a primer plano, verificar conexión
     const onVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        void syncUserProfile();
+      if (document.visibilityState === 'visible' && isComponentMounted) {
+        if (!eventSource) {
+          clearTimers();
+          void syncUserProfile();
+        }
       } else {
-        // ahorrar recursos si está en background
-        try { if (eventSource) { eventSource.close(); eventSource = null; } } catch(e){}
+        // Ahorrar memoria y recursos en background
+        clearTimers();
+        if (eventSource) {
+          try {
+            eventSource.close();
+          } catch {}
+          eventSource = null;
+        }
+        if (eventSourceRef.current) {
+          try {
+            eventSourceRef.current.close();
+          } catch {}
+          eventSourceRef.current = null;
+        }
       }
     };
     document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
-      try {
-        if (eventSource) {
+      isComponentMounted = false;
+      clearTimers();
+      if (eventSource) {
+        try {
           eventSource.close();
-        }
-      } catch (error) {
-        console.warn('Error al cerrar EventSource en cleanup:', error instanceof Error ? error.message : 'Error desconocido');
+        } catch {}
+        eventSource = null;
       }
-      if (fallbackInterval) window.clearInterval(fallbackInterval);
-      if (reconnectTimer) window.clearTimeout(reconnectTimer);
+      if (eventSourceRef.current) {
+        try {
+          eventSourceRef.current.close();
+        } catch {}
+        eventSourceRef.current = null;
+      }
       document.removeEventListener('visibilitychange', onVisibility);
     };
   }, []);
@@ -266,10 +333,20 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
 
   const handleLogout = async () => {
     try {
+      // 1. Matar en seco la conexión SSE activa para que no quede pendiente en el socket del navegador
+      if (eventSourceRef.current) {
+        try {
+          eventSourceRef.current.close();
+        } catch {}
+        eventSourceRef.current = null;
+      }
+
+      // 2. Purgar credenciales locales
       await performCompleteLogout();
-      navigate('/login', { replace: true });
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
+    } finally {
+      // 3. Redirección instantánea mediante React Router SPA (Cero cuelgues de red)
       navigate('/login', { replace: true });
     }
   };
