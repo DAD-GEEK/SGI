@@ -45,6 +45,13 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- Microsoft SQL Server JDBC Driver (para replicación y extracción ETL) -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         
         <!-- Lombok -->
         <dependency>

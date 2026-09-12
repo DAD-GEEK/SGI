@@ -8,7 +8,7 @@ spring:
   application:
     name: sgi-core-service
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://127.0.0.1:5432/waloyodb?currentSchema=sgi}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://127.0.0.1:5434/postgres?currentSchema=sgi}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
@@ -32,3 +32,27 @@ logging:
     root: INFO
     com.waloyo.sgi: DEBUG
     org.hibernate.SQL: DEBUG
+
+supabase:
+  url: ${SUPABASE_URL:https://bmgfqxribkrhbzqvhsjp.supabase.co}
+
+sgi:
+  sync:
+    enabled: ${SGI_SYNC_ENABLED:true}
+    # Cron por defecto cada 1 hora (configurable via secreto GitHub SGI_SYNC_CRON a cada 3 horas '0 0 */3 * * *')
+    cron: ${SGI_SYNC_CRON:0 0 */1 * * *}
+    retry:
+      max-attempts: ${SGI_SYNC_MAX_ATTEMPTS:3}
+      # Reintentos espaciados en 5 minutos (300,000 milisegundos)
+      delay-ms: ${SGI_SYNC_RETRY_DELAY_MS:300000}
+  datasource:
+    mssql:
+      host: ${MSSQL_HOST:server163.tecnoweb.net}
+      port: ${MSSQL_PORT:1433}
+      user: ${MSSQL_USER:}
+      password: ${MSSQL_PASSWORD:}
+      db-agenda: ${MSSQL_DB_AGENDA:gestioni_datosNet}
+      db-consultor: ${MSSQL_DB_CONSULTOR:gestioni_consultorNet}
+      trust-server-certificate: ${MSSQL_TRUST_SERVER_CERTIFICATE:true}
+      login-timeout-sec: ${MSSQL_LOGIN_TIMEOUT:15}
+

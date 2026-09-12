@@ -4,6 +4,18 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.4.0] - 2026-09-12
+
+### 🔄 Replicación de Base de Datos, ETL Reactivo & Watermark Incremental (sgi-core-service)
+- **Motor de Replicación Reactiva y Extracción Incremental (`MssqlExtractionService.java` & WebFlux)**: Implementado servicio reactivo (`Flux<RawRecord>`) que conecta dinámicamente vía JDBC a Microsoft SQL Server (`gestioni_datosNet` y `gestioni_consultorNet` en `server163.tecnoweb.net:1433`) extrayendo de forma incremental solo registros modificados con base en marcas temporales (`FechaModificacion`, `FechaCreacion`, `FechaRegistro`).
+- **Esquema Espejo Idéntico Raw (`sgi_raw` / `RawMirrorService.java`)**: Creación dinámica y desacoplada del esquema `sgi_raw` en PostgreSQL, persistiendo réplicas 1:1 de las tablas legadas de Agenda y Consultor como respaldo vivo sin impactar el rendimiento del CRM.
+- **Transformación Unificada y Sanitización B2B (`UnifiedTransformService.java`)**: Filtrado estricto por lista blanca de NITs reales colombianos (>= 8 dígitos), mapeo de estados legados (`OpcEstado`) y sincronización automática hacia `sgi.terceros_clientes` y `sgi.usuarios_consultores`.
+- **Orquestador Programado Resiliente con Reintentos (`DatabaseSyncScheduler.java`)**: Cronjob configurable vía secretos (`SGI_SYNC_CRON: 0 0 */1 * * *` / `0 0 */3 * * *`), política reactiva de 3 reintentos espaciados cada 5 minutos (`delay-ms: 300000`) y congelamiento de marca temporal (`last_successful_sync`) en caso de fallo para evitar pérdida de datos en la siguiente ventana programada.
+- **Control de Marcas de Agua (`SyncWatermarkEntity.java` & `SyncWatermarkRepository.java`)**: Auditoría y control transaccional por tabla en `sgi.sync_watermarks` registrando estado, registros procesados y mensajes de error.
+- **Endpoints de Monitoreo y Disparo Manual (`SyncController.java`)**: Habilitados `GET /api/sync/status` (telemetría en vivo) y `POST /api/sync/trigger` (ejecución manual reactiva).
+
+---
+
 ## [1.2.0] - 2026-09-05
 
 ### 🧹 Refactorización & Arquitectura de Repositorios
