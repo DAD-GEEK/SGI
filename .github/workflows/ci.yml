@@ -1,0 +1,121 @@
+name: ?? Integraci?n Continua (CI) - Gesti?n Integral SGI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  changes:
+    name: ?? Detectar Componentes Modificados
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      landing: ${{ steps.filter.outputs.landing }}
+      crm: ${{ steps.filter.outputs.crm }}
+      core: ${{ steps.filter.outputs.core }}
+    steps:
+      - name: Descargar C?digo
+        uses: actions/checkout@v4
+
+      - name: Evaluar Filtro de Rutas
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            landing:
+              - 'src/**'
+              - 'public/**'
+              - 'package*.json'
+              - 'vite.config.ts'
+              - 'index.html'
+            crm:
+              - 'crm/**'
+            core:
+              - 'sgi-core-service/**'
+
+  validate-landing:
+    name: ?? Validar SGI Landing Comercial
+    needs: changes
+    if: ${{ needs.changes.outputs.landing == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar C?digo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Instalar Dependencias
+        run: npm ci
+
+      - name: Validar Formato y Linter
+        run: npm run lint || echo "No hay lint configurado a?n"
+
+      - name: Compilar Frontend (Vite)
+        run: npm run build
+
+  validate-crm:
+    name: ?? Validar SGI CRM & Portal
+    needs: changes
+    if: ${{ needs.changes.outputs.crm == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar C?digo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: crm/package-lock.json
+
+      - name: Instalar Dependencias
+        run: npm ci
+        working-directory: crm
+
+      - name: Validar Formato y Linter
+        run: npm run lint || echo "No hay lint configurado a?n"
+        working-directory: crm
+
+      - name: Compilar Frontend (Vite)
+        run: npm run build
+        working-directory: crm
+
+  validate-core-service:
+    name: ?? Validar SGI Core Service (Spring Boot)
+    needs: changes
+    if: ${{ needs.changes.outputs.core == 'true' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar C?digo
+        uses: actions/checkout@v4
+
+      - name: Configurar Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Otorgar Permisos de Ejecuci?n al Wrapper de Maven
+        run: chmod +x mvnw
+        working-directory: sgi-core-service
+
+      - name: Compilar y Ejecutar Pruebas Unitarias (Maven)
+        run: ./mvnw clean test
+        working-directory: sgi-core-service

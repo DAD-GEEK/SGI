@@ -4,6 +4,16 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.4.4] - 2026-09-12
+
+### 🚀 Desacoplamiento Arquitectónico de Integración Continua (CI Propio en SGI)
+- **Pipeline de CI Dedicado y Autónomo (`.github/workflows/ci.yml`)**:
+  - Implementado pipeline de Integración Continua nativo dentro del repositorio de SGI ejecutado ante cada `pull_request` y `push` hacia `master` y `main`.
+  - Detección precisa de componentes modificados vía `dorny/paths-filter`: `landing` (`src/**`), `crm` (`crm/**`) y `core` (`sgi-core-service/**`).
+  - Validación automatizada con pruebas unitarias (`mvn clean test`), linters y compilación de frontends Vite (`npm run build`).
+
+---
+
 ## [1.4.3] - 2026-09-12
 
 ### 🔍 Observabilidad, Monitoreo de Errores & CD Automatizado (Sentry & Repository Dispatch)
