@@ -16,7 +16,11 @@ public class AuthService {
     private final String apiStreamSecret;
 
     public AuthService(Environment env) {
-        this.supabaseUrl = env.getProperty("SUPABASE_URL");
+        String url = env.getProperty("SUPABASE_URL");
+        if (url == null || url.isBlank()) {
+            url = env.getProperty("supabase.url", "https://bmgfqxribkrhbzqvhsjp.supabase.co");
+        }
+        this.supabaseUrl = url;
         this.apiStreamSecret = env.getProperty("API_STREAM_SECRET");
         this.webClient = WebClient.builder().build();
     }

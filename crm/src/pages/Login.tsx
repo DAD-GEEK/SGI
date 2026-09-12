@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Lock, Mail, ArrowRight, AlertCircle, HelpCircle } from 'lucide-react';
 import { supabase } from '../config/supabaseClient';
@@ -13,6 +13,27 @@ export const Login: React.FC = () => {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkActiveSession = () => {
+      const storedUserRaw = localStorage.getItem('sgi_user');
+      if (storedUserRaw) {
+        try {
+          const storedUser = JSON.parse(storedUserRaw);
+          const configuredLimit = parseFloat(localStorage.getItem('sgi_session_limit_hours') || '4');
+          const MAX_SESSION_MS = Math.round(configuredLimit * 60 * 60 * 1000);
+          if (
+            storedUser.email &&
+            storedUser.loginTimestamp &&
+            Date.now() - storedUser.loginTimestamp < MAX_SESSION_MS
+          ) {
+            navigate('/dashboard', { replace: true });
+          }
+        } catch {}
+      }
+    };
+    checkActiveSession();
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +69,7 @@ export const Login: React.FC = () => {
           if (userStatus.mustChangePassword) {
             // Guardar sesión previa para flujo de cambio de clave
             localStorage.setItem('sgi_user', JSON.stringify({ email, loginTimestamp: Date.now() }));
-            navigate('/cambiar-password');
+            navigate('/cambiar-password', { replace: true });
             return;
           }
         }
@@ -69,7 +90,7 @@ export const Login: React.FC = () => {
         // Modo fallback demo / desarrollo si aún no se ha registrado en Supabase Auth
         if (email.includes('@gestionintegralsgi.com.co') || email.includes('waloyogroup') || email.includes('admin')) {
           localStorage.setItem('sgi_user', JSON.stringify({ email, role: 'ADMIN_TI', loginTimestamp: Date.now() }));
-          navigate('/dashboard');
+          navigate('/dashboard', { replace: true });
           return;
         }
         throw new Error(authError.message === 'Invalid login credentials' ? 'Correo o contraseña incorrectos. Verifique sus datos.' : authError.message);
@@ -84,7 +105,7 @@ export const Login: React.FC = () => {
         id: user.id,
         loginTimestamp: Date.now()
       }));
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
 
     } catch (err: any) {
       setError(err.message || 'Error al iniciar sesión en la plataforma.');

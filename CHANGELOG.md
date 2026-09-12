@@ -4,6 +4,19 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.3.0] - 2026-09-08
+
+### 🔒 Seguridad, Autenticación & Gobernanza de Sesiones (SGI CRM)
+- **Corrección de Supabase Anon Key (`supabaseClient.ts`)**: Solucionado el error HTTP 401 (`Invalid API key`) al autenticar con Supabase Auth (`/auth/v1/token?grant_type=password`) reemplazando el valor truncado de respaldo por la clave pública anónima formal del proyecto `bmgfqxribkrhbzqvhsjp`. Añadida plantilla `.env.example` e ignorado `.env` en Git.
+- **Blindaje contra Retroceso del Navegador (`ProtectedRoute.tsx` & `App.tsx`)**: Implementado componente guardián `ProtectedRoute` envolviendo todas las rutas privadas (`/dashboard`, `/consultor`, `/agenda`, `/clientes`, `/usuarios`, `/perfil`, `/cambiar-password`). Previene el reingreso al presionar "Atrás" en el navegador tras cerrar sesión o expirar el token, limpiando `bfcache` (`pageshow`) y escuchando eventos `SIGNED_OUT` en tiempo real.
+- **Eliminación de Auto-Inicialización Insegura (`CrmSidebar.tsx`)**: Removida la lógica que re-creaba usuarios inexistentes con perfil simulado de administrador al navegar a rutas privadas.
+- **Cierre Integral de Sesión Multicapa (`authUtils.ts`)**: Implementada función `performCompleteLogout()` que purga `sgi_user` (localStorage/sessionStorage), elimina tokens persistidos de Supabase (`sb-*-auth-token`) e invalida la sesión remota en Supabase Auth (`scope: global/local`).
+- **Temporizador de Auto-Redirección a 15 Segundos en Expiración de Sesión (`CrmSidebar.tsx`)**: Integrado contador regresivo de 15 segundos visible en el modal corporativo de seguridad ("Sesión Expirada por Seguridad" y "Acceso Desactivado"). Si el usuario no interactúa pulsando "Reingresar al Sistema SGI", el sistema lo redirige de forma automática e inmediata al login mediante `navigate('/login', { replace: true })`.
+- **Monitoreo Continuo de Expiración cada 1 Segundo (`CrmSidebar.tsx`)**: Incorporado chequeo en segundo plano cada 1000ms que evalúa `sgi_session_limit_hours` con soporte reactivo exacto para `⏱️ 10 Segundos (Modo Pruebas)` y expiraciones dinámicas en vivo.
+- **Soporte de URL Supabase en Microservicio (`application.yml` & `AuthService.java`)**: Configurada propiedad `supabase.url` con fallback dinámico para la validación de tokens en el endpoint reactivo SSE `/stream-estado`.
+
+---
+
 ## [1.2.0] - 2026-09-05
 
 ### 🧹 Refactorización & Arquitectura de Repositorios
