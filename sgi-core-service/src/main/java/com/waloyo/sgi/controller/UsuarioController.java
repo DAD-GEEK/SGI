@@ -7,6 +7,7 @@ import com.waloyo.sgi.auth.AuthService;
 import com.waloyo.sgi.common.UsuarioConstants;
 import com.waloyo.sgi.dto.UsuarioDTO;
 import com.waloyo.sgi.service.UsuarioPayloadService;
+import com.waloyo.sgi.sync.MssqlUserSyncService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,7 +16,9 @@ import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,6 +33,7 @@ public class UsuarioController {
     private final UsuarioStatusPublisher statusPublisher;
     private final AuthService authService;
     private final UsuarioPayloadService payloadService;
+    private final MssqlUserSyncService mssqlUserSyncService;
 
     @GetMapping
     public ResponseEntity<List<UsuarioEntity>> listarTodos() {
@@ -70,24 +74,117 @@ public class UsuarioController {
     @PostMapping("/confirmar-clave")
     public ResponseEntity<Map<String, Object>> confirmarClave(@RequestBody Map<String, String> body) {
         String email = body.get(UsuarioConstants.EMAIL);
+        String password = body.get("password");
         if (email == null || email.isBlank()) {
             return ResponseEntity.badRequest().build();
         }
 
         return usuarioRepository.findByEmail(email)
-                .map(this::handleConfirmarClave)
+                .map(usuario -> handleConfirmarClave(usuario, password))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    private ResponseEntity<Map<String, Object>> handleConfirmarClave(UsuarioEntity usuario) {
+    private ResponseEntity<Map<String, Object>> handleConfirmarClave(UsuarioEntity usuario, String plainPassword) {
         usuario.setMustChangePassword(false);
         usuarioRepository.save(usuario);
+
+        // Sincronizar en tiempo real con las bases de datos de Agenda (3DES) y Consultor (ASP.NET Identity)
+        if (plainPassword != null && !plainPassword.isBlank()) {
+            mssqlUserSyncService.syncPassword(usuario.getEmail(), plainPassword).subscribe();
+            // Aprovisionar o actualizar en Supabase Auth
+            authService.provisionUserInSupabase(usuario.getEmail(), plainPassword).subscribe();
+        }
+
         Map<String, Object> payload = payloadService.buildUsuarioPayload(usuario);
         statusPublisher.publish(usuario.getEmail(), payload);
 
         return ResponseEntity.ok(Map.of(
                 UsuarioConstants.STATUS, UsuarioConstants.SUCCESS,
-                UsuarioConstants.MESSAGE, "Contraseña definitiva confirmada."
+                UsuarioConstants.MESSAGE, "Contraseña definitiva confirmada y sincronizada."
+        ));
+    }
+
+    @PostMapping("/auto-sincronizar-password")
+    public Mono<ResponseEntity<Map<String, Object>>> autoSincronizarPassword(@RequestBody Map<String, String> body) {
+        String email = body.get(UsuarioConstants.EMAIL);
+        String password = body.get("password");
+        if (email == null || email.isBlank() || password == null || password.isBlank()) {
+            return Mono.just(ResponseEntity.badRequest().body(Map.of(
+                    UsuarioConstants.STATUS, UsuarioConstants.ERROR,
+                    UsuarioConstants.MESSAGE, "Email y contraseña son requeridos"
+            )));
+        }
+
+        // Asegurar que en PostgreSQL el flag mustChangePassword quede en false
+        usuarioRepository.findByEmail(email).ifPresent(u -> {
+            if (Boolean.TRUE.equals(u.getMustChangePassword())) {
+                u.setMustChangePassword(false);
+                usuarioRepository.save(u);
+            }
+        });
+
+        // Sincronizar unicamente si la clave en Agenda o Consultor esta desactualizada
+        return mssqlUserSyncService.syncPasswordIfOutdated(email, password)
+                .map(wasUpdated -> {
+                    Map<String, Object> response = new HashMap<>();
+                    response.put(UsuarioConstants.STATUS, UsuarioConstants.SUCCESS);
+                    response.put("updated", wasUpdated);
+                    response.put(UsuarioConstants.MESSAGE, wasUpdated
+                            ? "Contraseñas desactualizadas en aplicativos detectadas y sincronizadas exitosamente."
+                            : "Contraseñas en aplicativos ya se encuentran al día.");
+                    return ResponseEntity.ok(response);
+                })
+                .defaultIfEmpty(ResponseEntity.ok(Map.of(
+                        UsuarioConstants.STATUS, UsuarioConstants.SUCCESS,
+                        "updated", false,
+                        UsuarioConstants.MESSAGE, "No se requirió sincronización."
+                )));
+    }
+
+    @PostMapping("/admin/sincronizar-passwords")
+    public ResponseEntity<Map<String, Object>> sincronizarPasswordsAdmin(@RequestBody Map<String, Object> body) {
+        String claveMaestra = (String) body.get("clave");
+        String emailEspecifico = (String) body.get("email");
+
+        if (claveMaestra == null || claveMaestra.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    UsuarioConstants.STATUS, UsuarioConstants.ERROR,
+                    UsuarioConstants.MESSAGE, "El campo 'clave' es obligatorio."
+            ));
+        }
+
+        List<UsuarioEntity> usuariosParaActualizar;
+        if (emailEspecifico != null && !emailEspecifico.isBlank()) {
+            usuariosParaActualizar = usuarioRepository.findByEmail(emailEspecifico.trim())
+                    .map(List::of)
+                    .orElse(List.of());
+        } else {
+            usuariosParaActualizar = usuarioRepository.findByActivoTrue();
+        }
+
+        if (usuariosParaActualizar.isEmpty()) {
+            return ResponseEntity.status(404).body(Map.of(
+                    UsuarioConstants.STATUS, UsuarioConstants.ERROR,
+                    UsuarioConstants.MESSAGE, "No se encontraron usuarios para actualizar."
+            ));
+        }
+
+        List<String> actualizados = new java.util.ArrayList<>();
+        for (UsuarioEntity u : usuariosParaActualizar) {
+            u.setMustChangePassword(false);
+            usuarioRepository.save(u);
+
+            // Sincronizar en tiempo real con Supabase Auth y MSSQL (Agenda + Consultor)
+            mssqlUserSyncService.syncPassword(u.getEmail(), claveMaestra).subscribe();
+            authService.provisionUserInSupabase(u.getEmail(), claveMaestra).subscribe();
+            actualizados.add(u.getEmail());
+        }
+
+        return ResponseEntity.ok(Map.of(
+                UsuarioConstants.STATUS, UsuarioConstants.SUCCESS,
+                UsuarioConstants.MESSAGE, "Contraseñas sincronizadas en Supabase Auth, Agenda y Consultor.",
+                "totalProcesados", actualizados.size(),
+                "usuarios", actualizados
         ));
     }
 
@@ -106,6 +203,15 @@ public class UsuarioController {
 
         // Aprovisionar simultáneamente en Supabase Auth con Service Role Key
         authService.provisionUserInSupabase(usuario.getEmail(), null).subscribe();
+
+        // Sincronizar permisos y accesos hacia bases de datos de Agenda y Consultor
+        mssqlUserSyncService.syncModulePermissions(
+                usuario.getEmail(),
+                usuario.getNombreCompleto(),
+                usuario.getDocumento(),
+                usuario.getModulosPermitidos(),
+                null
+        ).subscribe();
 
         Map<String, Object> payload = payloadService.buildUsuarioPayload(usuario);
         statusPublisher.publish(usuario.getEmail(), payload);
@@ -160,6 +266,17 @@ public class UsuarioController {
         if (datos.getModulosPermitidos() != null) usuario.setModulosPermitidos(datos.getModulosPermitidos());
 
         usuarioRepository.save(usuario);
+
+        // Sincronizar cambios de estado y permisos de módulos hacia MSSQL (Agenda y Consultor)
+        mssqlUserSyncService.syncUserStatus(usuario.getEmail(), Boolean.TRUE.equals(usuario.getActivo())).subscribe();
+        mssqlUserSyncService.syncModulePermissions(
+                usuario.getEmail(),
+                usuario.getNombreCompleto(),
+                usuario.getDocumento(),
+                usuario.getModulosPermitidos(),
+                null
+        ).subscribe();
+
         Map<String, Object> payload = payloadService.buildUsuarioPayload(usuario);
         statusPublisher.publish(usuario.getEmail(), payload);
 
@@ -202,8 +319,13 @@ public class UsuarioController {
     }
 
     private ResponseEntity<Map<String, Object>> handleAlternarEstado(UsuarioEntity usuario) {
-        usuario.setActivo(!Boolean.TRUE.equals(usuario.getActivo()));
+        boolean nuevoEstado = !Boolean.TRUE.equals(usuario.getActivo());
+        usuario.setActivo(nuevoEstado);
         usuarioRepository.save(usuario);
+
+        // Sincronizar activación/desactivación en tiempo real hacia MSSQL
+        mssqlUserSyncService.syncUserStatus(usuario.getEmail(), nuevoEstado).subscribe();
+
         Map<String, Object> payload = payloadService.buildUsuarioPayload(usuario);
         statusPublisher.publish(usuario.getEmail(), payload);
 
@@ -224,20 +346,28 @@ public class UsuarioController {
         String email = usuario.getEmail();
         UUID usuarioId = usuario.getId();
 
-        // 1. Desvincular / eliminar eventos asociados en la agenda para no violar FK
+        // 1. PRESERVAR EVENTOS HISTÓRICOS: En lugar de borrarlos (deleteAll), desvincular el asesor y conservar auditoría
         List<com.waloyo.sgi.entity.AgendaEventoEntity> eventos = agendaEventoRepository.findByAsesorId(usuarioId);
         if (!eventos.isEmpty()) {
-            agendaEventoRepository.deleteAll(eventos);
+            for (com.waloyo.sgi.entity.AgendaEventoEntity ev : eventos) {
+                ev.setAsesor(null);
+                ev.setAsesorHistoricoNombre(usuario.getNombreCompleto());
+                ev.setAsesorHistoricoEmail(usuario.getEmail());
+            }
+            agendaEventoRepository.saveAll(eventos);
         }
 
-        // 2. Eliminar el usuario
+        // 2. Desactivar en bases de datos legadas MSSQL (sin borrar historia de Agenda y Consultor)
+        mssqlUserSyncService.syncUserStatus(email, false).subscribe();
+
+        // 3. Eliminar de PostgreSQL CRM
         usuarioRepository.delete(usuario);
         Map<String, Object> payload = payloadService.buildDeactivatedPayload(usuario);
         statusPublisher.publish(email, payload);
 
         return ResponseEntity.ok(Map.of(
                 UsuarioConstants.STATUS, UsuarioConstants.SUCCESS,
-                UsuarioConstants.MESSAGE, "Usuario y sus registros asociados eliminados definitivamente de la base de datos."
+                UsuarioConstants.MESSAGE, "Usuario eliminado del CRM preservando integridad y auditoría de eventos históricos."
         ));
     }
 

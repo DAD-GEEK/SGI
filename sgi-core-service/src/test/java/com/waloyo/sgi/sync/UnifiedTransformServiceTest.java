@@ -74,8 +74,8 @@ class UnifiedTransformServiceTest {
     }
 
     @Test
-    @DisplayName("Debe transformar y guardar nuevo consultor/usuario")
-    void testProcessUsuarioNuevo() {
+    @DisplayName("Debe ignorar creacion automatica no supervisada de usuarios desde ETL")
+    void testProcessUsuarioIgnoradoEnEtl() {
         Map<String, Object> data = new HashMap<>();
         data.put("Email", "asesor@waloyo.com");
         data.put("Nombre", "Asesor Waloyo");
@@ -88,35 +88,7 @@ class UnifiedTransformServiceTest {
                 .data(data)
                 .build();
 
-        when(usuarioRepository.findByEmail("asesor@waloyo.com")).thenReturn(Optional.empty());
-
         assertDoesNotThrow(() -> unifiedTransformService.transformAndUpsert(record).block());
-        verify(usuarioRepository, times(1)).save(any(UsuarioEntity.class));
-    }
-
-    @Test
-    @DisplayName("Debe actualizar consultor existente si ya existe")
-    void testProcessUsuarioExistente() {
-        Map<String, Object> data = new HashMap<>();
-        data.put("Email", "asesor@waloyo.com");
-        data.put("Nombre", "Asesor Actualizado");
-
-        RawRecord record = RawRecord.builder()
-                .sourceDb("SGI_Consultor")
-                .sourceTable("Usuarios")
-                .primaryKey("asesor@waloyo.com")
-                .data(data)
-                .build();
-
-        UsuarioEntity existing = UsuarioEntity.builder()
-                .id(java.util.UUID.randomUUID())
-                .email("asesor@waloyo.com")
-                .nombreCompleto("Asesor Viejo")
-                .build();
-
-        when(usuarioRepository.findByEmail("asesor@waloyo.com")).thenReturn(Optional.of(existing));
-
-        assertDoesNotThrow(() -> unifiedTransformService.transformAndUpsert(record).block());
-        verify(usuarioRepository, times(1)).save(existing);
+        verify(usuarioRepository, never()).save(any(UsuarioEntity.class));
     }
 }
