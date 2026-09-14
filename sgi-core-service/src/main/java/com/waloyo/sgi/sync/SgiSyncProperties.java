@@ -13,6 +13,15 @@ public class SgiSyncProperties {
 
     private Sync sync = new Sync();
     private Datasource datasource = new Datasource();
+    private Legacy legacy = new Legacy();
+
+    @Getter
+    @Setter
+    public static class Legacy {
+        private boolean keepAliveEnabled = true;
+        private String agendaUrl;
+        private String consultorUrl;
+    }
 
     @Getter
     @Setter

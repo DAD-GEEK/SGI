@@ -1,5 +1,5 @@
 // SGI CRM & Client Portal - Enterprise Release
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
@@ -12,6 +12,16 @@ import { ChangePassword } from './pages/ChangePassword';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const App: React.FC = () => {
+  useEffect(() => {
+    if (import.meta.env.PROD) {
+      const hostname = window.location.hostname;
+      if (hostname.endsWith('.web.app') || hostname.endsWith('.firebaseapp.com')) {
+        const canonicalTarget = 'https://crm.gestionintegralsgi.com.co' + window.location.pathname + window.location.search + window.location.hash;
+        window.location.replace(canonicalTarget);
+      }
+    }
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>

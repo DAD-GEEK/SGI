@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Search, Plus, UserCheck, Edit, Power, X, AlertTriangle, CheckCircle2, KeyRound, Shield, Clock, Settings, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Users, Search, Plus, UserCheck, Edit, Power, X, AlertTriangle, CheckCircle2, KeyRound, Shield, ShieldCheck, Clock, Settings, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { CrmSidebar } from '../components/CrmSidebar';
 import { API_BASE_URL } from '../config/apiConfig';
 
@@ -343,7 +343,7 @@ const UsuariosView: React.FC = () => {
         method: 'DELETE'
       });
       if (res.ok) {
-        showToast(`Usuario ${usuarioToDelete.nombreCompleto} y sus eventos asociados eliminados permanentemente.`);
+        showToast(`Usuario ${usuarioToDelete.nombreCompleto} eliminado exitosamente. Sus eventos de agenda fueron preservados para auditoría histórica.`);
         setUsuarioToDelete(null);
         setEventosToDelete([]);
         fetchUsuarios();
@@ -745,30 +745,30 @@ const UsuariosView: React.FC = () => {
                 ¿Está seguro de eliminar de forma permanente al usuario <strong className="text-slate-900">{usuarioToDelete.nombreCompleto}</strong> (`{usuarioToDelete.email}`)? Esta acción borra completamente el registro de la base de datos.
               </p>
 
-              {/* Advertencia Explícita de Eventos de Agenda Asociados */}
-              <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl space-y-2">
-                <div className="flex items-center gap-2 text-amber-900 font-bold text-xs">
-                  <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-                  <span>Eliminación en Cascada de Agenda</span>
+              {/* Preservación de Auditoría Histórica de Eventos */}
+              <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl space-y-2">
+                <div className="flex items-center gap-2 text-blue-900 font-bold text-xs">
+                  <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span>Preservación Legal de Auditoría SST</span>
                 </div>
-                <p className="text-xs text-amber-800 leading-relaxed">
-                  Para mantener la integridad de la base de datos sin errores de clave foránea, al eliminar este asesor <strong className="text-amber-950">se borrarán automáticamente todos los eventos de agenda vinculados a su cuenta</strong>.
+                <p className="text-xs text-blue-800 leading-relaxed">
+                  Para cumplir con la normatividad del SGSST y auditorías laborales, al eliminar este usuario sus citas de agenda <strong className="text-blue-950">NO se borrarán</strong>. Los eventos se preservarán intactos en el historial, desvinculando la cuenta activa y registrando su nombre y correo como autor histórico inmutable.
                 </p>
 
                 {loadingEventosToDelete ? (
-                  <div className="text-xs text-amber-700 italic pt-1 flex items-center gap-1.5">
+                  <div className="text-xs text-blue-700 italic pt-1 flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 animate-spin" />
                     Consultando eventos de agenda asociados...
                   </div>
                 ) : eventosToDelete.length > 0 ? (
                   <div className="pt-1 space-y-1.5">
-                    <div className="text-xs font-semibold text-amber-900 flex justify-between">
-                      <span>Eventos que se eliminarán:</span>
-                      <span className="bg-amber-200 text-amber-900 px-1.5 py-0.2 rounded font-mono text-[11px]">{eventosToDelete.length}</span>
+                    <div className="text-xs font-semibold text-blue-900 flex justify-between">
+                      <span>Eventos históricos que se preservarán:</span>
+                      <span className="bg-blue-200 text-blue-900 px-1.5 py-0.2 rounded font-mono text-[11px]">{eventosToDelete.length}</span>
                     </div>
                     <div className="max-h-28 overflow-y-auto space-y-1 pr-1">
                       {eventosToDelete.map((ev) => (
-                        <div key={ev.id} className="p-1.5 bg-white/80 border border-amber-200/60 rounded text-[11px] text-slate-700 flex justify-between items-center gap-2">
+                        <div key={ev.id} className="p-1.5 bg-white/80 border border-blue-200/60 rounded text-[11px] text-slate-700 flex justify-between items-center gap-2">
                           <span className="font-medium truncate">{ev.titulo || 'Sin Título'}</span>
                           <span className="text-[10px] text-slate-500 shrink-0 font-mono">
                             {ev.fechaInicio ? new Date(ev.fechaInicio).toLocaleDateString() : ''}
