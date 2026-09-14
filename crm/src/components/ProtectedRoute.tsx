@@ -11,6 +11,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const location = useLocation();
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [pendingPasswordChange, setPendingPasswordChange] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -21,6 +22,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         if (!storedUserRaw) {
           if (isMounted) {
             setIsAuthenticated(false);
+            setPendingPasswordChange(false);
             setIsChecking(false);
           }
           return;
@@ -31,6 +33,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           await performCompleteLogout();
           if (isMounted) {
             setIsAuthenticated(false);
+            setPendingPasswordChange(false);
             setIsChecking(false);
           }
           return;
@@ -44,14 +47,18 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           await performCompleteLogout();
           if (isMounted) {
             setIsAuthenticated(false);
+            setPendingPasswordChange(false);
             setIsChecking(false);
           }
           return;
         }
 
+        const mustChange = Boolean(storedUser.mustChangePassword);
+
         // Si existe un registro local válido, confirmar estado
         if (isMounted) {
           setIsAuthenticated(true);
+          setPendingPasswordChange(mustChange);
           setIsChecking(false);
         }
       } catch (err) {
@@ -59,6 +66,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         await performCompleteLogout();
         if (isMounted) {
           setIsAuthenticated(false);
+          setPendingPasswordChange(false);
           setIsChecking(false);
         }
       }
@@ -102,6 +110,16 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  // Si tiene cambio de clave pendiente y trata de acceder a otra ruta, forzar a /cambiar-password
+  if (pendingPasswordChange && location.pathname !== '/cambiar-password') {
+    return <Navigate to="/cambiar-password" replace />;
+  }
+
+  // Si NO tiene cambio de clave pendiente y se encuentra en /cambiar-password, redirigir al Dashboard
+  if (!pendingPasswordChange && location.pathname === '/cambiar-password') {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;

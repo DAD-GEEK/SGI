@@ -27,7 +27,11 @@ export const Login: React.FC = () => {
             storedUser.loginTimestamp &&
             Date.now() - storedUser.loginTimestamp < MAX_SESSION_MS
           ) {
-            navigate('/dashboard', { replace: true });
+            if (storedUser.mustChangePassword) {
+              navigate('/cambiar-password', { replace: true });
+            } else {
+              navigate('/dashboard', { replace: true });
+            }
           }
         } catch {}
       }
@@ -70,7 +74,11 @@ export const Login: React.FC = () => {
           }
           if (userStatus.mustChangePassword) {
             // Guardar sesión previa para flujo de cambio de clave
-            localStorage.setItem('sgi_user', JSON.stringify({ email, loginTimestamp: Date.now() }));
+            localStorage.setItem('sgi_user', JSON.stringify({
+              email,
+              mustChangePassword: true,
+              loginTimestamp: Date.now()
+            }));
             navigate('/cambiar-password', { replace: true });
             return;
           }
@@ -122,20 +130,46 @@ export const Login: React.FC = () => {
       let userNombre = user.email?.split('@')[0] || 'Usuario SGI';
       let userModulos = ['dashboard', 'clientes', 'agenda', 'consultor'];
 
+      let userMustChange = false;
+
       try {
         const profileRes = await fetch(`${API_BASE_URL}/usuarios/verificar-estado?email=${encodeURIComponent(user.email || email)}`, {
           signal: AbortSignal.timeout(1500)
         });
         if (profileRes.ok) {
           const profileData = await profileRes.json();
+          if (profileData.activo === false) {
+            throw new Error('Su cuenta de asesor ha sido desactivada. Por favor comuníquese con el Administrador para restablecer su acceso.');
+          }
           if (profileData.rol) userRole = profileData.rol;
           if (profileData.nombreCompleto) userNombre = profileData.nombreCompleto;
           if (profileData.modulosPermitidos) {
             userModulos = profileData.modulosPermitidos.split(',');
           }
+          if (profileData.mustChangePassword) {
+            userMustChange = true;
+          }
         }
-      } catch (e) {
+      } catch (e: any) {
+        if (e.message && e.message.includes('desactivada')) {
+          throw e;
+        }
         console.warn('No se pudo precargar perfil en login:', e);
+      }
+
+      // Si debe cambiar clave obligatoriamente, redirigir a cambio de contraseña
+      if (userMustChange) {
+        localStorage.setItem('sgi_user', JSON.stringify({
+          email: user.email,
+          id: user.id,
+          nombre: userNombre,
+          rol: userRole,
+          modulos: userModulos,
+          mustChangePassword: true,
+          loginTimestamp: Date.now()
+        }));
+        navigate('/cambiar-password', { replace: true });
+        return;
       }
 
       // Si es ADMIN_TI o ADMIN, garantizar acceso universal a todos los módulos existentes y futuros
@@ -143,13 +177,40 @@ export const Login: React.FC = () => {
         userModulos = ['dashboard', 'clientes', 'agenda', 'consultor', 'usuarios', '*'];
       }
 
-      // 4. Guardar sesión con timestamp y redirigir al Dashboard
+      // 4. Auto-sincronizar contraseñas en segundo plano si estaban desactualizadas en aplicativos
+      fetch(`${API_BASE_URL}/usuarios/auto-sincronizar-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: user.email || email, password })
+      })
+        .then(res => res.json())
+        .then(syncData => {
+          if (syncData && syncData.updated === true) {
+            // Solo registrar notificación cuando el sistema detectó desactualización y corrigió
+            const storedNotifs = JSON.parse(localStorage.getItem('sgi_notifications') || '[]');
+            const syncNotif = {
+              id: `pwd-sync-${Date.now()}`,
+              title: 'Contraseñas actualizadas en aplicativos',
+              description: 'El sistema detectó que tu clave en Agenda y Consultor SGI estaba desactualizada y la sincronizó automáticamente con tu cuenta del CRM.',
+              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              date: 'Hoy',
+              read: false,
+              type: 'sync'
+            };
+            const remainingNotifs = storedNotifs.filter((n: any) => !n.id.startsWith('pwd-sync-'));
+            localStorage.setItem('sgi_notifications', JSON.stringify([syncNotif, ...remainingNotifs]));
+          }
+        })
+        .catch(syncErr => console.warn('Auto-sync password background note:', syncErr));
+
+      // 6. Guardar sesión con timestamp y redirigir al Dashboard
       localStorage.setItem('sgi_user', JSON.stringify({
         email: user.email,
         id: user.id,
         nombre: userNombre,
         rol: userRole,
         modulos: userModulos,
+        mustChangePassword: false,
         loginTimestamp: Date.now()
       }));
       navigate('/dashboard', { replace: true });
