@@ -10,12 +10,11 @@ Bienvenido al repositorio oficial del portal web institucional y comercial de **
 
 | Componente | Tecnología | Versión |
 |---|---|---|
-| **Core Framework** | React | `^19.0.0` |
-| **Bundler / Build Tool** | Vite | `^6.1.0` |
-| **Lenguaje** | TypeScript | `^5.7.3` |
-| **Estilos & CSS** | Tailwind CSS v4 | `^4.0.0` (`@tailwindcss/vite`) |
-| **Enrutamiento** | React Router DOM | `^7.1.5` |
-| **Iconografía** | Lucide React + Material Symbols | `^0.475.0` |
+| **Landing Web** | React + Vite + Tailwind CSS v4 | `^19.0.0` / `^6.1.0` |
+| **CRM Moderno** | React + Vite + Lucide + Tailwind | `^19.0.0` / `^6.4.3` |
+| **Backend Core** | Spring Boot + Java 21 + PostgreSQL (Schema `sgi`) | `3.2.3` / `JDK 21` |
+| **Agenda SGI (Legacy)** | ASP.NET MVC 5 + C# + SQL Server | `.NET Framework 4.8` |
+| **Consultor SGI (Legacy)**| ASP.NET MVC 5 + OWIN Identity + SQL Server | `.NET Framework 4.8` |
 
 ---
 
@@ -33,13 +32,17 @@ El proyecto adopta formalmente la especificación **SGI Unified Core** definida 
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📁 Estructura del Ecosistema Consolidado
 
 ```
 apps/client/SGI/
 ├── crm/                  # Portal moderno CRM & gestión de consultores (React + Vite + Tailwind)
 ├── sgi-core-service/     # Microservicio backend On-Premise (Spring Boot / Java 21 / PostgreSQL schema sgi)
-├── docs/                 # Documentación técnica y arquitectura
+├── AgendaSGI/            # Aplicación legada unificada: cronogramas, visitas y actas (.NET Framework 4.8)
+├── ConsultorSGI/         # Aplicación legada unificada: SG-SST Res. 0312, normas e ISO (.NET Framework 4.8)
+├── docs/                 # Documentación técnica, guías operativas y arquitectura
+│   ├── guia_configuracion_supabase_cors_dominios.md # Guía oficial de CORS y dominios en Supabase Auth
+│   ├── agenda_sgi_event_lifecycle_and_rules.md      # Ciclo de vida de eventos y reglas de negocio
 │   ├── plan_sgi.md       # Plan Maestro de Onboarding e Ingeniería
 │   ├── plan_sgi_crm.md   # Plan Maestro del Software CRM Desacoplado
 │   ├── arquitectura_sgi.md # Documento de Arquitectura y Migración 5 Capas
@@ -50,13 +53,13 @@ apps/client/SGI/
 │   ├── sgi_architecture_division.md # Especificación de división de responsabilidades (Spring Boot vs CRM)
 │   └── sgi_data_migration_plan.md # Plan Maestro de Migración ETL de backups .bak (MS SQL -> PostgreSQL)
 ├── platillas diseño/     # Diseños fuente en HTML/CSS y capturas de pantalla
-├── src/
+├── src/                  # Landing page institucional (React + Vite)
 │   ├── components/       # Componentes reutilizables (Navbar, Footer, etc.)
 │   ├── pages/            # Vistas principales (Home, Services, PESV)
 │   ├── App.tsx           # Ruteo dinámico
 │   ├── main.tsx          # Punto de entrada de React
 │   └── index.css         # Importación de Tailwind CSS v4 y tokens de diseño
-├── CHANGELOG.md          # Bitácora de cambios del proyecto SGI
+├── CHANGELOG.md          # Bitácora de cambios del proyecto SGI (v1.4.9)
 ├── index.html            # Plantilla HTML base con fuentes de Google
 ├── package.json          # Dependencias y scripts
 ├── tsconfig.json         # Configuración estricta de TypeScript
