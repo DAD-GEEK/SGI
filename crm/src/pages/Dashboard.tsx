@@ -5,7 +5,6 @@ import {
   Users,
   ClipboardCheck,
   Bell,
-  Search,
   User,
   TrendingUp,
   AlertTriangle,
@@ -13,14 +12,114 @@ import {
   Clock,
   Calendar,
   Filter,
-  Plus,
   ShieldCheck,
   X
 } from 'lucide-react';
+import { API_BASE_URL } from '../config/apiConfig';
+
+interface AgendaDashboardItem {
+  id: string;
+  titulo: string;
+  cliente: string;
+  descripcion?: string;
+  fecha: string;
+  hora: string;
+  duracion: string;
+  asesorNombre: string;
+  asesorEmail?: string;
+  tipoEvento?: string;
+  estado?: string;
+}
+
+interface DashboardKpis {
+  clientesAsignados?: number;
+  horasEjecutadasMes: number;
+  horasContratadasMes: number;
+  porcentajeEjecucionHoras: number;
+  compromisosPendientes: number;
+  compromisosVencidos: number;
+  auditoriasEnCurso: number;
+  auditoriasPendientesFirma: number;
+  planesAccionPendientes: number;
+  diagnosticosEnProceso: number;
+}
+
+interface AuditoriaItem {
+  id: string;
+  codigo: string;
+  cliente: string;
+  norma: string;
+  estado: string;
+  auditor: string;
+  fechaInicio: string;
+  fechaFin: string;
+  firmada: boolean;
+}
 
 export const Dashboard: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const [agendaEventos, setAgendaEventos] = useState<AgendaDashboardItem[]>([]);
+  const [loadingAgenda, setLoadingAgenda] = useState<boolean>(true);
+  const [kpis, setKpis] = useState<DashboardKpis | null>(null);
+  const [loadingKpis, setLoadingKpis] = useState<boolean>(true);
+  const [auditoriasRecientes, setAuditoriasRecientes] = useState<AuditoriaItem[]>([]);
+  const [loadingAuditorias, setLoadingAuditorias] = useState<boolean>(true);
+  const [filtroAgenda, setFiltroAgenda] = useState<'todas' | 'mias'>('todas');
+  const [userName, setUserName] = useState<string>(() => {
+    try {
+      const stored = localStorage.getItem('sgi_user');
+      if (stored) {
+        const u = JSON.parse(stored);
+        if (u.nombre && typeof u.nombre === 'string' && u.nombre.trim().length > 0) {
+          return u.nombre.trim();
+        }
+        if (u.email) {
+          const prefix = u.email.split('@')[0];
+          return prefix.charAt(0).toUpperCase() + prefix.slice(1);
+        }
+      }
+    } catch {}
+    return 'Consultor';
+  });
+  const [totalClientes, setTotalClientes] = useState<number | null>(null);
+  const [clientesActivos, setClientesActivos] = useState<number | null>(null);
+  const [loadingClientes, setLoadingClientes] = useState<boolean>(true);
+  const [isUserAdmin, setIsUserAdmin] = useState<boolean>(() => {
+    try {
+      const stored = localStorage.getItem('sgi_user');
+      if (stored) {
+        const u = JSON.parse(stored);
+        return u.rol === 'ADMIN_TI' || u.role === 'ADMIN_TI' || u.rol === 'ADMIN' || u.role === 'ADMIN' || u.email === 'admon@waloyogroup.com';
+      }
+    } catch {}
+    return false;
+  });
+
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      try {
+        const stored = localStorage.getItem('sgi_user');
+        if (stored) {
+          const u = JSON.parse(stored);
+          if (u.nombre && typeof u.nombre === 'string' && u.nombre.trim().length > 0) {
+            setUserName(u.nombre.trim());
+          } else if (u.email) {
+            const prefix = u.email.split('@')[0];
+            setUserName(prefix.charAt(0).toUpperCase() + prefix.slice(1));
+          }
+          setIsUserAdmin(u.rol === 'ADMIN_TI' || u.role === 'ADMIN_TI' || u.rol === 'ADMIN' || u.role === 'ADMIN' || u.email === 'admon@waloyogroup.com');
+        }
+      } catch {}
+    };
+
+    window.addEventListener('sgi_user_changed', handleUserUpdate);
+    window.addEventListener('storage', handleUserUpdate);
+    return () => {
+      window.removeEventListener('sgi_user_changed', handleUserUpdate);
+      window.removeEventListener('storage', handleUserUpdate);
+    };
+  }, []);
 
   const [notifications, setNotifications] = useState<any[]>(() => {
     try {
@@ -72,6 +171,83 @@ export const Dashboard: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchAgenda = async () => {
+      try {
+        setLoadingAgenda(true);
+        const storedRaw = localStorage.getItem('sgi_user');
+        const user = storedRaw ? JSON.parse(storedRaw) : null;
+        const email = user?.email || '';
+        const soloMias = isUserAdmin ? (filtroAgenda === 'mias') : true;
+        const res = await fetch(`${API_BASE_URL}/agenda/dashboard?email=${encodeURIComponent(email)}&limit=5&soloMias=${soloMias}`);
+        if (res.ok) {
+          const data = await res.json();
+          setAgendaEventos(Array.isArray(data) ? data : []);
+        }
+      } catch (err) {
+        console.error('Error cargando asesorías de agenda:', err);
+      } finally {
+        setLoadingAgenda(false);
+      }
+    };
+    void fetchAgenda();
+  }, [filtroAgenda, isUserAdmin]);
+
+  useEffect(() => {
+    const fetchClientes = async () => {
+      try {
+        setLoadingClientes(true);
+        const res = await fetch(`${API_BASE_URL}/clientes`);
+        if (res.ok) {
+          const list = await res.json();
+          if (Array.isArray(list)) {
+            setTotalClientes(list.length);
+            const activos = list.filter((c: any) => c.activo === true || c.activo === 1 || c.activo === 'true').length;
+            setClientesActivos(activos);
+          }
+        }
+      } catch (err) {
+        console.error('Error cargando métricas de clientes en Dashboard:', err);
+      } finally {
+        setLoadingClientes(false);
+      }
+    };
+    void fetchClientes();
+  }, []);
+
+  useEffect(() => {
+    const fetchMetrics = async () => {
+      try {
+        setLoadingKpis(true);
+        setLoadingAuditorias(true);
+        const storedRaw = localStorage.getItem('sgi_user');
+        const user = storedRaw ? JSON.parse(storedRaw) : null;
+        const email = user?.email || '';
+        const soloMias = isUserAdmin ? (filtroAgenda === 'mias') : true;
+
+        const [kpiRes, audRes] = await Promise.all([
+          fetch(`${API_BASE_URL}/dashboard/kpis?email=${encodeURIComponent(email)}&soloMias=${soloMias}`),
+          fetch(`${API_BASE_URL}/dashboard/auditorias?email=${encodeURIComponent(email)}&limit=6&soloMias=${soloMias}`)
+        ]);
+
+        if (kpiRes.ok) {
+          const kpiData = await kpiRes.json();
+          setKpis(kpiData);
+        }
+        if (audRes.ok) {
+          const audData = await audRes.json();
+          setAuditoriasRecientes(Array.isArray(audData) ? audData : []);
+        }
+      } catch (err) {
+        console.error('Error cargando metricas operativas en Dashboard:', err);
+      } finally {
+        setLoadingKpis(false);
+        setLoadingAuditorias(false);
+      }
+    };
+    void fetchMetrics();
+  }, [filtroAgenda, isUserAdmin]);
+
 
   return (
     <div className="h-screen bg-[#f7f9fb] flex flex-col md:flex-row font-sans overflow-hidden">
@@ -81,16 +257,18 @@ export const Dashboard: React.FC = () => {
       {/* Main Workspace Area */}
       <div className="flex-grow flex flex-col overflow-y-auto w-full transition-all duration-300 ease-in-out">
         {/* Top Header */}
-        <header className="bg-white border-b border-[#c2c6d4]/40 px-6 py-4 flex items-center justify-between sticky top-0 z-30 elevation-1">
-          <div className="flex items-center gap-4 w-full max-w-md">
-            <div className="relative w-full">
-              <Search className="w-4 h-4 text-[#727783] absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Buscar cliente, NIT, código de auditoría..."
-                className="w-full pl-9 pr-4 py-2 rounded-xl border border-[#c2c6d4]/60 text-xs focus:outline-none focus:border-[#055bb2] bg-[#f8fafc]"
-              />
-            </div>
+        <header className="bg-white border-b border-[#c2c6d4]/40 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30 elevation-1">
+          <div className="flex items-center gap-3">
+            <h2 className="text-base font-bold font-headline text-[#191c1e]">
+              Panel de Control
+            </h2>
+            <span className="hidden sm:inline-block text-[11px] font-semibold text-[#055bb2] bg-[#055bb2]/10 px-2.5 py-0.5 rounded-full">
+              SGI Software
+            </span>
+            <span className="hidden sm:inline-block text-slate-300">|</span>
+            <span className="text-xs sm:text-sm font-medium text-[#424752]">
+              ¡Hola, <strong className="font-semibold text-[#191c1e]">{userName}</strong>! Bienvenido(a)
+            </span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -177,213 +355,327 @@ export const Dashboard: React.FC = () => {
             <Link
               to="/perfil"
               className="p-2 rounded-xl text-[#545f73] hover:bg-[#f2f4f6] transition-colors"
+              title="Mi Perfil"
             >
               <User className="w-5 h-5" />
             </Link>
-            <button
-              onClick={() => alert('Crear nueva auditoría / compromiso')}
-              className="hidden sm:flex items-center gap-2 bg-[#055bb2] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#3374cd] transition-all shadow-xs"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Nueva Auditoría</span>
-            </button>
           </div>
         </header>
 
-        {/* Dashboard Content */}
-        <main className="p-6 space-y-8 max-w-7xl w-full mx-auto">
-          {/* Welcome Banner */}
-          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-[#055bb2] rounded-2xl p-6 text-white shadow-lg">
-            <div className="space-y-1">
-              <h1 className="text-xl font-bold font-headline">
-                Bienvenido al Panel de Control SGI
-              </h1>
-              <p className="text-xs text-[#d6e3ff]">
-                Resumen ejecutivo del estado de Sistemas de Gestión Integrados de sus clientes.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-medium bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-md">
-                Última sincronización: Hoy, 17:45
-              </span>
-            </div>
-          </div>
-
-          {/* KPI Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Dashboard Content — Adaptable Fluid Layout */}
+        <main className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 space-y-4 sm:space-y-5 flex-grow flex flex-col transition-all duration-300">
+          {/* KPI Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 xl:gap-4.5">
             {/* KPI 1 */}
-            <Link to="/clientes" className="bg-white p-5 rounded-2xl border border-[#c2c6d4]/40 elevation-1 space-y-3 hover:border-[#055bb2]/60 hover:shadow-md transition-all group block">
+            <Link to="/clientes" className="bg-white p-4 sm:p-4.5 xl:p-5 rounded-2xl border border-[#c2c6d4]/40 elevation-1 space-y-2.5 hover:border-[#055bb2]/60 hover:shadow-md transition-all group flex flex-col justify-between">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold text-[#545f73] group-hover:text-[#055bb2] transition-colors">Clientes Activos</span>
-                <div className="p-2 bg-[#055bb2]/10 rounded-xl text-[#055bb2]">
-                  <Users className="w-5 h-5" />
+                <span className="text-xs font-semibold text-[#545f73] group-hover:text-[#055bb2] transition-colors">
+                  {isUserAdmin ? 'Clientes Activos' : 'Mis Clientes Asignados'}
+                </span>
+                <div className="p-1.5 sm:p-2 bg-[#055bb2]/10 rounded-xl text-[#055bb2]">
+                  <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold font-headline text-[#191c1e]">67</span>
-                <span className="text-xs font-semibold text-emerald-600 inline-flex items-center gap-0.5">
-                  <TrendingUp className="w-3.5 h-3.5" /> Reales B2B
+                <span className="text-2xl sm:text-3xl font-bold font-headline text-[#191c1e]">
+                  {isUserAdmin ? (
+                    loadingClientes ? (
+                      <span className="text-lg text-[#727783] animate-pulse">...</span>
+                    ) : (
+                      clientesActivos ?? 0
+                    )
+                  ) : (
+                    loadingKpis ? (
+                      <span className="text-lg text-[#727783] animate-pulse">...</span>
+                    ) : (
+                      kpis?.clientesAsignados ?? 0
+                    )
+                  )}
+                </span>
+                <span className="text-xs font-semibold text-emerald-600 inline-flex items-center" title="Directorio actualizado">
+                  <TrendingUp className="w-4 h-4" />
                 </span>
               </div>
-              <p className="text-[11px] text-[#727783]">Ver directorio B2B en PostgreSQL 15</p>
+              <p className="text-[11px] sm:text-xs text-[#727783] truncate">
+                {isUserAdmin
+                  ? (totalClientes !== null ? `${clientesActivos ?? 0} activos de ${totalClientes} registrados` : 'Directorio corporativo B2B')
+                  : (kpis ? `${kpis.clientesAsignados ?? 0} cuentas a su cargo en contratos` : 'Empresas asignadas')}
+              </p>
             </Link>
 
             {/* KPI 2 */}
-            <div className="bg-white p-5 rounded-2xl border border-[#c2c6d4]/40 elevation-1 space-y-3">
+            <Link to="/consultor" className="bg-white p-4 sm:p-4.5 xl:p-5 rounded-2xl border border-[#c2c6d4]/40 elevation-1 space-y-2.5 hover:border-[#055bb2]/60 hover:shadow-md transition-all group flex flex-col justify-between">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold text-[#545f73]">Auditorías en Curso</span>
-                <div className="p-2 bg-[#3374cd]/10 rounded-xl text-[#055bb2]">
-                  <ClipboardCheck className="w-5 h-5" />
+                <span className="text-xs font-semibold text-[#545f73] group-hover:text-[#055bb2] transition-colors">Auditorías en Curso</span>
+                <div className="p-1.5 sm:p-2 bg-[#3374cd]/10 rounded-xl text-[#055bb2]">
+                  <ClipboardCheck className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold font-headline text-[#191c1e]">8</span>
+                <span className="text-2xl sm:text-3xl font-bold font-headline text-[#191c1e]">
+                  {loadingKpis ? (
+                    <span className="text-lg text-[#727783] animate-pulse">...</span>
+                  ) : (
+                    kpis?.auditoriasEnCurso ?? 0
+                  )}
+                </span>
                 <span className="text-xs font-medium text-[#424752]">SG-SST & ISO</span>
               </div>
-              <p className="text-[11px] text-[#727783]">4 con fecha de cierre esta semana</p>
-            </div>
+              <p className="text-[11px] sm:text-xs text-[#727783] truncate">
+                {kpis
+                  ? `${kpis.auditoriasPendientesFirma} pendientes de firma informe`
+                  : 'Auditorías internas y de certificación'}
+              </p>
+            </Link>
 
             {/* KPI 3 */}
-            <div className="bg-white p-5 rounded-2xl border border-[#c2c6d4]/40 elevation-1 space-y-3">
+            <Link to="/agenda" className="bg-white p-4 sm:p-4.5 xl:p-5 rounded-2xl border border-[#c2c6d4]/40 elevation-1 space-y-2.5 hover:border-[#055bb2]/60 hover:shadow-md transition-all group flex flex-col justify-between">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold text-[#545f73]">Cumplimiento Promedio</span>
-                <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-600">
-                  <CheckCircle2 className="w-5 h-5" />
+                <span className="text-xs font-semibold text-[#545f73] group-hover:text-[#055bb2] transition-colors">Ejecución del Mes</span>
+                <div className="p-1.5 sm:p-2 bg-emerald-500/10 rounded-xl text-emerald-600">
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold font-headline text-[#191c1e]">94.2%</span>
-                <span className="text-xs font-semibold text-emerald-600">+3.1% vs 2025</span>
+                <span className="text-2xl sm:text-3xl font-bold font-headline text-[#191c1e]">
+                  {loadingKpis ? (
+                    <span className="text-lg text-[#727783] animate-pulse">...</span>
+                  ) : (
+                    `${kpis?.porcentajeEjecucionHoras ?? 0}%`
+                  )}
+                </span>
+                <span className="text-xs font-semibold text-emerald-600">
+                  {kpis ? `${kpis.horasEjecutadasMes}h ejecutadas` : ''}
+                </span>
               </div>
-              <p className="text-[11px] text-[#727783]">Estándares mínimos Res. 0312</p>
-            </div>
+              <p className="text-[11px] sm:text-xs text-[#727783] truncate">
+                {kpis
+                  ? `${kpis.horasEjecutadasMes}h de ${kpis.horasContratadasMes}h contratadas`
+                  : 'Horas de asesoría'}
+              </p>
+            </Link>
 
             {/* KPI 4 */}
-            <div className="bg-white p-5 rounded-2xl border border-[#c2c6d4]/40 elevation-1 space-y-3">
+            <Link to="/agenda" className="bg-white p-4 sm:p-4.5 xl:p-5 rounded-2xl border border-[#c2c6d4]/40 elevation-1 space-y-2.5 hover:border-[#055bb2]/60 hover:shadow-md transition-all group flex flex-col justify-between">
               <div className="flex justify-between items-center">
-                <span className="text-xs font-semibold text-[#545f73]">Pendientes Críticos</span>
-                <div className="p-2 bg-amber-500/10 rounded-xl text-amber-600">
-                  <AlertTriangle className="w-5 h-5" />
+                <span className="text-xs font-semibold text-[#545f73] group-hover:text-[#055bb2] transition-colors">Compromisos de Actas</span>
+                <div className="p-1.5 sm:p-2 bg-amber-500/10 rounded-xl text-amber-600">
+                  <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold font-headline text-[#191c1e]">3</span>
-                <span className="text-xs font-semibold text-amber-600">Acción Requerida</span>
+                <span className="text-2xl sm:text-3xl font-bold font-headline text-[#191c1e]">
+                  {loadingKpis ? (
+                    <span className="text-lg text-[#727783] animate-pulse">...</span>
+                  ) : (
+                    kpis?.compromisosPendientes ?? 0
+                  )}
+                </span>
+                <span className={`text-xs font-semibold ${kpis && kpis.compromisosVencidos > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                  {kpis && kpis.compromisosVencidos > 0 ? `${kpis.compromisosVencidos} vencidos` : 'Al día'}
+                </span>
               </div>
-              <p className="text-[11px] text-[#727783]">Compromisos con vencimiento cercano</p>
-            </div>
+              <p className="text-[11px] sm:text-xs text-[#727783] truncate">
+                {kpis
+                  ? `${kpis.planesAccionPendientes} planes de acción en auditorías`
+                  : 'Compromisos pactados en visitas'}
+              </p>
+            </Link>
           </div>
 
-          {/* Main Table & Widgets */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Table Section (Col 2) */}
-            <div className="lg:col-span-2 bg-white rounded-2xl border border-[#c2c6d4]/40 elevation-1 overflow-hidden space-y-4">
-              <div className="p-5 border-b border-[#e0e3e5] flex justify-between items-center">
-                <div>
-                  <h3 className="font-bold text-base font-headline text-[#191c1e]">
-                    Auditorías y Acompañamientos Recientes
-                  </h3>
-                  <p className="text-xs text-[#727783]">Estado PHVA y entregables normados</p>
+          {/* Main Table & Widgets (12-Column Fluid Responsive Grid) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 xl:gap-5 flex-grow items-stretch">
+            {/* Table Section (8 Cols in XL, 7 Cols in LG) */}
+            <div className="lg:col-span-7 xl:col-span-8 bg-white rounded-2xl border border-[#c2c6d4]/40 elevation-1 flex flex-col justify-between overflow-hidden">
+              <div>
+                <div className="px-4 sm:px-5 py-3 sm:py-3.5 border-b border-[#e0e3e5] flex justify-between items-center bg-white">
+                  <div>
+                    <h3 className="font-bold text-sm sm:text-base font-headline text-[#191c1e]">
+                      Auditorías y Acompañamientos Recientes
+                    </h3>
+                    <p className="text-[11px] sm:text-xs text-[#727783]">Consultor SGI y estado normativo</p>
+                  </div>
+                  <Link
+                    to="/consultor"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#055bb2] hover:bg-[#d6e3ff]/40 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-colors"
+                  >
+                    <Filter className="w-3.5 h-3.5" />
+                    <span>Ver Todas</span>
+                  </Link>
                 </div>
-                <button className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#055bb2] hover:bg-[#d6e3ff]/40 px-3 py-1.5 rounded-lg transition-colors">
-                  <Filter className="w-3.5 h-3.5" />
-                  Filtrar
-                </button>
-              </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-[#f8fafc] text-[#545f73] font-semibold border-b border-[#e0e3e5]">
-                    <tr>
-                      <th className="px-5 py-3">Cliente / Empresa</th>
-                      <th className="px-5 py-3">Norma</th>
-                      <th className="px-5 py-3">Estado PHVA</th>
-                      <th className="px-5 py-3">% Avance</th>
-                      <th className="px-5 py-3 text-right">Acción</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#e0e3e5] text-[#191c1e]">
-                    <tr className="hover:bg-[#f8fafc] transition-colors">
-                      <td className="px-5 py-4 font-semibold">Transportes del Norte S.A.</td>
-                      <td className="px-5 py-4 text-[#545f73]">PESV (Ley 2251)</td>
-                      <td className="px-5 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-100 text-blue-800">
-                          Hacer (Implementación)
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 font-bold text-[#055bb2]">88%</td>
-                      <td className="px-5 py-4 text-right">
-                        <Link to="/consultor" className="text-[#055bb2] font-semibold hover:underline">Ver Informe</Link>
-                      </td>
-                    </tr>
-
-                    <tr className="hover:bg-[#f8fafc] transition-colors">
-                      <td className="px-5 py-4 font-semibold">Constructora Andina B2B</td>
-                      <td className="px-5 py-4 text-[#545f73]">SG-SST (Res. 0312)</td>
-                      <td className="px-5 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800">
-                          Verificar (Auditoría)
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 font-bold text-emerald-600">96%</td>
-                      <td className="px-5 py-4 text-right">
-                        <Link to="/consultor" className="text-[#055bb2] font-semibold hover:underline">Ver Informe</Link>
-                      </td>
-                    </tr>
-
-                    <tr className="hover:bg-[#f8fafc] transition-colors">
-                      <td className="px-5 py-4 font-semibold">Industrias Químicas S.A.S.</td>
-                      <td className="px-5 py-4 text-[#545f73]">ISO 9001:2015</td>
-                      <td className="px-5 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800">
-                          Planear (Diagnóstico)
-                        </span>
-                      </td>
-                      <td className="px-5 py-4 font-bold text-amber-600">45%</td>
-                      <td className="px-5 py-4 text-right">
-                        <Link to="/consultor" className="text-[#055bb2] font-semibold hover:underline">Ver Informe</Link>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-[#f8fafc] text-[#545f73] font-semibold border-b border-[#e0e3e5]">
+                      <tr>
+                        <th className="px-3.5 sm:px-4 py-2 sm:py-2.5 text-[11px] font-semibold">Cliente / Empresa</th>
+                        <th className="px-3.5 sm:px-4 py-2 sm:py-2.5 text-[11px] font-semibold">Norma / Código</th>
+                        <th className="px-3.5 sm:px-4 py-2 sm:py-2.5 text-[11px] font-semibold">Estado</th>
+                        <th className="px-3.5 sm:px-4 py-2 sm:py-2.5 text-[11px] font-semibold">Fecha</th>
+                        <th className="px-3.5 sm:px-4 py-2 sm:py-2.5 text-[11px] font-semibold text-right">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#e0e3e5] text-[#191c1e]">
+                      {loadingAuditorias ? (
+                        <tr>
+                          <td colSpan={5} className="px-4 py-6 text-center text-xs text-[#727783] animate-pulse">
+                            Cargando auditorías de Consultor SGI...
+                          </td>
+                        </tr>
+                      ) : auditoriasRecientes.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="px-4 py-6 text-center text-xs text-[#727783]">
+                            No hay auditorías registradas recientemente.
+                          </td>
+                        </tr>
+                      ) : (
+                        auditoriasRecientes.map((aud) => (
+                          <tr key={aud.id} className="hover:bg-[#f8fafc] transition-colors">
+                            <td className="px-3.5 sm:px-4 py-2 sm:py-2.5">
+                              <div className="font-semibold text-xs text-[#191c1e] truncate max-w-[160px] sm:max-w-[200px] xl:max-w-[280px]" title={aud.cliente}>
+                                {aud.cliente}
+                              </div>
+                              <div className="text-[10px] sm:text-[11px] text-[#727783] truncate max-w-[160px] sm:max-w-[200px]">Auditor: {aud.auditor}</div>
+                            </td>
+                            <td className="px-3.5 sm:px-4 py-2 sm:py-2.5">
+                              <div className="font-medium text-xs text-[#424752] truncate max-w-[120px] sm:max-w-[180px]">{aud.norma}</div>
+                              <div className="text-[10px] sm:text-[11px] text-[#727783] font-mono">{aud.codigo}</div>
+                            </td>
+                            <td className="px-3.5 sm:px-4 py-2 sm:py-2.5 whitespace-nowrap">
+                              <span
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold ${
+                                  aud.estado === 'Cerrada'
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : aud.estado === 'Pendiente Firma'
+                                    ? 'bg-amber-100 text-amber-800'
+                                    : 'bg-blue-100 text-blue-800'
+                                }`}
+                              >
+                                {aud.estado}
+                              </span>
+                            </td>
+                            <td className="px-3.5 sm:px-4 py-2 sm:py-2.5 font-mono text-[11px] sm:text-xs text-[#545f73] whitespace-nowrap">
+                              {aud.fechaInicio || 'Por programar'}
+                            </td>
+                            <td className="px-3.5 sm:px-4 py-2 sm:py-2.5 text-right whitespace-nowrap">
+                              <Link to="/consultor" className="text-[#055bb2] font-semibold text-[11px] sm:text-xs hover:underline">
+                                Ver Auditoría
+                              </Link>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
 
-            {/* Agenda & Reminders Widget (Col 1) */}
-            <div className="bg-white rounded-2xl border border-[#c2c6d4]/40 elevation-1 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-[#e0e3e5] pb-3">
-                <h3 className="font-bold text-base font-headline text-[#191c1e] flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#055bb2]" />
-                  Próximas Asesorías
-                </h3>
-                <Link to="/agenda" className="text-[11px] text-[#055bb2] font-bold hover:underline">
-                  Ver Todo
-                </Link>
-              </div>
-
-              <div className="space-y-3">
-                <div className="p-3 bg-[#f8fafc] rounded-xl border border-[#e0e3e5] space-y-1">
-                  <div className="flex justify-between items-center text-xs font-bold text-[#191c1e]">
-                    <span>Reunión de Cierre COPASST</span>
-                    <span className="text-[10px] text-[#055bb2] font-semibold">09:00 AM</span>
+            {/* Agenda & Reminders Widget (4 Cols in XL, 5 Cols in LG) */}
+            <div className="lg:col-span-5 xl:col-span-4 bg-white rounded-2xl border border-[#c2c6d4]/40 elevation-1 p-4 sm:p-5 space-y-3 sm:space-y-4 flex flex-col justify-between">
+              <div>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#e0e3e5] pb-2.5 gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-bold text-sm sm:text-base font-headline text-[#191c1e] flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-[#055bb2]" />
+                      Próximas Asesorías
+                    </h3>
+                    {isUserAdmin && (
+                      <div className="inline-flex items-center bg-[#f2f4f6] p-0.5 rounded-lg text-[10px] font-bold ml-1">
+                        <button
+                          onClick={() => setFiltroAgenda('todas')}
+                          className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
+                            filtroAgenda === 'todas'
+                              ? 'bg-[#055bb2] text-white shadow-xs'
+                              : 'text-[#545f73] hover:text-[#191c1e]'
+                          }`}
+                          title="Ver asesorías de todo el equipo"
+                        >
+                          Todas
+                        </button>
+                        <button
+                          onClick={() => setFiltroAgenda('mias')}
+                          className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
+                            filtroAgenda === 'mias'
+                              ? 'bg-[#055bb2] text-white shadow-xs'
+                              : 'text-[#545f73] hover:text-[#191c1e]'
+                          }`}
+                          title="Ver únicamente mis asesorías programadas"
+                        >
+                          Mis Citas
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-[11px] text-[#545f73]">Cliente: Transportes del Norte S.A.</p>
-                  <div className="flex items-center gap-1.5 text-[10px] text-[#727783] pt-1">
-                    <Clock className="w-3 h-3 text-[#545f73]" />
-                    <span>Duración: 2 Horas • Virtual Teams</span>
-                  </div>
+                  <Link
+                    to="/agenda"
+                    className="text-xs text-[#055bb2] font-bold hover:underline shrink-0"
+                    title="Abrir Módulo Agenda completo"
+                  >
+                    Ver Todo
+                  </Link>
                 </div>
 
-                <div className="p-3 bg-[#f8fafc] rounded-xl border border-[#e0e3e5] space-y-1">
-                  <div className="flex justify-between items-center text-xs font-bold text-[#191c1e]">
-                    <span>Auditoría de Campo PESV</span>
-                    <span className="text-[10px] text-[#055bb2] font-semibold">02:30 PM</span>
-                  </div>
-                  <p className="text-[11px] text-[#545f73]">Cliente: Logística Medellín</p>
-                  <div className="flex items-center gap-1.5 text-[10px] text-[#727783] pt-1">
-                    <Clock className="w-3 h-3 text-[#545f73]" />
-                    <span>Presencial • Sede Envigado</span>
-                  </div>
+                <div className="space-y-2 pt-2.5">
+                  {loadingAgenda ? (
+                    <div className="space-y-2 py-1">
+                      <div className="h-12 bg-slate-100/80 rounded-xl animate-pulse" />
+                      <div className="h-12 bg-slate-100/80 rounded-xl animate-pulse" />
+                    </div>
+                  ) : agendaEventos.length === 0 ? (
+                    <div className="p-5 text-center text-[#727783] text-xs">
+                      No hay asesorías próximas programadas en este momento.
+                    </div>
+                  ) : (
+                    agendaEventos.map((evento) => {
+                      const nombrePrincipal = evento.cliente && evento.cliente !== 'Sin Cliente Asignado'
+                        ? evento.cliente
+                        : (evento.titulo || 'Asesoría SGI');
+                      const subtitulo = evento.titulo && evento.titulo.trim().toLowerCase() !== nombrePrincipal.trim().toLowerCase()
+                        ? evento.titulo
+                        : null;
+
+                      return (
+                        <Link
+                          to="/agenda"
+                          key={evento.id}
+                          className="block px-3 py-2 sm:py-2.5 bg-[#f8fafc] hover:bg-sky-50/70 hover:border-[#055bb2]/40 transition-all rounded-xl border border-[#e0e3e5] space-y-1 group cursor-pointer text-inherit no-underline"
+                          title="Abrir cita en Módulo Agenda"
+                        >
+                          <div className="flex justify-between items-center text-xs font-bold text-[#191c1e] gap-2">
+                            <span className="truncate group-hover:text-[#055bb2] transition-colors" title={nombrePrincipal}>
+                              {nombrePrincipal}
+                            </span>
+                            <span className="text-[10px] sm:text-[11px] text-[#055bb2] font-semibold shrink-0 bg-sky-100/80 px-1.5 py-0.5 rounded">
+                              {evento.hora}
+                            </span>
+                          </div>
+
+                          {subtitulo && (
+                            <p className="text-[10px] sm:text-[11px] text-[#545f73] truncate" title={subtitulo}>
+                              {subtitulo}
+                            </p>
+                          )}
+
+                          <div className="flex items-center justify-between gap-1 text-[10px] sm:text-[11px] text-[#727783]">
+                            <div className="flex items-center gap-1.5 truncate">
+                              <Clock className="w-3 h-3 text-[#055bb2] shrink-0" />
+                              <span>{evento.fecha} • {evento.duracion}</span>
+                            </div>
+                            {evento.asesorNombre && (
+                              <span
+                                className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-700 font-medium truncate max-w-[120px]"
+                                title={`Asesor: ${evento.asesorNombre}`}
+                              >
+                                <User className="w-3 h-3 text-slate-500 shrink-0" />
+                                <span className="truncate">{evento.asesorNombre}</span>
+                              </span>
+                            )}
+                          </div>
+                        </Link>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </div>

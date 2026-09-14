@@ -4,6 +4,102 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.4.14] - 2026-09-14
+
+### 🚀 Integración Total de Métricas de Alto Valor en Dashboard (Agenda y Consultor SGI)
+- **Implementación de Servicio de Métricas Operativas (`LegacyDashboardMetricsService.java`)**:
+  - Conexión dual en tiempo real a las bases de datos de **AgendaSGI** (`gestioni_datosNet`) y **ConsultorSGI** (`gestioni_consultorNet`) mediante JDBC y pool optimizado.
+  - **Ejecución Mensual de Horas**: Agregación de horas ejecutadas (`dbo.Agenda.StrHoras`) vs horas contratadas del mes (`dbo.Contratos.IntHoras`), calculando el porcentaje dinámico de ejecución.
+  - **Auditorías en Curso y Pendientes de Firma**: Conteo de auditorías activas (`dbo.Auditorias.BitEstado = 1`) y pendientes de firma formal de informe (`BitFirma = 0`).
+  - **Compromisos de Actas y Planes de Acción**: Monitoreo de compromisos sin ejecutar derivados de visitas de asesoría (`dbo.ActividadesActa.OpcEjecuta = 0`), alertando los vencidos respecto a la fecha actual y planes de acción de auditoría (`dbo.AuditoriasDetalleAC`).
+  - **Diagnósticos Iniciales**: Seguimiento de empresas en proceso de evaluación de estándares mínimos (`dbo.DocumentosDiagnostico`).
+  - **Tabla de Auditorías Recientes**: Listado dinámico de auditorías con razón social del cliente (`dbo.Terceros_Clientes`), norma evaluada (`dbo.Normas`), estado, auditor líder y fechas programadas.
+- **Controlador REST y Pruebas Unitarias (`DashboardMetricsController.java`, `DashboardMetricsControllerTest.java`)**:
+  - Expuestos endpoints `GET /api/dashboard/kpis` y `GET /api/dashboard/auditorias` con filtrado por email y rol de asesor.
+  - Cobertura de pruebas con MockMvc alcanzando 25 tests unitarios con 0 fallos.
+- **Conexión Reactiva en Interfaz de Usuario (`Dashboard.tsx`)**:
+  - Reemplazados todos los datos estáticos de las 4 tarjetas superiores por métricas dinámicas y reactivas enlazadas a los módulos de Agenda y Consultor.
+  - Reemplazadas las filas fijas de la tabla de auditorías por datos reales de SQL Server.
+  - **Segmentación Estricta de Métricas por Rol**:
+    - **Para `ADMIN_TI` y `ADMIN`**: Visión global de toda la organización (todos los clientes activos, todas las auditorías de todos los consultores, horas globales y compromisos totales).
+    - **Para Asesores y Consultores**: Vista personalizada y autocontenida que calcula estrictamente sus clientes asignados en contratos vigentes, sus horas ejecutadas y contratadas a su nombre, sus auditorías asignadas y los compromisos de actas bajo su responsabilidad.
+- **Rediseño Horizontal de Perfil, Notificación Push In-App y Retorno Automático (`Profile.tsx`, `CrmSidebar.tsx`)**:
+  - **Aprovechamiento Horizontal y Cero Scroll**: Se reorganizó la vista en una arquitectura de doble columna horizontal (`lg:grid-cols-12`): información personal y botones de acción a la izquierda (`7 cols`) y seguridad/contraseña a la derecha (`5 cols`). Con esto, toda la configuración es visible en un solo plano sin provocar scroll vertical.
+  - **Depuración de Elementos Innecesarios**:
+    - Eliminado el texto redundante de Licencia SST Vigente.
+    - Eliminado el selector redundante de "Rol de Licencia y Gobernanza", manteniéndose la insignia visual de rol en la barra superior.
+    - Eliminado el bloque en desuso de "Preferencias de Notificación & Alertas" (WhatsApp y correos semanales).
+    - Eliminadas las solicitudes de permisos y notificaciones nativas de escritorio del navegador, conservando exclusivamente las alertas y toasts corporativos in-app del sistema.
+  - **Unificación de Flujo y Accesos a Perfil (2 Accesos Estratégicos)**:
+    - Se eliminó el enlace redundante "Perfil & Preferencias" de la lista de módulos operativos en `CrmSidebar.tsx` para no sobrecargar el menú transaccional.
+    - Se consolidaron **exactamente 2 puntos de acceso intuitivos y complementarios**:
+      1. **Cabecera Superior**: Botón de acceso rápido con icono de usuario (`User`) junto al centro de notificaciones.
+      2. **Pie de la Barra Lateral**: Tarjeta de usuario autenticado (`Link to="/perfil"`), estilizada con avatar, nombre, rol y un icono sutil de ajustes (`Settings`), con resaltado activo cuando se visita la página.
+- **Sincronización Reactiva Instantánea de Perfil (`Profile.tsx`, `CrmSidebar.tsx`, `Dashboard.tsx`)**:
+  - **Persistencia Reactiva en LocalStorage y Bus de Eventos**: Al actualizar datos personales (nombre, teléfono, rol) en la vista *Perfil & Preferencias*, `Profile.tsx` ahora actualiza atómicamente `sgi_user` en `localStorage` y despacha eventos de ventana nativos (`sgi_user_changed` y `storage`).
+  - **Actualización Inmediata en Caliente sin Recargar**:
+    - `CrmSidebar.tsx`: Suscrito a `sgi_user_changed`, refrescando al instante el nombre y rol en el badge de usuario inferior sin requerir `F5`. También sincroniza la recepción de eventos SSE de fondo.
+    - `Dashboard.tsx`: Suscrito a `sgi_user_changed`, actualizando en tiempo real el saludo dinámico del header (`¡Hola, {userName}!`) y los permisos de vista de métricas (`isUserAdmin`).
+- **Diseño Adaptable y Fluido en Dashboard & Persistencia de Barra Lateral (`Dashboard.tsx`, `CrmSidebar.tsx`, `Profile.tsx`)**:
+  - **Lienzo Fluido Dinámico (Ancho y Alto)**: Se eliminó la restricción rígida de `max-w-7xl` (1280px) tanto en Dashboard como en Perfil, permitiendo que el área de trabajo se expanda fluidamente hasta `max-w-[1720px]` con márgenes responsivos (`px-4 sm:px-6 lg:px-8`).
+  - **Adaptabilidad al Estado de la Barra Lateral (Anclada / Desanclada)**:
+    - Cuando la barra lateral está anclada (`w-64`), el contenido se distribuye equilibradamente sin apretarse.
+    - Cuando la barra lateral se desancla (`w-20`), el dashboard absorbe de inmediato los 176px adicionales, expandiendo suavemente las 4 tarjetas de KPI y la grilla operativa.
+    - Se agregó persistencia de la preferencia de anclaje (`isPinned`) en `localStorage` (`sgi_sidebar_pinned`) con despacho de eventos de reajuste (`sgi_sidebar_toggle`, `resize`).
+  - **Arquitectura de Grilla de 12 Columnas y Altura Equilibrada**:
+    - Tabla de auditorías en `8 columnas` (en pantallas grandes) y widget de próximas asesorías en `4 columnas`, ambos con `flex flex-col justify-between` para mantener exactamente la misma altura armónica y evitar sensación de compresión.
+    - Tarjetas KPI con tipografía legible (`text-3xl font-headline`) y espaciado respirable (`p-5 space-y-3`).
+  - **Institucionalización como Estándar Oficial en AGENTS.md y Skills**:
+    - Documentada formalmente la **Regla de Estándar Universal de Adaptabilidad Fluida en Pantallas y Barras Laterales Dinámicas (Zero Cramped Layouts)** en `.agents/AGENTS.md`, así como en los skills especializados `coder-frontend` y `ui-standards` como norma obligatoria de maquetación para todo el holding y sus submódulos.
+- **Estándar Universal Mobile-First, Ergonomía Táctil y Formularios Responsivos (`Profile.tsx`, `CrmSidebar.tsx`)**:
+  - **Enfoque Mobile-First Riguroso**: Se garantizó que el estándar de adaptabilidad aplique de manera integral en pantallas móviles (`320px` - `480px`), tablets y laptops, prestando especial atención a la experiencia en formularios (`<form>`), modales y vistas de gestión.
+  - **Formularios con Monocolumna y Escalado Progresivo**: Todo formulario se distribuye a 1 columna en pantallas estrechas (`< 640px`) y escala a grillas proporcionales (`sm:grid-cols-2`, `lg:grid-cols-12`) en pantallas medianas y de escritorio.
+  - **Áreas Táctiles Cómodas (Touch Targets)**: Inputs, selects y textareas configurados con ancho completo (`w-full`) y altura ergonómica (`min-h-[40px]`, `py-2.5 sm:py-2`), previniendo pulsaciones accidentales en pantallas táctiles.
+  - **Botoneras Ergonómicas para Móvil**: Botones de acción organizados con `flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3`, permitiendo que en pantallas móviles los botones ocupen el 100% del ancho (`w-full sm:w-auto text-center justify-center`) para un accionamiento ágil con el pulgar.
+  - **Cabeceras Adaptables y Cero Scroll Horizontal**: Tarjetas de cabecera con alineación natural (`items-start sm:items-center`) y blindaje contra scroll horizontal (`overflow-x-hidden`) en todo el viewport del dispositivo.
+- **Calibración de Densidad Visual y Aligeramiento a 100% de Zoom (`Dashboard.tsx`)**:
+  - **Optimización de Proporciones en Componentes Internos (`div[2]/div[1]`)**: Se ajustaron las dimensiones, paddings y jerarquía tipográfica de la tabla de *Auditorías y Acompañamientos Recientes* y el widget de *Próximas Asesorías*, garantizando que al 100% de zoom del navegador la vista conserve la ligereza, respiro y elegancia que previamente solo se apreciaba al 90%.
+  - **Paddings de Celda Enterprise y Cero Inflado Vertical**: Transición de `px-5 py-3` a `px-3.5 sm:px-4 py-2 sm:py-2.5` en cabeceras (`th`) y filas (`td`), reduciendo más de 70px de altura acumulada sin perder legibilidad.
+  - **Truncado Defensivo de Razones Sociales y Normas**: Implementado `truncate max-w-[160px] sm:max-w-[200px] xl:max-w-[280px]` para clientes y auditores, evitando que nombres extensos partan las filas en 3 líneas desbalanceadas.
+  - **Armonización de Tarjetas Superiores y Widgets**: KPI cards estilizadas con `p-4 sm:p-4.5 xl:p-5 space-y-2.5` y números `text-2xl sm:text-3xl font-headline`, logrando un lienzo balanceado y cero saturación.
+  - **Ampliación de Regla a 6 Auditorías Recientes**: Se actualizó la regla de visualización en la tabla de *Auditorías y Acompañamientos Recientes* de 5 a **6 elementos**, ajustando tanto el parámetro de consulta en el frontend (`limit=6` en `Dashboard.tsx`) como el valor por defecto y fallback en el backend (`DashboardMetricsController.java` y `LegacyDashboardMetricsService.java`).
+
+## [1.4.13] - 2026-09-14
+
+### 💎 Optimización Espacial de Dashboard, Saludo en Header y Métricas de Clientes en Tiempo Real
+- **Traslado de Saludo Personalizado al Header Superior (`Dashboard.tsx`)**:
+  - Reubicado el saludo al usuario autenticado (`¡Hola, {nombre}! Bienvenido(a)`) directamente en la barra de cabecera superior al lado de *Panel de Control* y la insignia institucional *SGI Software*.
+  - Eliminado el banner gigante azul oscuro (`bg-[#055bb2]`) que abrumaba visualmente y generaba scroll vertical innecesario.
+  - Al suprimir el banner, toda la grilla de métricas KPI, próximas asesorías y tablas operativas se desplazan hacia arriba, quedando inmediatamente visibles al ingresar a la pantalla.
+- **Conexión en Vivo de Clientes B2B (`Dashboard.tsx`)**:
+  - Sustituido el valor estático `67` por el consumo en tiempo real del endpoint `GET /api/clientes` (misma fuente de verdad de `ClientesView.tsx`).
+  - Muestra el conteo de clientes activos junto con el total de empresas registradas (`X activos de Y registrados`).
+  - Depurado el texto redundante *"En tiempo real"*, manteniendo el icono visual de tendencia positiva (`TrendingUp`).
+
+## [1.4.12] - 2026-09-14
+
+### 💎 Paridad Visual en Navegación Lateral, Rediseño de Telemetría e Integración Real de Agenda en Dashboard
+- **Integración de Próximas Asesorías Reales en Dashboard (`Dashboard.tsx`, `AgendaController.java`, `LegacyAgendaQueryService.java`, `AgendaDashboardDTO.java`)**:
+  - Implementado `LegacyAgendaQueryService` que consulta directamente las tablas de Agenda en SQL Server (`dbo.Agenda`, `dbo.Clientes`, `dbo.Usuarios`, `dbo.TipoEventos`), filtrando estrictamente a partir de la fecha actual en orden cronológico ascendente (`DatFechaInicial >= CURRENT_DATE ASC`) para priorizar las citas inmediatas (hoy 14, mañana 15, etc.) con fallback a registros recientes.
+  - **Selector para Administrador TI / Admin**: Añadido selector interactivo de doble pestaña (`[ Todas ]` | `[ Mis Citas ]`) en la cabecera del widget para alternar al instante entre la visión ejecutiva global del holding o las citas personales del usuario.
+  - **Visualización Explícita del Asesor**: Cada tarjeta muestra el nombre del asesor responsable asignado a la visita o asesoría técnica.
+  - **Navegación Interactiva Directa a la Función Agenda**: Cada tarjeta de asesoría y el enlace "Ver Todo" son completamente interactivos y conducen directamente a la función de calendario (`/agenda`).
+  - **Redirección de SSO a la Función Agenda (`AuthController.cs` & `AgendaView.tsx`)**: Se configuró el endpoint SSO en ASP.NET MVC para recibir `returnUrl=/Agenda` y redirigir directamente al calendario interactivo de citas (`/Agenda`), eliminando el aterrizaje en la página de inicio genérica de Home.
+  - Implementado mecanismo de resiliencia con fallback defensivo al espejo de base de datos local en caso de interrupción o latencia con SQL Server.
+  - Expuesto endpoint `GET /api/agenda/dashboard?email={email}&limit=5&soloMias={soloMias}` en `AgendaController` con prueba unitaria en `AgendaControllerTest.java`.
+- **Estandarización de Nomenclatura en Navegación Lateral (`CrmSidebar.tsx`)**:
+  - Unificado el botón de la barra lateral izquierda a **"Panel de Control"** (anteriormente "Dashboard General"), asegurando correspondencia textual exacta con el encabezado superior de la vista.
+- **Rediseño Corporativo de la Página de Bienvenida y Telemetría (`WelcomeController.java`)**:
+  - Incorporado el logotipo oficial de SGI cargado desde recursos estáticos (`/logo.png`) con cabeceras de caché HTTP.
+  - Eliminado el texto técnico descriptivo y la caja rígida de telemetría de desarrollo (`STATUS`, `DATABASE_SCHEMA`, `PORT`, `VERSION`).
+  - Subtítulo simplificado limpiamente a **"Motor Transaccional"**.
+  - **Badge de Estado Reactivo en Tiempo Real**:
+    - `ACTIVE / SECURE` (verde esmeralda): Operación nominal con conexión activa a base de datos PostgreSQL.
+    - `DEGRADED / ERROR` (rojo): Anomalía en conectividad o fallo de base de datos.
+    - `ACTUALIZANDO / REINICIANDO...` (ámbar pulsante): Detectado automáticamente mediante sondeo asíncrono cliente a `/api/health` durante ciclos de reinicio o despliegue en servidor.
+  - **Pie de Página Corporativo Waloyo Group**:
+    - Integrado pie de página oficial con crédito institucional y enlace directo a `https://waloyogroup.com/`, acompañado del lema corporativo *"Ingeniería · Continuidad · Resiliencia"*.
+
 ## [1.4.11] - 2026-09-14
 
 ### 🎨 Refinamiento de UI de Login, Ayuda Contextual y Sello Corporativo Waloyo Group
@@ -20,6 +116,10 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - **Secuencialidad Estricta de CI antes de Disparar CD (`ci.yml` & `trigger-waloyo-cd.yml`)**:
   - Integrado el job `dispatch-to-waloyo` como la etapa final y dependiente (`needs: [changes, validate-landing, validate-crm, validate-core-service]`) en `ci.yml`, garantizando que el webhook hacia Waloyo CD se dispare ÚNICAMENTE tras validar con éxito todas las pruebas unitarias y compilación.
   - Eliminado el trigger paralelo `on: push` en `trigger-waloyo-cd.yml`, restringiéndolo exclusivamente a disparos manuales (`workflow_dispatch`) de emergencia.
+- **Habilitación de CORS para Dominio Corporativo Oficial (`CorsConfig.java`)**:
+  - Incorporado `https://crm.gestionintegralsgi.com.co` y los patrones comodín `https://*.gestionintegralsgi.com.co` y `https://*.waloyogroup.com` a los orígenes autorizados de Spring Boot, eliminando bloqueos de preflight `403 Forbidden - Invalid CORS request` (Failed to fetch) en las peticiones del CRM hacia el backend.
+- **Depuración Visual del Header en Dashboard (`Dashboard.tsx`)**:
+  - Eliminado botón muerto "Nueva Auditoría" y barra de búsqueda estática no funcional en el encabezado principal, reemplazándolos por un identificador institucional sobrio ("Panel de Control — SGI Software") de cara a presentaciones comerciales.
 
 ## [1.4.10] - 2026-09-14
 

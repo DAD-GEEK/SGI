@@ -1,7 +1,9 @@
 package com.waloyo.sgi.controller;
 
+import com.waloyo.sgi.dto.AgendaDashboardDTO;
 import com.waloyo.sgi.entity.AgendaEventoEntity;
 import com.waloyo.sgi.repository.AgendaEventoRepository;
+import com.waloyo.sgi.service.LegacyAgendaQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -22,7 +24,16 @@ import java.util.UUID;
 public class AgendaController {
 
     private final AgendaEventoRepository agendaEventoRepository;
+    private final LegacyAgendaQueryService legacyAgendaQueryService;
     private final Sinks.Many<AgendaEventoEntity> agendaSink = Sinks.many().multicast().onBackpressureBuffer();
+
+    @GetMapping("/dashboard")
+    public ResponseEntity<List<AgendaDashboardDTO>> obtenerAgendaDashboard(
+            @RequestParam(required = false) String email,
+            @RequestParam(defaultValue = "5") int limit,
+            @RequestParam(required = false) Boolean soloMias) {
+        return ResponseEntity.ok(legacyAgendaQueryService.obtenerProximasAsesorias(email, limit, soloMias));
+    }
 
     @GetMapping
     public ResponseEntity<List<AgendaEventoEntity>> listarTodos() {

@@ -43,7 +43,7 @@ namespace Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult> SSO(string email)
+        public async Task<ActionResult> SSO(string email, string returnUrl = "/Agenda")
         {
             try
             {
@@ -60,7 +60,12 @@ namespace Web.Controllers
                 Session["Usuario"] = usuarioBD;
                 Session["UsuarioNombre"] = usuarioBD.StrNombre;
 
-                return RedirectToAction("Index", "Home");
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+
+                return RedirectToAction("Index", "Agenda");
             }
             catch
             {

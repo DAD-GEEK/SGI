@@ -23,7 +23,13 @@ interface CrmSidebarProps {
 }
 
 export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
-  const [isPinned, setIsPinned] = useState<boolean>(true);
+  const [isPinned, setIsPinned] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('sgi_sidebar_pinned');
+      if (saved !== null) return JSON.parse(saved);
+    } catch {}
+    return true;
+  });
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [securityModal, setSecurityModal] = useState<{ title: string; message: string; isDeactivated?: boolean } | null>(null);
   const [redirectCountdown, setRedirectCountdown] = useState<number>(15);
@@ -87,6 +93,31 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
 
     return () => clearInterval(interval);
   }, [securityModal, navigate]);
+
+  // Listener para actualización reactiva instantánea del perfil de usuario
+  useEffect(() => {
+    const handleUserChanged = () => {
+      try {
+        const storedRaw = localStorage.getItem('sgi_user');
+        if (storedRaw) {
+          const u = JSON.parse(storedRaw);
+          setUserProfile((prev) => ({
+            ...prev,
+            nombre: u.nombre || u.email?.split('@')[0] || 'Usuario SGI',
+            email: u.email || prev.email,
+            rol: u.rol || prev.rol
+          }));
+        }
+      } catch {}
+    };
+
+    window.addEventListener('sgi_user_changed', handleUserChanged);
+    window.addEventListener('storage', handleUserChanged);
+    return () => {
+      window.removeEventListener('sgi_user_changed', handleUserChanged);
+      window.removeEventListener('storage', handleUserChanged);
+    };
+  }, []);
 
   // Monitoreo continuo de sesión cada 1 segundo (Soporta Modo Pruebas 10s y Límites Dinámicos)
   useEffect(() => {
@@ -230,13 +261,25 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
                       ? info.modulosPermitidos.split(',')
                       : ['dashboard', 'clientes', 'agenda', 'consultor']);
 
+                const nuevoNombre = info.nombreCompleto || activeEmail.split('@')[0];
                 setUserProfile({
-                  nombre: info.nombreCompleto || activeEmail.split('@')[0],
+                  nombre: nuevoNombre,
                   email: activeEmail,
                   rol: info.rol || 'CONSULTOR',
                   modulos: modulosList,
                   activo: info.activo ?? true
                 });
+
+                try {
+                  const s = localStorage.getItem('sgi_user');
+                  if (s) {
+                    const parsed = JSON.parse(s);
+                    if (parsed.nombre !== nuevoNombre) {
+                      localStorage.setItem('sgi_user', JSON.stringify({ ...parsed, nombre: nuevoNombre, rol: info.rol || parsed.rol }));
+                      window.dispatchEvent(new Event('sgi_user_changed'));
+                    }
+                  }
+                } catch {}
               } catch {
                 // Parse ignorado
               }
@@ -380,7 +423,7 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
     <aside
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative h-screen bg-[#0b1c30] text-white flex flex-col justify-between shadow-2xl transition-all duration-300 z-40 select-none ${
+      className={`relative h-screen bg-[#0b1c30] text-white flex flex-col justify-between shadow-2xl transition-all duration-300 z-40 select-none shrink-0 ${
         isExpanded ? 'w-64' : 'w-20'
       }`}
     >
@@ -444,8 +487,18 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
             )}
           </div>
           <button
-            onClick={() => setIsPinned(!isPinned)}
-            className={`p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors ${
+            onClick={() => {
+              setIsPinned((prev) => {
+                const next = !prev;
+                try {
+                  localStorage.setItem('sgi_sidebar_pinned', JSON.stringify(next));
+                  window.dispatchEvent(new Event('sgi_sidebar_toggle'));
+                  window.dispatchEvent(new Event('resize'));
+                } catch {}
+                return next;
+              });
+            }}
+            className={`p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer ${
               !isExpanded && 'hidden'
             }`}
             title={isPinned ? 'Desanclar barra lateral' : 'Anclar barra lateral'}
@@ -459,13 +512,13 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
           {canAccessModule('dashboard') && (
             <Link
               to="/dashboard"
-              title="Dashboard General"
+              title="Panel de Control"
               className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                 isActive('/dashboard') ? 'bg-[#055bb2] text-white shadow-sm' : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
               }`}
             >
               <LayoutDashboard className="w-4 h-4 shrink-0" />
-              {isExpanded && <span>Dashboard General</span>}
+              {isExpanded && <span>Panel de Control</span>}
             </Link>
           )}
 
@@ -521,34 +574,35 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
             </Link>
           )}
 
-          <Link
-            to="/perfil"
-            title="Perfil & Preferencias"
-            className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
-              isActive('/perfil') ? 'bg-[#055bb2] text-white shadow-sm' : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
-            }`}
-          >
-            <Settings className="w-4 h-4 shrink-0" />
-            {isExpanded && <span>Perfil & Preferencias</span>}
-          </Link>
         </nav>
       </div>
 
       {/* User Card & Logout */}
       <div className="p-4 border-t border-white/10 space-y-3">
-        <div className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-2`}>
-          <div className="w-9 h-9 rounded-full bg-[#055bb2] text-white flex items-center justify-center font-bold text-xs shrink-0">
+        <Link
+          to="/perfil"
+          title="Mi Perfil & Preferencias de Cuenta"
+          className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-2 py-2 rounded-xl transition-all cursor-pointer group ${
+            isActive('/perfil') ? 'bg-white/15 ring-1 ring-sky-400/30' : 'hover:bg-white/10'
+          }`}
+        >
+          <div className="w-9 h-9 rounded-full bg-[#055bb2] text-white flex items-center justify-center font-bold text-xs shrink-0 group-hover:ring-2 group-hover:ring-sky-400/50 transition-all shadow-xs">
             {userProfile.nombre.substring(0, 2).toUpperCase()}
           </div>
           {isExpanded && (
-            <div className="flex flex-col overflow-hidden transition-opacity">
-              <span className="text-xs font-bold text-white truncate">{userProfile.nombre}</span>
-               <span className="text-[10px] text-[#a9c7ff] truncate">
-                 {getRolLabel()}
-               </span>
+            <div className="flex items-center justify-between flex-grow overflow-hidden text-left">
+              <div className="flex flex-col overflow-hidden">
+                <span className="text-xs font-bold text-white truncate group-hover:text-sky-200 transition-colors">
+                  {userProfile.nombre}
+                </span>
+                <span className="text-[10px] text-[#a9c7ff] truncate">
+                  {getRolLabel()}
+                </span>
+              </div>
+              <Settings className="w-3.5 h-3.5 text-white/50 group-hover:text-white transition-colors shrink-0 ml-1.5" />
             </div>
           )}
-        </div>
+        </Link>
         <button
           onClick={handleLogout}
           title="Cerrar Sesión"
