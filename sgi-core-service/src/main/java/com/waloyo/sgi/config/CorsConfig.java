@@ -23,8 +23,12 @@ public class CorsConfig {
                                 "https://sgi-landing.firebaseapp.com",
                                 "https://sgi-waloyo.web.app",
                                 "https://sgi-waloyo.firebaseapp.com",
+                                "https://crm.gestionintegralsgi.com.co",
                                 "https://app.gestionintegralsgi.com.co",
-                                "https://gestionintegralsgi.com.co"
+                                "https://gestionintegralsgi.com.co",
+                                "https://*.gestionintegralsgi.com.co",
+                                "https://waloyogroup.com",
+                                "https://*.waloyogroup.com"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")

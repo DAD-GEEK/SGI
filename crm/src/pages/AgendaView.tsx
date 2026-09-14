@@ -10,8 +10,8 @@ export const AgendaView: React.FC = () => {
   const userEmail = storedUser.email || '';
 
   const agendaUrl = userEmail
-    ? `https://app.gestionintegralsgi.com.co/Auth/SSO?email=${encodeURIComponent(userEmail)}`
-    : 'https://app.gestionintegralsgi.com.co/Auth/Login';
+    ? `https://app.gestionintegralsgi.com.co/Auth/SSO?email=${encodeURIComponent(userEmail)}&returnUrl=%2FAgenda`
+    : 'https://app.gestionintegralsgi.com.co/Agenda';
 
   const handleRefresh = () => {
     setIframeKey((prev) => prev + 1);
