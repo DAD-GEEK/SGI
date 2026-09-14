@@ -1,0 +1,91 @@
+﻿
+@model List<Models.ModulosDetalle>
+
+@{
+    string Estado = string.Empty;
+}
+
+<div class="pb-2">
+    <button type="button" class="btn btn-outline-dark pb-2" id="btnAgregarDetalle"><i class="fas fa-plus mr-1"></i>Agregar módulo detalle</button>
+
+</div>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    @Html.AntiForgeryToken()
+    <table class="table table-sm dt-responsive" id="tblModulosDetalle" style="width:100%">
+        <thead class="text-center">
+            <tr>
+                <th style="display:none;">RegistroID</th>
+                <th class="text-center">#</th>
+                <th class="text-left">Módulo Detalle</th>
+                <th class="text-left">Url</th>
+                <th class="text-center">Activo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.OrderBy(x => x.TIntOrden))
+            {
+                <tr>
+                    <td style="display:none;">@item.IntModuloDetalleID</td>
+                    <td class="text-center font-weight-bold">@item.TIntOrden</td>
+                    <td>@item.StrModuloDetalle</td>
+
+                    <td>@item.StrControlador/@item.StrAccion</td>
+
+                    @if (item.BitActivo == true)
+                    {
+                        <td class="text-center"><span class="badge badge-success">SI</span></td>
+                    }
+                    else
+                    {
+                        <td class="text-center"><span class="badge badge-danger">NO</span></td>
+                    }
+
+                    <td class=" text-center">
+                        <button type="button" title="Editar módulo detalle" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm" data-registroid="@item.IntModuloDetalleID" data-tipoevento="editar"><i class="fa fa-edit"></i></button>
+                        <button type="button" title="Eliminar módulo detalle" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm" data-registroid="@item.IntModuloDetalleID" data-tipoevento="eliminar"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        var moduloID = $("#moduloRegistroID").val();
+        var btnAgregarDetalle = $("#btnAgregarDetalle");
+        btnAgregarDetalle.click(function () {
+            modulosDetalleCRUD.crearModuloDetalle(moduloID)
+        });
+
+        $('#tblModulosDetalle tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+
+            if (tipoEvento == 'editar') return modulosDetalleCRUD.getModuloDetalleByEditarAsync(registroID);
+            if (tipoEvento == 'eliminar') return modulosDetalleCRUD.deleteModuloDetalleAsync(registroID);
+
+        });
+
+    });
+
+
+</script>
+
+
+

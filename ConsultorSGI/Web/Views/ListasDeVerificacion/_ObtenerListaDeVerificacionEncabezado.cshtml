@@ -1,0 +1,147 @@
+﻿@model Models.AuditoriasDetalle
+
+<input type="hidden" id="auditoriaID" value="@Model.IntAuditoriaID" />
+<input type="hidden" id="auditoriaDetalleID" value="@Model.IntAuditoriaDetalleID" />
+<input type="hidden" id="procesoID" value="@Model.IntProcesoID" />
+<input type="hidden" id="procesoNombre" value="@Model.Procesos.StrDescripcion" />
+<input type="hidden" id="terceroClienteID" value="@Model.Auditorias.IntTerceroClienteID" />
+<input hidden type="checkbox" id="esListasDeVerificacion" checked />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobal" method="post" action="#">
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline">
+
+                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", $" {ViewBag.terceroNombre} - {Model.Procesos.StrDescripcion}" }, { "claseTexto", "d-none" }, })
+
+                <div class="card-body pt-1 pb-0">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class=""><span class="font-weight-bold">Fecha de auditoría: </span> @Across.Common.ObtenerFechaLargaSinHora(Model.DatFechaInicial) || @Across.Common.ObtenerHoraDeFecha(Model.DatFechaInicial) - @Across.Common.ObtenerHoraDeFecha(Model.DatFechaFinal)</div>
+
+                        </div>
+
+
+                        <div class="col-md-6 pt-3">
+
+                            @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Auditores" }, { "claseTexto", "d-none" }, { "claseColorTexto", "text-black p-0" }, { "icono", "fas fa-users" } })
+
+                            <div class="card-body pt-1">
+                                @{
+                                    var listaNombresAuditores = Model.StrAuditor.Split(',');
+
+                                    foreach (var nombre in listaNombresAuditores.GroupBy(t => t.Trim()))
+                                    {
+                                        <p class="pt-0 mt-0 pb-0 mb-0 text-sm"><i class="fas fa-check text-primary pr-2" style="font-size:8px;"></i>@nombre.Key</p>
+
+                                    }
+                                }
+
+
+                            </div>
+
+                            @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Auditados" }, { "claseTexto", "d-none" }, { "claseColorTexto", "text-black p-0" }, { "icono", "fas fa-users" } })
+
+                            <div class="card-body pt-1">
+                                @{
+                                    var listaNombresAuditados = Model.StrAuditado.Split(',');
+
+                                    foreach (var nombre in listaNombresAuditados.GroupBy(t => t.Trim()))
+                                    {
+                                        <p class="pt-0 mt-0 pb-0 mb-0 text-sm"><i class="fas fa-check text-primary pr-2" style="font-size:8px;"></i>@nombre.Key</p>
+                                    }
+                                }
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 pt-3">
+
+                            <div class="form-group">
+                                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Criterios" }, { "claseTexto", "d-none" }, { "claseColorTexto", "text-black p-0" }, { "icono", "fas fa-award" } })
+                                <ul>
+                                    @foreach (var item in Model.Auditorias.Auditorias_Normas)
+                                    {
+                                        <li><span class="text-primary font-italic font-weight-bold">@item.Normas.StrCodigo:</span>  @item.Normas.StrDescripcion</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                          
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <hr class="m-0" />
+
+                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", $"Listas de verificación" }, { "claseTexto", "d-none" }, })
+
+                <div id="divListaDeVerificacionDetalle"></div>
+
+
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-3">
+
+                        </div>
+                        <div class="col-md-3">
+
+                        </div>
+
+                        <div class="col-md-3">
+
+                        </div>
+
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-outline-dark btn-block " title="Ir a la vista anterior" data-toggle="tooltip" data-placement="top" onclick="auditoriasCRUD.getAuditoriaByEditarAsync('@Model.IntAuditoriaID');"><i class="fas fa-undo-alt mr-1"></i>Atras</button>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var auditoriaDetalleID = $("#auditoriaDetalleID").val();
+        listasDeVerificacionCRUD.obtenerListaDeVerificacionDetalleAsync(auditoriaDetalleID);
+
+        var listaTercero = $("#auditoriaTercero");
+        listaTercero.change(function () {
+            auditoriasCRUD.obtenerComplementosPorTercero($(this).val(), 0);
+        });
+
+    });
+
+
+</script>
+
+
+

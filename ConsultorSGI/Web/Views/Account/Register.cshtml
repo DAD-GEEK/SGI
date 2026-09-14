@@ -1,0 +1,139 @@
+﻿@model Web.Models.RegisterViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+<div class="fondoRegistro"></div>
+<div class="register-box" style="width:800px!important">
+    <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            <a href="@Url.Action("Login","Account")" class="h1">Consultor<b class="text-primary ">SGI</b></a>
+        </div>
+        <div class="card-body">
+            <p class="login-box-msg">Registrar un nuevo usuario</p>
+
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", id="formRegistro" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <div class="input-group with-focus">
+                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control border-right-0", type = "text", id = "registroNombre", placeholder = "Nombre completo...", autocomplete = "off", minlength = "10", maxlength = "200", required = "required" })
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-user-tag"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group with-focus">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control border-right-0", type = "email", id = "registroEmail", placeholder = "Email...", autocomplete = "off", required = "required" })
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fa fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group with-focus">
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control border-right-0", type = "text", id = "registroTelefono", placeholder = "Teléfono o móvil...", autocomplete = "off", minlength = "7", maxlength = "20", required = "required" })
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fa fa-phone"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group with-focus">
+                        @Html.TextBoxFor(m => m.Password, new { @class = "form-control border-right-0", type = "password", id = "registroClave", placeholder = "Contraseña de acceso...", autocomplete = "off", minlength = "5", maxlength = "20", required = "required" })
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group with-focus">
+                        @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control border-right-0", type = "password", id = "registroConfirmarContraseña", placeholder = "Confirmar contraseña...", autocomplete = "off", minlength = "5", maxlength = "20", required = "required" })
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="icheck-primary">
+                            <input type="checkbox" id="agreeTerms" name="terms" value="agree">
+                            <label for="agreeTerms">
+                                Acepto los <a href="#">terminos y condiciones</a>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block btnRegistrar">Registrar</button>
+                    </div>
+                    <div class="col-12">
+                        <div class="card card-primary d-none m-0 p-0 btnProcesar">
+                            <div class="card-header rounded m-0 p-0">
+
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-block text-center font-weight-bold " data-source="widgets.html" data-card-widget="card-refresh" data-source-selector="#card-refresh-content">
+                                        &nbsp;
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+                        @if (ViewBag.ErrorRegistro != null)
+                        {
+                            <ul class="text-danger ">
+                                <li> @ViewBag.ErrorRegistro </li>
+                            </ul>
+                        }
+                    </div>
+                </div>
+            }
+            <a href="@Url.Action("Login","Account")" class="text-center">Ya tengo una cuenta</a>
+        </div>
+        <!-- /.form-box -->
+    </div><!-- /.card -->
+</div>
+
+<script src="@Scripts.Url("~/Vendor/jquery/jquery.min.js")"></script>
+<script src="@Scripts.Url("~/Scripts/common/parsley.js")"></script>
+<script src="@Scripts.Url("~/Scripts/modulos/Funciones_Globales/parsleyValidationsForms.js")"></script>
+<script src="@Scripts.Url("~/Scripts/modulos/Funciones_Globales/parsleyValidationsForms.js")"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        var formularioLogin = $("#formRegistro");
+        var btnIngresar = $(".btnRegistrar");
+        var btnProcesar = $(".btnProcesar");
+
+        formularioLogin.submit(function () {
+
+            btnIngresar.addClass('d-none');
+            btnProcesar.removeClass('d-none');
+
+        });
+
+
+
+
+
+    })
+
+</script>
+
+

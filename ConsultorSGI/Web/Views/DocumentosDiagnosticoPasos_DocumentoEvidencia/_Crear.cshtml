@@ -1,0 +1,70 @@
+﻿@{
+    Layout = null;
+}
+
+<input type="hidden" id="evidenciaID" value="" />
+
+<div class="modal-dialog " style=" max-width:800px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarEvidencia">
+
+                @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Agregar soporte" }, { "icono", "fas fa-cogs" } })
+
+                <div class="modal-body pt-1" style="overflow-y:auto!important; max-height: 70vh !important;">
+                    <div class="container-fluid">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="evidenciaDescripcion">Soporte<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <textarea class="form-control text-sm" id="evidenciaDescripcion" rows="5" placeholder="Escriba aquí los soportes..." data-parsley-required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div id="divCriteriosPorEvidencia"></div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Modal_Footer", ViewData["claseGuardarPersonalizada"] = $"btnGuardarEvidencia")
+
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        documentosDiagnosticoPasos_DocumentoEvidenciaCRUD.guardar();
+        documentosDiagnosticoPasos_CriteriosCRUD.getAllCriteriosPorEvidencia();
+
+    });
+
+</script>
+
+
+
+

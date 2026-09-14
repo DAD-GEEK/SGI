@@ -1,0 +1,37 @@
+﻿@using System.Linq;
+
+@model List<Models.DTO.NormasDTO>
+
+@foreach (var norma in Model.OrderBy(x => x.IntNormaID))
+{
+    <p class="badge badge-primary m-0">@norma.StrCodigo</p>
+
+    if (norma.CantidadNumeralesSeleccionados == norma.CantidadNumeralesPorNorma)
+    {
+        <span>(Todos)</span>
+    }
+    else
+    {
+        var contador = 0;
+        var cantidadRegistros = norma.Numerales.Count();
+
+        foreach (var numeral in norma.Numerales)
+        {
+            contador = contador + 1;
+
+            if (contador == cantidadRegistros)
+            {
+                @numeral.StrCodigo
+            }
+            else
+            {
+                @numeral.StrCodigo<span>,&nbsp; </span>
+            }
+
+        }
+
+    }
+    <br />
+
+}
+

@@ -1,0 +1,206 @@
+﻿@model Web.Models.RegisterViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutRegister.cshtml";
+}
+<div class="fondoRegistro"></div>
+<div class="register-box" style="width:800px!important">
+    <div class="card card-outline card-primary">
+        @Html.Partial("_Card_Titulo_Login")
+
+        @Html.Partial("_Card_Titulo", ViewData["titulo"] = "Registrar nuevo usuario")
+
+        <div class="card-body pt-1">
+
+            <form id="formRegistro">
+                @Html.AntiForgeryToken()
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-control-label font-weight-bold" for="registroNombre">Nombre completo<span class="text-danger">*</span></label>
+                            <div class=" input-group with-focus">
+                                <input class="form-control border-right-0" type="text" id="registroNombre" placeholder="Ingrese su nombre aquí..." autocomplete="off" data-parsley-length="[10, 100]" required />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <i class="fas fa-user-tag"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <label class="form-control-label font-weight-bold" for="registroEmail">Correo electrónico<span class="text-danger">*</span></label>
+                            <div class=" input-group with-focus">
+                                <input class="form-control border-right-0" type="email" id="registroEmail" placeholder="Ingrese su email aquí..." autocomplete="off" data-parsley-length="[5, 50]" required />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <i class="fa fa-envelope"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <label class="form-control-label font-weight-bold" for="registroTelefono">Teléfono movil<span class="text-danger">*</span></label>
+                            <div class=" input-group with-focus">
+                                <input class="form-control border-right-0" type="text" id="registroTelefono" placeholder="Ingrese aquí su teléfono..." data-inputmask='"mask": "999 999-9999"' data-mask autocomplete="off" minlength="12" maxlength="12" required />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <i class="fa fa-phone"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <label class="form-control-label font-weight-bold" for="registroFechaNacimiento">Fecha de nacimiento</label>
+                            <div class="input-group with-focus">
+                                <input class="form-control border-right-0" type="text" id="registroFechaNacimiento" placeholder="Ingrese aquí su fecha nacimiento..." autocomplete="off" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="form-group ">
+                            <label class="form-control-label font-weight-bold" for="registroClave">Contraseña<span class="text-danger">*</span></label>
+                            <div class=" input-group with-focus">
+                                <input class="form-control border-right-0" type="password" id="registroClave" placeholder="Ingrese su contraseña aquí..." autocomplete="off" minlength="3" maxlength="10" required />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <label class="form-control-label font-weight-bold" for="registroConfirmarClave">Confirmar contraseña<span class="text-danger">*</span></label>
+                            <div class=" input-group with-focus">
+                                <input class="form-control border-right-0" type="password" id="registroConfirmarClave" placeholder="Ingrese la confirmación de su contraseña aquí..." autocomplete="off" minlength="3" maxlength="10" required />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="row mt-0">
+                    <div class="col-12 ">
+                        <div class="icheck-primary">
+                            <input type="checkbox" id="agreeTerms" name="terms" value="agree" required>
+                            <label for="agreeTerms">
+                                @{
+                                    var urlPoliticaTratamientoDatos = $"{System.Web.HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority)}/Files/descargas/Politica_de_uso_de_datos_personales.pdf";
+                                }
+                                Acepto la <a href="@urlPoliticaTratamientoDatos" target="_blank">política de tratamiento de datos</a>
+
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-outline-primary btn-block btnRegistrar"><i class="fas fa-user-plus mr-1"></i>Registrar usuario</button>
+                    </div>
+                </div>
+            </form>
+
+            <a href="@Url.Action("Login","Seguridad")" class="text-center">Ya tengo una cuenta</a>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        seguridad.RegistroAsync();
+
+        $('#registroFechaNacimiento').daterangepicker({
+            "autoUpdateInput": false,
+            "singleDatePicker": true,
+            "showDropdowns": true,
+            "minYear": 1901,
+            "maxYear": parseInt(moment().format('YYYY'), 0),
+            "locale": {
+                "format": "YYYY-MM-DD",
+                "separator": " - ",
+                "applyLabel": "Guardar",
+                "cancelLabel": "Cancelar",
+                "fromLabel": "Desde",
+                "toLabel": "Hasta",
+                "customRangeLabel": "Personalizar",
+                "daysOfWeek": [
+                    "Do",
+                    "Lu",
+                    "Ma",
+                    "Mi",
+                    "Ju",
+                    "Vi",
+                    "Sa"
+                ],
+                "monthNames": [
+                    "Enero",
+                    "Febrero",
+                    "Marzo",
+                    "Abril",
+                    "Mayo",
+                    "Junio",
+                    "Julio",
+                    "Agosto",
+                    "Setiembre",
+                    "Octubre",
+                    "Noviembre",
+                    "Diciembre"
+                ],
+            },
+
+            "opens": "center"
+        });
+
+        $('#registroFechaNacimiento').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD'));
+        });
+
+        $('#registroFechaNacimiento').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+
+    });
+
+</script>
+
+

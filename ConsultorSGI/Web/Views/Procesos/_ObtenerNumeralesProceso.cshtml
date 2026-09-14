@@ -1,0 +1,166 @@
+﻿@model List<Models.DTO.Procesos_NumeralesDTO>
+
+@{
+    string Estado = string.Empty;
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    <form id="formAgregarNumeral">
+        @Html.AntiForgeryToken()
+
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="procesoNormas">Normas</label>
+                    <div class=" input-group with-focus">
+                        @Html.DropDownList("listaNormas", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "procesoNormas", placeholder = "-- Seleccione una opción", required = "required" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="procesoNumerales">Numerales</label>
+                    <div id="divNumerales">
+
+                        @if (ViewBag.listaNumerales != null)
+                        {
+                            @Html.DropDownList("listaNumerales", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "procesoNumerales", placeholder = "-- Seleccione una opción", required = "required" })
+
+                        }
+                        else
+                        {
+                            <select class="select2bs4 form-control" id="procesoNumerales" style="width:100%;" required>
+                                <option value="">-- Seleccione una opción --</option>
+                            </select>
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="procesoNumerales">&nbsp;</label>
+                    <button type="button" class="btn btn-outline-primary btn-block" id="btnAgregarNumeral"><i class="fas fa-plus"></i>&nbsp;&nbsp;Agregar numeral</button>
+
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    @Html.AntiForgeryToken()
+    <table id="tblNumeralesProcesos" class="table dt-responsive text-sm table-sm center-block pt-2" style="width:100%">
+        <thead class="text-center fondoColorSGI text-white">
+            <tr>
+                <th>Id</th>
+                <th class="text-center">Norma</th>
+                <th>Numeral</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.IntID</td>
+
+                    <td class="text-center font-weight-bold h6">@item.CodigoNorma</td>
+
+                    <td>@item.CodigoNumeral - @item.DescripcionNumeral</td>
+
+                    <td class=" text-center">
+                        <button type="button" title="Eliminar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm glyphicon glyphicon-trash" data-registroid="@item.IntID" data-tipoevento="eliminar"><i class="fa fa-times fa-fw"></i></button>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        procesosCRUD.agregarNumeralAsync();
+
+        var dropDownNormas = $("#procesoNormas");
+
+        dropDownNormas.change(function () {
+            var normaID = $(this).val();
+
+            if (normaID == "")
+                normaID = 0;
+
+            procesosCRUD.vistaDropDownNumeralesPorNormaAsync(normaID);
+
+        });
+
+        var tblNumeralesProcesos = $('#tblNumeralesProcesos').DataTable({
+            "order": [[1, "asc"]],
+            "searching": true,
+            "ordering": true,
+            //"paging": false,
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblNumeralesProcesos tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+
+            if (tipoEvento == 'eliminar') return procesosCRUD.deleteProcesoNumeralAsync(registroID);
+
+        });
+
+    });
+
+
+</script>
+
+

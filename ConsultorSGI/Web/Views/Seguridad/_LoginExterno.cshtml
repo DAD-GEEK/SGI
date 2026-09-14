@@ -1,0 +1,39 @@
+﻿@model Web.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0)
+    {
+        <div>
+            <p>
+                No hay un servicio de autenticación externa, comuniquese con el área encargada.
+            </p>
+        </div>
+    }
+    else
+    {
+        using (Html.BeginForm("LoginExterno", "Seguridad", new { ReturnUrl = Model.ReturnUrl }, FormMethod.Post, new { @class = "", role = "form", id = "formAutenticacionExterna" }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="socialLoginList" class="pt-2 m-0">
+
+                <p>
+                    @foreach (AuthenticationDescription p in loginProviders)
+                    {
+                        <button type="submit" class="btn btn-block btn-danger" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Iniciar sesion con su cuenta de @p.Caption"><i class="fab fa-google-plus-g fa-1x mr-1"></i>Acceder con @p.AuthenticationType+ </button>
+                    }
+                </p>
+
+            </div>
+        }
+    }
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+
+</script>

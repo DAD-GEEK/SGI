@@ -1,0 +1,99 @@
+﻿@{
+    Layout = null;
+}
+
+<input type="hidden" id="procesoID" value="@ViewBag.procesoID" />
+<input type="hidden" id="plantillaDetalleID" value="0" />
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center m-2" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    <form id="formGuardarDetalleGlobal" method="post" action="#">
+        @Html.AntiForgeryToken()
+        <div class="card card-primary card-outline">
+
+            @Html.Partial("_Card_Titulo", ViewData["Titulo"] = $"({ViewBag.procesoNombre}) Agregar lista de verificación")
+
+            <div class="card-body pt-0">
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-control-label font-weight-bold" for="plantillaDetalleDescripcion">Descripción<span class="text-danger">*</span></label>
+                            <div class=" input-group with-focus">
+                                <input class="form-control border-right-0" type="text" id="plantillaDetalleDescripcion" placeholder="Ingrese aquí el nombre del item de la lista de verificación..." autocomplete="off" maxlength="100" required />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <em class="fas fa-tags"></em>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-group clearfix">
+                                <div class="icheck-primary d-inline">
+                                    <input type="checkbox" id="plantillaDetalleEstado" checked>
+                                    <label for="plantillaDetalleEstado">
+                                        ¿Activo?
+                                    </label>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-12">
+
+                        <div class="callout callout-warning">
+                            <h5 class="font-weight-bold"><i class="fas fa-info-circle mr-1"></i>¡Alerta!</h5>
+                            Para agregar los numerales a la Lista de verificación haga click <button class="btn btn-primary btnGuardarRegistro" data-aplicar="true"><i class="fas fa-tasks mr-1"></i>AQUÍ</button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            @Html.Partial("_Card_Footer")
+
+        </div>
+    </form>
+
+}
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var procesoID = $("#procesoID").val();
+        esVistaGlobal = true;
+        esVistaListaVerificacion = true;
+
+        $("#btnAtras").click(function () {
+            procesosCRUD.getProcesoByEditarAsync(procesoID, esVistaGlobal, esVistaListaVerificacion);
+        });
+
+        plantillaListasDeVerificacionDetalleCRUD.guardarPalntillaListaVerificacionDetalleAsync(esVistaGlobal, esVistaListaVerificacion);
+
+    });
+
+</script>
+
+
+

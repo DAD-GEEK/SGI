@@ -1,0 +1,52 @@
+﻿@model Web.Models.ForgotPasswordViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutRegister.cshtml";
+}
+<div class="fondoRegistro"></div>
+<div class="register-box">
+    <div class="card card-outline card-primary">
+        @Html.Partial("_Card_Titulo_Login")
+
+        <div class="card-body pt-0">
+            <p class="login-box-msg" style="padding-top:0px!important; padding-bottom:0px!important;">Ingrese su correo electrónico para recuperar la contraseña.</p>
+
+            <form class="form-horizontal" id="formRecuperarContraseña">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="input-group with-focus">
+                                <input class="form-control border-right-0" type="email" id="inputEmailRecuperarContraseña" placeholder="Ingrese aquí su email..." autocomplete="off" required />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <i class="fa fa-envelope"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-block btn-outline-primary">
+                            <i class="fas fa-lock-open mr-1"></i>
+                            Recuperar contraseña
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        seguridad.recuperarContraseñaAsync();
+
+    });
+
+</script>

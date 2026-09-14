@@ -1,0 +1,57 @@
+﻿@model List<Models.DTO.NormasDTO>
+
+<tr>
+
+    <td colspan="5">
+        <span class="h6 font-weight-bold">
+            CANTIDAD DE NO CONFORMIDADES POR NORMA
+        </span>
+    </td>
+
+</tr>
+
+@foreach (var item in Model.GroupBy(x => x.IntNormaID))
+{
+    var cantidadNoConformidades = 0;
+
+    if (Model.FirstOrDefault(x => x.IntNormaID == item.Key && x.BitNoConformidad == true) != null)
+    {
+        cantidadNoConformidades = Model.FirstOrDefault(x => x.IntNormaID == item.Key && x.BitNoConformidad == true).CantidadNoConformidades;
+    }
+
+    var normaInformacion = Model.FirstOrDefault(x => x.IntNormaID == item.Key);
+
+    <tr>
+        <td class="pt-0 pb-0" colspan="5">
+            <i class="fas fa-times text-danger mr-1"></i><span class="font-weight-bold">@normaInformacion.StrCodigo</span> <i class="fas fa-arrow-right text-primary"></i> @cantidadNoConformidades
+        </td>
+    </tr>
+}
+
+<tr>
+
+    <td colspan="5">
+        <span class="h6 font-weight-bold">
+            CANTIDAD DE OBSERVACIONES POR NORMA
+        </span>
+    </td>
+
+</tr>
+
+@foreach (var item in Model.GroupBy(x => x.IntNormaID))
+{
+    var cantidadObservacion = 0;
+
+    if (Model.FirstOrDefault(x => x.IntNormaID == item.Key && x.BitObservacion == true) != null)
+    {
+        cantidadObservacion = Model.FirstOrDefault(x => x.IntNormaID == item.Key && x.BitObservacion == true).CantidadNoConformidades;
+    }
+
+    var normaInformacion = Model.FirstOrDefault(x => x.IntNormaID == item.Key);
+
+    <tr>
+        <td class="pt-0 pb-0" colspan="5">
+            <i class="fas fa-exclamation-triangle text-warning mr-1"></i><span class="font-weight-bold">@normaInformacion.StrCodigo</span> <i class="fas fa-arrow-right text-primary"></i> @cantidadObservacion
+        </td>
+    </tr>
+}

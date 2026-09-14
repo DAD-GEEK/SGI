@@ -1,0 +1,313 @@
+﻿@model Models.Terceros_Clientes
+
+<input type="hidden" id="tipoVista" value="editarTercero" />
+<input type="hidden" id="terceroClienteID" value="@Model.IntTerceroClienteID" />
+<input type="hidden" id="urlImagenTercero" value="@Model.StrRutaImagen" />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobal" method="post" action="#">
+            @Html.AntiForgeryToken()
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#general" data-toggle="tab">General</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#procesos" data-toggle="tab">Procesos</a></li>
+                               
+                            </ul>
+                        </div><!-- /.card-header -->
+
+                        @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", $"{Model.StrIdentificacion} - {Model.StrNombre}" } })
+
+                        <div class="card-body pt-2">
+                            <div class="tab-content">
+                                <div class="active tab-pane" id="general">
+
+                                    <div class="row">
+
+                                        <div class="col-md-4 text-center" style="width: 100% !important;">
+
+                                            <div class="kv-avatar">
+                                                <div class="file-loading" style="width:100%;">
+                                                    <input id="terceroLogo" type="file" accept="image/*">
+                                                </div>
+                                            </div>
+
+                                            <div class="kv-avatar-hint">
+                                                <small>Seleccione una imagen < 1000 KB</small>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-md-8">
+
+                                            <div class="row">
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="terceroClienteIdentificacion">Identificación/Nit<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 numerico" type="text" id="terceroClienteIdentificacion" value="@Model.StrIdentificacion" placeholder="Identificación o nit..." autocomplete="off" minlength="6" maxlength="12" required />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-id-card-alt"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="terceroClienteDV">Dígito de verificación<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0" type="text" id="terceroClienteDV" value="@Model.IntDV" placeholder="Dígito de verificación..." autocomplete="off" readonly />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted border-left-0">
+                                                                    <i class="fas fa-user-check"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="terceroClienteRazonSocial">Razón social<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0" type="text" id="terceroClienteRazonSocial" value="@Model.StrNombre" placeholder="Razón social o nombre..." autocomplete="off" required maxlength="200" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <i class="fas fa-user"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="terceroClienteMail">Email</label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0" type="email" id="terceroClienteMail" value="@Model.StrEmail" placeholder="Email..." autocomplete="off" maxlength="100" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <i class="fa fa-envelope"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="terceroTelefono">Teléfono</label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0" type="text" id="terceroClienteTelefono" value="@Model.StrTelefono" placeholder="Teléfono..." autocomplete="off" maxlength="50" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <i class="fas fa-phone"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="terceroClienteDireccion">Dirección</label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0" type="text" id="terceroClienteDireccion" value="@Model.StrDireccion" placeholder="Direccion..." autocomplete="off" maxlength="100" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <i class="fa fa-map-marked-alt"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="terceroClienteCiudad">Ciudad</label>
+                                                        <div class=" input-group with-focus">
+                                                            @Html.DropDownList("listaCiudades", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "terceroClienteCiudad", placeholder = "-- Seleccione una opción", data_parsley_required = "required" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="terceroClienteRepresentanteLegal">Representante legal<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0" type="text" id="terceroClienteRepresentanteLegal" value="@Model.StrRepresentanteLegal" placeholder="Representante legal de la empresa..." autocomplete="off" maxlength="200" required />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <i class="fas fa-user-cog"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="terceroClientePaginaWeb">Página web</label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0" type="text" id="terceroClientePaginaWeb" value="@Model.StrPaginaWeb" placeholder="Representante legal de la empresa..." autocomplete="off" maxlength="100" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <i class="fas fa-user-cog"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="form-group clearfix">
+                                                            <div class="icheck-primary d-inline">
+                                                                <input type="checkbox" id="terceroClienteActivo" checked="@Model.BitEstado">
+                                                                <label for="terceroClienteActivo">
+                                                                    ¿Activo?
+                                                                </label>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="procesos">
+                                    <div id="divGetProcesos"></div>
+
+                                </div>
+
+                            
+                            </div>
+                        </div>
+
+
+                        @Html.Partial("_Card_Footer")
+
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var terceroClienteID = $("#terceroClienteID").val();
+
+        terceros_clientesCRUD.index();
+        terceros_clientesCRUD.guardarAsync();
+        procesosCRUD.getAllProcesosAsync(terceroClienteID);
+
+        $("#btnAtras").click(function () {
+            terceros_clientesCRUD.getAll();
+        });
+
+        var urlImagen = $("#urlImagenTercero").val();
+
+        if ($("#urlImagenTercero").val().length != 0) {
+
+               var usuarioImagen = $("#terceroLogo").fileinput({
+                    overwriteInitial: true,
+                    resizeImage: true,
+                    language: 'es',
+                    previewClass: 'text-center',
+                    dropZoneTitle: 'Arrastre o deje caer el logo aquí...',
+                    frameClass: 'block-center',
+                    maxFileSize: 1000,
+                    showClose: true,
+                    showCaption: false,
+                    browseLabel: 'Agregar imagen',
+                    removeLabel: 'Remover',
+                    browseIcon: '<i class="fas fa-plus-circle"></i>',
+                    removeIcon: '<i class="fas fa-times"></i>',
+                    removeTitle: 'Cancelar',
+                    elErrorContainer: '#kv-avatar-errors-1',
+                    msgErrorClass: 'alert alert-block alert-danger',
+                    append: true,
+                    layoutTemplates: {
+                        main2: '{preview} {browse}',
+                    },
+                    initialPreview: [
+                        urlImagen,
+                    ],
+                    initialPreviewAsData: true, // identify if you are sending preview data only and not the raw markup
+                    initialPreviewFileType: 'image', // image is the default and can be overridden in config below
+                    initialPreviewDownloadUrl: urlImagen, // includes the dynamic `filename` tag to be replaced for each config
+                    initialPreviewConfig: [
+                        {
+                            key: '@Model.IntTerceroClienteID',
+                            caption: "Logo compañía",
+                            description: "<h5>@Model.StrNombre</h5> NIT: @Model.StrIdentificacion",
+                            size: @ViewBag.tamañoImagen,
+                            width: "100%",
+                            url: rootHost + 'Terceros_Clientes/EliminarImagenAsync',
+                        },
+                    ],
+                    allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+                    removeFromPreviewOnError: false, //Remover preview si hay error
+                   browseOnZoneClick: false, //Abrir buscador al dar click en la imagen
+               });
+            }
+            else {
+
+                var usuarioImagen = $("#terceroLogo").fileinput({
+                    overwriteInitial: true,
+                    resizeImage: false,
+                    language: 'es',
+                    previewClass: 'text-center',
+                    dropZoneTitle: 'Arrastre o deje caer el logo aquí...',
+                    frameClass: 'block-center',
+                    maxFileSize: 1000,
+                    showClose: false,
+                    showCaption: false,
+                    browseLabel: 'Agregar imagen',
+                    removeLabel: 'Remover',
+                    browseIcon: '<i class="fas fa-plus-circle"></i>',
+                    removeIcon: '<i class="fas fa-times"></i>',
+                    removeTitle: 'Cancelar',
+                    elErrorContainer: '#kv-avatar-errors-1',
+                    msgErrorClass: 'alert alert-block alert-danger',
+                    layoutTemplates: { main2: '{preview} {remove} {browse}' },
+                    allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+                    removeFromPreviewOnError: false, //Remover preview si hay error
+                    browseOnZoneClick: false, //Abrir buscador al dar click en la imagen
+               });
+            }
+
+    });
+
+
+</script>
+
+
+

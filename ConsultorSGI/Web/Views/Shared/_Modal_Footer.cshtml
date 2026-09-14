@@ -1,0 +1,46 @@
+﻿@{
+    string claseGuardarModal = "btnGuardarRegistroModal";
+    var claseGuardarPersonalizada = ViewData["claseGuardarPersonalizada"];
+
+    if (claseGuardarPersonalizada != null)
+    {
+        claseGuardarModal = claseGuardarPersonalizada.ToString();
+    }
+}
+
+
+<div class="modal-footer bg-light">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+
+            </div>
+
+            <div class="col-md-10">
+                <div class="row">
+
+                    <div class="col-xs-12 col-md-4">
+                        <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Volver a la vista anterior"><i class="fas fa-undo-alt mr-1"></i>Atras</button>
+                    </div>
+
+                    <div class="col-xs-12 col-md-4">
+                        <button type="button" class="btn btn-outline-primary btn-block @claseGuardarModal" data-aplicar="true" data-toggle="tooltip" data-placement="top" title="Guardar y continuar editando"><i class="fas fa-sync-alt mr-1"></i>Aplicar</button>
+                    </div>
+
+                    <div class="col-xs-12 col-md-4">
+                        <button type="button" class="btn btn-outline-primary btn-block @claseGuardarModal" data-toggle="tooltip" data-placement="top" title="Guardar y cerrar la ventana"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@*@Scripts.Render("~/bundles/vistasParciales")*@
+
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+

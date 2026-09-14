@@ -4,6 +4,14 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.4.9] - 2026-09-14
+
+### 📦 Consolidación Arquitectónica: Integración de Aplicaciones Legadas (.NET MVC) en SGI
+- **Unificación de Código Fuente en Repositorio SGI (`AgendaSGI/` y `ConsultorSGI/`)**:
+  - Integradas las aplicaciones legadas ASP.NET MVC (.NET Framework 4.8) como módulos de código fuente directo dentro del repositorio SGI, eliminando dependencias de repositorios externos y referencias fragmentadas.
+  - Purga estricta de binarios (`bin/`, `obj/`), paquetes NuGet (`packages/`), módulos de cliente (`node_modules/`, `Vendor/`), archivos comprimidos (`*.rar`, `*.zip`) y metadatos de entorno (`.vs/`, `*.user`, `*.suo`), garantizando un repositorio liviano y exclusivamente con código fuente versionable.
+  - Actualizado `.gitignore` con exclusiones defensivas para la suite Visual Studio / MSBuild.
+
 ## [1.4.8] - 2026-09-13
 
 ### 🔐 SSO Automático Transparente en Iframes, Auto-Sincronización de Contraseñas y Centro de Notificaciones

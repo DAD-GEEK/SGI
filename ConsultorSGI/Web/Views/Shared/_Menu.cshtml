@@ -1,0 +1,79 @@
+﻿@using Web.Helpers
+@model Models.DTO.DatosUsuarioEnSesionDTO
+
+<a href="@Url.Action("Index","Home")" class="brand-link logo-switch text-center ">
+
+    <div>
+        <span class="brand-image-xs logo-xs" style="left:5px!important; top:5px!important;"><b class="text-primary font-weight-bold h1"> SGI</b></span>
+        <span class="brand-image-xl logo-xl" style="width:100%!important;left:-5px!important "><b class="h4 font-weight-bold text-white">CONSULTOR</b><b class="text-primary font-weight-bold h1"> SGI</b></span>
+    </div>
+</a>
+
+<!-- Sidebar -->
+<div class="sidebar mt-2">
+
+    <!-- SidebarSearch Form -->
+    <div class="form-inline">
+        <div class="input-group" data-widget="sidebar-search">
+            <input class="form-control form-control-sidebar" type="search" placeholder="Buscar" aria-label="Search">
+            <div class="input-group-append">
+                <button class="btn btn-sidebar">
+                    <i class="fas fa-search fa-fw"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-0">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
+
+            <li class="nav-header">CONSULTOR SGI</li>
+
+            @foreach (var menu in Model.MenuDinamico.OrderBy(x => x.Orden))
+            {
+                <li class="nav-item @Html.ActiveMenuPrincipal(moduloMenu: menu.NombreModulo, clase:"menu-open")">
+                    <a href="#" class="nav-link @Html.ActiveMenuPrincipal(moduloMenu: menu.NombreModulo, clase:"active")">
+                        <i class="nav-icon @menu.Icono"></i>
+                        <p>
+                            @menu.NombreModulo
+                            <i class="right fas fa-angle-left"></i>
+                            <span class="@Html.ActiveMenuPpalNewFeature(moduloMenu: menu.NombreModulo, clase: "badge badge-light right")"> @Html.ActiveMenuPpalNewFeature(moduloMenu: menu.NombreModulo, clase: "NUEVO")</span>
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+
+                        @foreach (var subMenu in menu.SubMenuDinamico.OrderBy(x => x.Orden))
+                        {
+                            <li class="nav-item">
+                                <a href="@Url.Action(subMenu.Accion, subMenu.Controlador)" class="nav-link @Html.ActiveClassSubMenu(controller: subMenu.Controlador)">
+                                    <i class="far fa-circle nav-icon @Html.ActiveSubMenuNewFeature(moduloDetalle: subMenu.NombreModulo)"></i>
+                                    <p>@subMenu.NombreModulo</p>
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                </li>
+            }
+
+            <li class="nav-header">INFORMACIÓN</li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("About","Home")" class="nav-link">
+                    <i class="nav-icon fas fa-info text-primary"></i>
+                    <p>Información general</p>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('[data-widget="treeview"]').Treeview('init');
+    });
+</script>

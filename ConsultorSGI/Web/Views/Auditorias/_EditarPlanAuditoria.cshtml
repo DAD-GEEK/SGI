@@ -1,0 +1,313 @@
+﻿@model Models.Auditorias
+
+<input type="hidden" id="auditoriaID" value="@Model.IntAuditoriaID" />
+<input type="hidden" id="terceroClienteID" value="@Model.IntTerceroClienteID" />
+
+<input hidden type="checkbox" id="auditoriaVerificacion" checked />
+
+@{
+    string fechaDeVersion = string.Empty;
+    string fechaDeInforme = string.Empty;
+
+    if (Model.DatFechaElaboracionInforme != null)
+    {
+        fechaDeInforme = Model.DatFechaElaboracionInforme.Value.ToString("yyyy-MM-dd");
+    }
+
+    if (!string.IsNullOrEmpty(Model.DatFechaVersion.ToString()))
+    {
+        fechaDeVersion = Model.DatFechaVersion.Value.ToString("yyyy-MM-dd");
+    }
+}
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarAuditoria" method="post" action="#">
+            @Html.AntiForgeryToken()
+
+            <div class="card card-primary card-outline">
+
+                <div class="card-header p-2">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item"><a class="nav-link active" href="#planDeAuditoria" id="tabPlanDeAuditoria" data-toggle="tab">Plan de auditoría</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#programacion" id="tabProgramacion" data-toggle="tab">&nbsp;&nbsp;&nbsp; Programación &nbsp;&nbsp;&nbsp;</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#procesos" data-toggle="tab">&nbsp;&nbsp;&nbsp; Procesos &nbsp;&nbsp;&nbsp;</a></li>
+                    </ul>
+                </div>
+
+                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = $"Auditoría: {Model.Terceros_Clientes.StrNombre} ({@ViewBag.diasAuditoria} días)")
+
+
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="planDeAuditoria">
+
+                        <div class="card-body pt-0">
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaTercero">Tercero<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+
+                                            @Html.DropDownList("listaTerceros", null, "-- Seleccione una opción --", htmlAttributes: new
+                                       {
+                                           @class = "select2bs4 form-control",
+                                           data_placeholder = "-- Seleccione una opción --",
+                                           required = "required",
+                                           style = "width: 100%;",
+                                           id = "auditoriaTercero",
+                                           @disabled = "disabled"
+
+                                       })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaFecha">Fecha de auditoría<span class="text-danger">*</span></label>
+                                        <div class="input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="auditoriaFecha" value="@Model.DatFechaInicial.ToString("yyyy-MM-dd") - @Model.DatFechaFinal.ToString("yyyy-MM-dd")" placeholder="Ingrese aquí la fecha de la auditoría..." autocomplete="off" required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <i class="fas fa-calendar-check"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <div class="input-group with-focus">
+                                            <h4 class="form-control border-0 text-center text-danger font-weight-bold" style="font-size:40px;" id="auditoriaConsecutivo">@Model.IntConsecutivo</h4>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaNormas">Criterios de auditoría<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            @Html.DropDownList("listaNormas", null, null, htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "auditoriaNormas", placeholder = "-- Seleccione una opción", required = "required", Multiple = "Multiple" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaFechaInforme">Fecha de elaboración de informe</label>
+                                        <div class="input-group with-focus">
+                                            <input class="form-control border-right-0 fechaIndividual" type="text" id="auditoriaFechaInforme" value="@fechaDeInforme" placeholder="Ingrese aquí la fecha de elaboración del informe..." autocomplete="off" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <i class="fas fa-calendar-check"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaObjetivo">Objetivo<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            <textarea class="form-control border-right-0" placeholder="Ingrese aquí el objetivo de la auditoría..." id="auditoriaObjetivo" rows="3" data-parsley-length="[5,500]" data-parsley-required>@Model.StrObjetivo</textarea>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-cogs"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaAlcance">Alcance<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            <textarea class="form-control border-right-0" placeholder="Ingrese aquí el alcance de la auditoría..." id="auditoriaAlcance" rows="3" data-parsley-length="[5,500]" data-parsley-required>@Model.StrAlcance</textarea>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-check"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaAuditorPrincipal">Auditor principal<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+
+                                            @Html.DropDownList("listaUsuarios", null, "-- Seleccione una opción --", htmlAttributes: new
+                                      {
+                                          @class = "select2bs4 form-control",
+                                          data_placeholder = "-- Seleccione una opción --",
+                                          required = "required",
+                                          style = "width: 100%;",
+                                          id = "auditoriaAuditorPrincipal",
+
+                                      })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaIntegranteCopasst">Integrante de COPASST<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="auditoriaIntegranteCopasst" value="@Model.StrIntegranteCopasst" placeholder="Ingrese aquí el nombre del integrante del COPASST..." autocomplete="off" maxlength="200" required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-user-plus"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaVersion">Versión documento</label>
+                                        <div class=" input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="auditoriaVersion" value="@Model.StrVersion" placeholder="Ingrese aquí la versión de los cambios realizados..." autocomplete="off" maxlength="20" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-clipboard-check"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaFechaVersion">Fecha de versión</label>
+                                        <div class="input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="auditoriaFechaVersion" value="@fechaDeVersion" placeholder="Ingrese aquí la fecha de la versión..." autocomplete="off" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <i class="fas fa-calendar-check"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaCodigo">Código documento</label>
+                                        <div class=" input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="auditoriaCodigo" value="@Model.StrCodigo" placeholder="Ingrese aquí la identificación del documento ..." autocomplete="off" maxlength="20" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-check"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane" id="programacion">
+
+                        <div class="card-header fondoOscuroSGI card-no-radius">
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-outline-light btn-block" name="True" data-toggle="modal" id="btnCrearDePlanDeAuditoriaDetalle"><i class="fas fa-plus"></i>&nbsp;&nbsp;Programar &nbsp;&nbsp;</button>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-block btn-outline-light" name="True" data-toggle="modal" id="btnAgregarAperturaCierre"><i class="fas fa-clock"></i>&nbsp;&nbsp;Apertura y cierre &nbsp;&nbsp;</button>
+                                </div>
+                                <div class="col-md-3">
+                                    @if (Model.AuditoriasDetalle.Count() > 0)
+                                    {
+                                        <a href="#" class="btn btn-danger btn-block" title="Exportar plan de auditoría a PDF" data-toggle="tooltip" data-placement="top" onclick="funcionesGlobales.vistaExportarPDFOptions('PlanDeAuditoria')">&nbsp;&nbsp;&nbsp;<i class="fas fa-file-pdf mr-1"></i> Exportar a PDF&nbsp;&nbsp;&nbsp;</a>
+
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body pt-2">
+                            <div id="getAuditoriaDetalle"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane" id="procesos">
+                        <div id="divGetProcesos"></div>
+                    </div>
+                    
+                    <div class="tab-pane" id="auditoria">
+                        <div id=""></div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer bg-light">
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <div class="col-xs-12 col-md-6"></div>
+
+                            <div class="col-xs-12 col-md-3">
+                                <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark" id="btnAtras" data-toggle="tooltip" data-placement="top" title="Volver a la vista anterior" onclick="auditoriasCRUD.getAllAuditoriasAsync();"><i class="fas fa-undo-alt mr-1"></i>Regresar</button>
+                            </div>
+
+                            <div class="col-xs-12 col-md-3">
+                                <button type="submit" class="btn btn-outline-primary btn-block bloquear" data-toggle="tooltip" data-placement="top" title="Guardar y regresar a la vista anterior"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    }
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        auditoriasCRUD.index();
+        auditoriasCRUD.guardarAuditoriaAsync();
+
+        auditoriasCRUD.getAllProcesosAuditoriaAsync();
+        auditoriaDetalleCRUD.getAllDetallePlanAuditoriasAsync();
+        auditoriaDetalleCRUD.crearPlanAuditoriaDetalle();
+
+        var listaTercero = $("#auditoriaTercero");
+        listaTercero.change(function () {
+            auditoriasCRUD.obtenerProcesosPorTercero($(this).val());
+        });
+
+    });
+
+
+</script>
+
+
+
+

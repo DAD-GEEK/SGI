@@ -1,0 +1,137 @@
+﻿@model Models.AusentismoIndicadores
+
+<input type="hidden" id="indicadorID" value="@Model.StrId" />
+
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:800px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", $"{Model.StrNombreIndicador}" }, { "icono", "fas fa-chart-area" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarIndicador">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-body pt-1">
+                    <div class="container-fluid">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="indicadorNombre">Nombre<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="indicadorNombre" value="@Model.StrNombreIndicador" placeholder="Ingrese aquí el nombre del indicador..." autocomplete="off" maxlength="200" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-cogs"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="indicadorFormula">Fórmula<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="indicadorFormula" value="@Model.StrFormula" placeholder="Ingrese aquí la fórmula del indicador..." autocomplete="off" maxlength="200" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-tags"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="indicadorFuente">Fuente de información<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="indicadorFuente" value="@Model.StrFuente" placeholder="Ingrese aquí la fuente de información del indicador..." autocomplete="off" maxlength="200" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-tags"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="indicadorObjetivo">Objetivo<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <textarea class="form-control border-right-0" type="text" id="indicadorObjetivo" rows="5" placeholder="Ingrese aquí el objetivo del indicador..." autocomplete="off" maxlength="500" required>@Model.StrObjetivo</textarea>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-tags"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-4">
+
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="row">
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Volver a la vista anterior"><i class="fas fa-undo-alt mr-1"></i>Atras</button>
+                                    </div>
+
+      
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="submit" class="btn btn-outline-primary btn-block" data-toggle="tooltip" data-placement="top" title="Guardar"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        ausentismoIndicadores.guardarIndicador();
+
+    });
+
+
+</script>
+
+

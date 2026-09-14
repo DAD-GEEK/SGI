@@ -1,0 +1,89 @@
+﻿@using Models.DTO;
+@model Models.ListasDeVerificacion
+
+@{
+    Layout = null;
+}
+
+<input type="hidden" id="listaDeVerificacionID" value="@Model.IntListaVerificacionID" />
+
+<div class="modal-dialog " style=" max-width:1000px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", $"{Model.StrTitulo}" }, { "icono", "fas fa-list-alt" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <div class="modal-body pt-1" style="overflow-y:auto!important; max-height:70vh!important;">
+                <div class="container-fluid">
+                    <form id="formGuardarGlobalItem">
+                        @Html.AntiForgeryToken()
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="listaDeVerificacionTitulo">Título<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="listaDeVerificacionTitulo" value="@Model.StrTitulo" placeholder="Ingrese aquí el título del item..." autocomplete="off" maxlength="100" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-cogs"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            @{
+                                NumeralesGenericosDTO numeralesGenericosDTO = new NumeralesGenericosDTO();
+                                numeralesGenericosDTO.TerceroID = Model.AuditoriasDetalle.Auditorias.IntTerceroClienteID;
+                                numeralesGenericosDTO.RegistroID = Model.IntListaVerificacionID;
+                                numeralesGenericosDTO.AuditoriaID = Model.AuditoriasDetalle.IntAuditoriaID;
+                                numeralesGenericosDTO.ProcesoID = Model.AuditoriasDetalle.IntProcesoID;
+                                numeralesGenericosDTO.Controlador = "ListasDeVerificacion";
+                            }
+
+                            @Html.Partial("_SeleccionarNumerales_Inicial", numeralesGenericosDTO)
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            @Html.Partial("_Modal_Footer")
+
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var listaDeVerificacionID = '@Model.IntListaVerificacionID';
+        var normaID = 0;
+
+        listasDeVerificacionCRUD.guardarListaVerificacionItemAsync();
+        listasDeVerificacionCRUD.vistaObtenerNumeralesDeListaDeVerificacionAsync(listaDeVerificacionID, normaID);
+    });
+
+</script>
+
+
+

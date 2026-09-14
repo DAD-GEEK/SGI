@@ -1,0 +1,219 @@
+﻿@model List<Models.ListasDeVerificacion>
+
+@{
+    string clase_clasificacion = string.Empty;
+    string auditado = string.Empty;
+
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    <div class="card-header fondoOscuroSGI card-no-radius">
+        <div class="row">
+            @*<div class="col-md-3">
+                <button type="button" class="btn btn-outline-light btn-block" name="True" data-toggle="modal" id="btnAgregarItem"><i class="fas fa-list-alt"></i>&nbsp;&nbsp;Agregar item la lista &nbsp;&nbsp;</button>
+            </div>*@
+
+            <div class="col-md-3">
+
+                @if (Model.FirstOrDefault() != null)
+                {
+                    <div class="btn-group w-100" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Actualizar lista de verificación
+                        </button>
+                        <div class="dropdown-menu text-left" aria-labelledby="btnGroupDrop1">
+
+                            <button type="button" class="btn" id="btnActualizarConProcesoActual" name="True" data-toggle="modal"></button>
+
+                            <button type="button" class="btn" id="btnActualizarConProcesoGenerico" name="True" data-toggle="modal"><i class="fas fa-list-alt mr-2"></i>Con procesos genéricos </button>
+
+                        </div>
+                    </div>
+
+
+                }
+
+            </div>
+
+            <div class="col-md-3">
+
+                @if (Model.Count() > 0)
+                {
+                    <a href="@Url.Action("DescargarListaDeVerificacionPDFAsync","ListasDeVerificacion", new { auditoriaDetalleID = Model.FirstOrDefault().IntAuditoriaDetalleID })" target="_blank" class="btn btn-danger btn-block" title="Exportar listas de verificación a PDF" data-toggle="tooltip" data-placement="top">&nbsp;&nbsp;&nbsp;<i class="fas fa-file-pdf mr-1"></i> Exportar a PDF&nbsp;&nbsp;&nbsp;</a>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+
+        @foreach (var item in Model.OrderBy(x => x.PlantillasListasDeVerificacionDetalle.IntOrden))
+        {
+            auditado = string.Empty;
+            clase_clasificacion = "text-primary";
+
+            if (item.BitConformidad)
+            {
+                clase_clasificacion = "";
+                auditado = "Auditado";
+            }
+
+            if (item.BitNoConformidad)
+            {
+                clase_clasificacion = "text-danger";
+                auditado = "Auditado";
+            }
+
+            if (item.BitObservacion)
+            {
+                clase_clasificacion = "text-warning";
+                auditado = "Auditado";
+            }
+
+            <div class="card-header" role="tab" id="@item.IntListaVerificacionID">
+                <a data-toggle="collapse" data-parent="#accordionEx" href="#lista_@item.IntListaVerificacionID" aria-expanded="true"
+                   aria-controls="lista_@item.IntListaVerificacionID">
+
+                    <span class="font-weight-bold h4 @clase_clasificacion"> @item.StrTitulo </span>
+                    <span class="text-sm badge badge-success" style="font-size:12px!important">@auditado</span>
+
+                </a>
+
+            </div>
+
+            <div id="lista_@item.IntListaVerificacionID" class="collapse" role="tabpanel" aria-labelledby="@item.IntListaVerificacionID"
+                 data-parent="#accordionEx">
+                <div class="card-body pt-0">
+                    <table class="table table-sm text-sm" style="width:100%;" id="tblListasDeVerificacion">
+                        <thead>
+                            <tr>
+                                <th style="width:60%!important">Hallazgo</th>
+                                <th class="text-center" style="width:10%!important">NO Conformidad</th>
+                                <th class="text-center" style="width:10%!important">Conformidad</th>
+                                <th class="text-center" style="width:10%!important">Observación</th>
+                                <th class="text-center" style="width:10%!important">Auditar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-sm p-1" style="width:60%!important">
+                                    @if (ViewBag.isVistaInforme)
+                                    {
+                                        <span>@item.StrHallazgoEnInforme</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@item.StrHallazgo</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="icheck-primary d-inline pb-1">
+                                        <input type="checkbox" id="listaNoConformidad_@item.IntListaVerificacionID.ToString()" checked="@item.BitNoConformidad" disabled>
+                                        <label for="listaNoConformidad_@item.IntListaVerificacionID.ToString()">
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="icheck-primary d-inline pb-1">
+                                        <input type="checkbox" id="listaConformidad_@item.IntListaVerificacionID.ToString()" checked="@item.BitConformidad" disabled>
+                                        <label for="listaConformidad_@item.IntListaVerificacionID.ToString()">
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="icheck-primary d-inline pb-1">
+                                        <input type="checkbox" id="listaObservacion_@item.IntListaVerificacionID.ToString()" checked="@item.BitObservacion" disabled>
+                                        <label for="listaObservacion_@item.IntListaVerificacionID.ToString()">
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" title="Auditar" data-toggle="tooltip" data-placement="left" class="btn btn-outline-primary btn-sm glyphicon glyphicon-edit" data-registroid="@item.IntListaVerificacionID" data-tipoevento="auditar"><i class="fas fa-award mr-1"></i>Auditar</button>
+                                    @*<button type="button" title="Editar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm  glyphicon glyphicon-edit" data-registroid="@item.IntListaVerificacionID" data-tipoevento="editar"><i class="fas fa-edit"></i></button>*@
+                                    <button type="button" title="Eliminar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm  glyphicon glyphicon-edit" data-registroid="@item.IntListaVerificacionID" data-tipoevento="eliminar"><i class="fas fa-trash-alt"></i></button>
+
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+
+        }
+
+    </div>
+
+
+}
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var auditoriaDetalleID = $("#auditoriaDetalleID").val();
+        var terceroID = $("#terceroID").val();
+        var procesoID = $("#procesoID").val();
+        var procesoNombre = $("#procesoNombre").val();
+        var auditoriaID = $("#auditoriaID").val();
+        var cargarPlantilla = $("#btnCargarPlantilla");
+        var btnActualizarConProcesoActual = $("#btnActualizarConProcesoActual");
+        var btnActualizarConProcesoGenerico = $("#btnActualizarConProcesoGenerico");
+
+        btnActualizarConProcesoActual.html('<i class="fas fa-cogs mr-1"></i>Con proceso de ' + procesoNombre);
+
+        btnActualizarConProcesoActual.click(function () {
+            listasDeVerificacionCRUD.vistaCargarListaDeVerificacionDeProcesoActualAsync(auditoriaDetalleID);
+        });
+
+        btnActualizarConProcesoGenerico.click(function () {
+            procesosCRUD.vistaCargarDatosGenericosAsync(procesoID);
+        });
+
+        cargarPlantilla.click(function () {
+            listasDeVerificacionCRUD.cargarPlantillaListaDeVerificacion();
+        });
+
+        var agregarItem = $("#btnAgregarItem");
+        agregarItem.click(function () {
+            listasDeVerificacionCRUD.crearItemListaDeVerificacion(procesoID, auditoriaID);
+        });
+
+        $('#tblListasDeVerificacion tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+
+            var isVistaInforme = false;
+
+            if ('@ViewBag.isVistaInforme' == 'True')
+                isVistaInforme = true;
+
+            if (tipoEvento == 'auditar')
+                return listasDeVerificacionCRUD.auditarListaDeVerificacion(registroID, isVistaInforme );
+
+            if (tipoEvento == 'editar')
+                return listasDeVerificacionCRUD.obtenerItemListaDeVerificacionParaEditar(registroID);
+
+            if (tipoEvento == 'eliminar')
+                return listasDeVerificacionCRUD.deleteListaDeVerificacionAsync(registroID);
+
+        });
+
+    });
+
+
+</script>

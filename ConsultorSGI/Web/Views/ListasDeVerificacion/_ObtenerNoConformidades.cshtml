@@ -1,0 +1,153 @@
+﻿@model List<Models.DTO.AuditoriaNoConformidadesDTO>
+
+@{
+    string Estado = string.Empty;
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    @Html.AntiForgeryToken()
+    <table id="tblNoConformidades" class="table dt-responsive table-condensed table-sm center-block mt-2 text-sm" style="width:100%">
+        <thead class="text-center text-white fondoColorSGI card-sombra" style="border-radius:10px">
+            <tr>
+                <th style="display:none">Id</th>
+                <th class="text-left">Numerales</th>
+                <th class="text-left">Hallazgo</th>
+                <th class="text-center">Clasificación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var proceso in Model.GroupBy(x => x.ProcesoDescripcion))
+            {
+                <tr>
+                    <td colspan="4">
+                        <h5 class="font-weight-bold text-uppercase mt-2 mb-0">@proceso.Key</h5>
+                    </td>
+                </tr>
+
+                foreach (var item in Model.Where(x => x.ProcesoDescripcion == proceso.Key).OrderBy(x => x.Orden))
+                {
+                    <tr>
+
+                        <td style="display:none">@item.Id</td>
+
+                        <td class="text-left">
+
+                            @Html.Partial("_NumeralesPorNorma", item.NormasDTO.ToList())
+
+                        </td>
+
+                        <td class="text-left">
+
+                            <h6 class="font-weight-bold text-primary">@item.Titulo</h6>
+
+                            @if (item.FechaQueSeAudita != null)
+                            {
+                                <b class="text-secondary font-weight-bold"><i class="fas fa-calendar-check mr-1"></i> Fecha en que se audita: </b> @Across.Common.ObtenerFechaLarga(item.FechaQueSeAudita.Value)
+                            }
+
+                            <hr class="m-1" />
+                            @if (!ViewBag.isVistaInforme)
+                            {
+                                <p class="cajaTexto text-justify">@item.Hallazgo</p>
+                            }
+                            else
+                            {
+                                <p class="cajaTexto text-justify">@item.HallazgoInforme</p>
+                            }
+
+                        </td>
+
+                        @if (item.NoConformidad)
+                        {
+                            <td class="text-center"><span class="badge badge-danger">NO CONFORMIDAD</span></td>
+                        }
+                        else
+                        {
+                            <td class="text-center"><span class="badge badge-warning">OBSERVACIÓN</span></td>
+
+                        }
+
+                        <td class=" text-center">
+                            <button type="button" title="Editar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm  glyphicon glyphicon-edit" data-registroid="@item.Id" data-tipoevento="editar"><i class="fas fa-edit"></i></button>
+
+                        </td>
+
+                    </tr>
+                }
+            }
+        </tbody>
+
+        <tfoot>
+            <tr>
+                @{
+                    foreach (var item in Model.GroupBy(x => x.NormasDTO.GroupBy(y => y.IntNormaID)))
+                    {
+                        var normaID = item.Key;
+                    }
+
+                    int totalHallazgos = Model.Count();
+                    int totalOBS = Model.Where(x => x.Observacion == true).Count();
+                    int totalNC = Model.Where(x => x.NoConformidad == true).Count();
+                }
+                <th colspan="5">En total se identifican @totalHallazgos hallazgos: @totalNC No conformidades (NC) y @totalOBS Observaciones (OBS)</th>
+            </tr>
+
+            @{
+                List<Models.DTO.NormasDTO> listaCantidadNormas = ViewBag.listaNormasCantidades;
+                Html.RenderPartial("_CantidadNoConformidadesPorNorma", listaCantidadNormas);
+            }
+
+        </tfoot>
+
+    </table>
+
+}
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+        $("#tblNoConformidades > tbody > tr").each(function (i, item) {
+
+            var texto = $(item).find(".cajaTexto").html();
+            if (typeof texto != 'undefined')
+                $(item).find(".cajaTexto").html(texto.replace(/\n/g, '<br \\>'));
+
+        });
+
+        $('#tblNoConformidades tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+            var tipoVista = "informeAuditoria";
+
+            var isVistaInforme = false;
+
+            if ('@ViewBag.isVistaInforme' == 'True')
+                isVistaInforme = true;
+
+            if (tipoEvento == 'editar')
+                return listasDeVerificacionCRUD.auditarListaDeVerificacion(registroID, isVistaInforme);
+
+        });
+
+    });
+
+
+</script>
+
+
+

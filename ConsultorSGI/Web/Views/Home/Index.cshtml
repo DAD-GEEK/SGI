@@ -1,0 +1,60 @@
+﻿@using DataAccess.Servicios;
+
+@{
+    var datosDeUsuario = ServicioUsuario.ObtenerDatosDeUsuarioEnSesion;
+}
+
+<div class="pt-2 m-0">
+    <div class="card ">
+        <div class="card-body text-center bg-center bannerSGI">
+            <div class="row">
+                <div class="col-12 text-white">
+
+                    <img class="img-thumbnail img-circle" src="~/Content/images/logo.png" alt="Image" style="height:150px!important" />
+                    <h3 class="m-2">¡Hola @datosDeUsuario.UsuarioNombre!</h3>
+                    <h3 class="m-4">Bienvenido(a) a Consultor SGI </h3>
+
+                </div>
+                <div class="card-body text-center">
+
+                    @using (Html.BeginForm("CerrarSesion", "Seguridad", FormMethod.Post, new { id = "logoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+
+                            <div class=" col-12">
+
+                                <div class="d-inline-block">
+                                    <button class="btn btn-primary"><i class="fas fa-user-edit mr-2"></i>@Html.ActionLink("Ver mi perfil", "Index", "Manage", null, htmlAttributes: new { @class = "text-white font-weight-bold" })</button>
+                                    &nbsp;&nbsp;
+                                    <a href="javascript:document.getElementById('logoutForm').submit()" class="btn btn-danger float-right text-white font-weight-bold"><i class="fas fa-sign-out-alt mr-1"></i>Cerrar sesión</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="divSistemasDeGestion"></div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var nombre = '@ViewBag.nombre';
+
+        if (nombre != null || nombre.length != 0) {
+            $("#menuNombreUsuario").html('@ViewBag.nombre');
+        }
+
+        home.getAllSistemasDeGestion();
+
+    });
+</script>

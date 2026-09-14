@@ -1,0 +1,134 @@
+﻿@model List<Models.DTO.SistemasDeGestionDTO>
+
+@{
+    string Estado = string.Empty;
+
+}
+
+<div class="card-header fondoOscuroSGI" style="border-top-right-radius:0px!important;border-top-left-radius:0px!important;">
+
+    <div class="row">
+
+        <div class="col-md-3">
+            <button type="button" class="btn btn-outline-light btn-block" id="btnAgregarSistemaDeGestion"><i class="fas fa-plus mr-1"></i>Agregar sistema de gestión</button>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card-body">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        @Html.AntiForgeryToken()
+        <table id="tblSistemasDeGestionPorTercero" class="table table-bordered dt-responsive table-sm center-block" style="width:100%">
+            <thead class="text-center text-white fondoColorSGI">
+                <tr>
+                    <th>Orden</th>
+                    <th>Sistema de gestión</th>
+                    <th>Normas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+
+                    <tr>
+                        <td>@item.TIntOrden</td>
+                        <td><span class="font-weight-bold">@item.StrCodigoID - </span>@item.StrDescripcion</td>
+
+                        <td>
+
+                            @foreach (var norma in item.Normas)
+                            {
+                                if (norma.BitAplica)
+                                {
+                                    <span class="badge badge-primary">@norma.StrDescripcion</span>
+                                }
+                            }
+
+                        </td>
+
+                        <td class=" text-center">
+                            <button type="button" title="Editar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm  glyphicon glyphicon-edit" data-registroid="@item.IntSistemaDeGestion_TerceroID" data-tipoevento="editar"><i class="fa fa-edit fa-fw"></i></button>
+                            <button type="button" title="Eliminar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm  glyphicon glyphicon-trash" data-registroid="@item.IntSistemaDeGestion_TerceroID" data-tipoevento="eliminar"><i class="fa fa-trash fa-fw"></i></button>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        terceros_SistemasDeGestionCRUD.crear();
+
+        var tblSistemasDeGestionPorTercero = $('#tblSistemasDeGestionPorTercero').DataTable({
+
+            "order": [[0, "asc"]],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblSistemasDeGestionPorTercero tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+
+            if (tipoEvento == 'editar')
+                return terceros_SistemasDeGestionCRUD.getByEditarAsync(registroID);
+
+            if (tipoEvento == 'eliminar')
+                return terceros_SistemasDeGestionCRUD.deleteAsync(registroID);
+
+        });
+
+    });
+
+
+</script>
+
+

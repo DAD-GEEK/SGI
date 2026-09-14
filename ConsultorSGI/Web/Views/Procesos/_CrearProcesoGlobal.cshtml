@@ -1,0 +1,110 @@
+﻿
+<input type="hidden" id="procesoID" value="0" />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobalPR" method="post" action="#">
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline">
+
+                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = $"Agregar proceso")
+
+                <div class="card-body pt-0 pb-0">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="procesoCodigo">Código<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="procesoCodigo" placeholder="Ingrese aquí el código..." autocomplete="off" maxlength="5" data-parsley-type="alphanum" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-cogs"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="procesoDescripcion">Descripción<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="procesoDescripcion" placeholder="Ingrese aquí la descripción..." autocomplete="off" maxlength="200" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-tags"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group  ">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-primary d-inline">
+                                        <input type="checkbox" id="procesoActivo" checked>
+                                        <label for="procesoActivo">
+                                            ¿Activo?
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>                      
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Listas de verificación" } })
+
+                <div class="card-header fondoOscuroSGI card-no-radius">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-outline-light btn-block btnGuardarProceso" name="True" data-aplicar="true" data-agregarlista="true"><i class="fas fa-list-alt"></i>&nbsp;&nbsp;Agregar item a lista &nbsp;&nbsp;</button>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Card_Footer")
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var terceroGlobal = 0;
+        var esVistaGlobal = true;
+
+        $("#btnAtras").click(function () {
+            procesosCRUD.getAllProcesosAsync(terceroGlobal, esVistaGlobal)
+        });
+
+        procesosCRUD.guardarProcesoAsync(esVistaGlobal);
+    });
+
+
+</script>
+
+
+

@@ -1,0 +1,29 @@
+﻿@model Models.DTO.NumeralesGenericosDTO
+
+<input type="hidden" id="controladorNumerales" value="@Model.Controlador" />
+
+<div id="divSeleccionarNumerales"></div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var terceroID = '@Model.TerceroID';
+        var registroID = '@Model.RegistroID';
+        var auditoriaID = '@Model.AuditoriaID';
+        var procesoID = '@Model.ProcesoID';
+        var controlador = '@Model.Controlador';
+
+        var datosGenericos = {
+            TerceroID: terceroID,
+            RegistroID: registroID,
+            AuditoriaID: auditoriaID,
+            ProcesoID: procesoID,
+            Controlador: controlador,
+        }
+
+        funcionesGlobales.openVistaSeleccionarNumerales(datosGenericos);
+
+    });
+
+</script>

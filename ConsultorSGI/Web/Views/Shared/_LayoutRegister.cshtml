@@ -1,0 +1,197 @@
+﻿﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="shortcut icon" href="~/Content/images/SGI.png" class="img-circle" type="image/x-icon" />
+    <meta name="keywords" content="app, SGI, Gestion, Integral, Gestion Integral">
+    @*<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">*@
+
+    <title>Consultor SGI - Registro</title>
+
+    <!-- Login CSS -->
+
+    <link href="@Styles.Url("~/Vendor/gijgo/css/gijgo.min.css")" rel="stylesheet" />
+
+    <!-- Google Font: Source Sans Pro -->
+    <link href="@Styles.Url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback")" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link href="@Styles.Url("~/Vendor/@fortawesome/fontawesome-free/css/all.min.css")" rel="stylesheet" />
+
+    <!-- Ionicons -->
+    <link href="@Styles.Url("https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css")" rel="stylesheet" />
+
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link href="@Styles.Url("~/Vendor/tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.min.css")" rel="stylesheet" />
+
+    <!-- iCheck -->
+    <link href="@Styles.Url("~/Vendor/icheck-bootstrap/icheck-bootstrap.min.css")" rel="stylesheet" />
+
+    <!-- Select2 -->
+    <link href="@Styles.Url("~/Vendor/select2/dist/css/select2.min.css")" rel="stylesheet" />
+    <link href="@Styles.Url("~/Vendor/select2-theme-bootstrap4/dist/select2-bootstrap.min.css")" rel="stylesheet" />
+
+    <!-- Theme style Revisar-->
+    <link href="@Styles.Url("~/AdminLTE/dist/css/adminlte.min.css")" rel="stylesheet" />
+
+    <!-- Daterange picker -->
+    <link href="@Styles.Url("~/Vendor/daterangepicker/daterangepicker.css")" rel="stylesheet" />
+
+    <!-- Parsley 2.9.2 Revisar-->
+    <link href="@Styles.Url("~/content/parsley.css")" rel="stylesheet" />
+
+    <!-- DataTables -->
+    <link href="@Styles.Url("~/Vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css")" rel="stylesheet" />
+    <link href="@Styles.Url("~/Vendor/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css")" rel="stylesheet" />
+
+    <!-- SweetAlert2 -->
+    <link href="@Styles.Url("~/Vendor/sweetalert2/dist/sweetalert2.min.css")" rel="stylesheet" />
+
+    <!-- Toastr -->
+    <link href="@Styles.Url("~/Vendor/toastr/build/toastr.min.css")" rel="stylesheet" />
+
+    <!-- FileInput -->
+    <link href="@Styles.Url("~/AdminLTE/dist/css/fileinput.min.css")" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.min.css" crossorigin="anonymous">
+
+    <!-- Mis estilos Revisra -->
+    <link href="@Styles.Url("~/content/MiStyle.css")" rel="stylesheet" />
+
+    <link href="@Styles.Url("~/Content/whirl.css")" rel="stylesheet" />
+
+    <!--jQuery -->
+    <script src="@Scripts.Url("~/Vendor/jquery/dist/jquery.min.js")"></script>
+
+    @if (IsSectionDefined("Styles"))
+    {@RenderSection("Styles", required: false)}
+
+</head>
+<body class="hold-transition register-page">
+
+    @RenderBody()
+
+    @if (IsSectionDefined("BodyArea"))
+    {@RenderSection("BodyArea", required: false)}
+
+    <!-- jQuery UI 1.11.4 -->
+    <script src="@Scripts.Url("~/Vendor/jquery-ui-dist/jquery-ui.min.js")"></script>
+
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
+    <!-- Bootstrap 4 -->
+    <script src="@Scripts.Url("~/AdminLTE/dist/js/bootstrap.bundle.min.js")"></script>
+
+    <!-- Select2 -->
+    <script src="@Scripts.Url("~/Vendor/select2/dist/js/select2.full.min.js")"></script>
+
+    <!-- Moment -->
+    <script src="@Scripts.Url("~/Vendor/moment/min/moment.min.js")"></script>
+    <script src="@Scripts.Url("~/Vendor/moment/locale/es-mx.js")"></script>
+
+    <!--Gijgo TreeView-->
+    <script src="@Scripts.Url("~/Vendor/gijgo/js/gijgo.min.js")"></script>
+
+    <!-- ChartJS -->
+    <script src="@Scripts.Url("~/Vendor/chart.js/dist/Chart.min.js")"></script>
+
+    <!-- Sparkline -->
+    <script src="@Scripts.Url("~/Vendor/sparklines/source/sparkline.js")"></script>
+
+    <!-- daterangepicker -->
+    <script src="@Scripts.Url("~/Vendor/daterangepicker/daterangepicker.js")"></script>
+
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="@Scripts.Url("~/Vendor/tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.min.js")"></script>
+
+    <!-- AdminLTE App -->
+    <script src="@Scripts.Url("~/AdminLTE/dist/js/adminlte.min.js")"></script>
+
+    <!-- Sweet Alert 2 -->
+    <script src="@Scripts.Url("~/Vendor/sweetalert2/dist/sweetalert2.js")"></script>
+
+    <!-- Toastr -->
+    <script src="@Scripts.Url("~/Vendor/toastr/build/toastr.min.js")"></script>
+
+    <!-- DataTables & Plugins -->
+    <script src="@Scripts.Url("~/Vendor/datatables.net/js/jquery.dataTables.min.js")"></script>
+    <script src="@Scripts.Url("~/Vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js")"></script>
+    <script src="@Scripts.Url("~/Vendor/datatables.net-responsive/js/dataTables.responsive.min.js")"></script>
+    <script src="@Scripts.Url("~/Vendor/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js")"></script>
+
+    <!-- InputMask -->
+    <script src="@Scripts.Url("~/Vendor/inputmask/dist/jquery.inputmask.min.js")"></script>
+
+    <!-- Waiting metod -->
+    <script src="@Scripts.Url("~/Scripts/propios/waitingDialog.js")"></script>
+
+    <!-- Fileinput -->
+    <script src="@Scripts.Url("~/AdminLTE/dist/js/fileinput.min.js")"></script>
+    <script src="@Scripts.Url("~/AdminLTE/dist/js/es.js")"></script>
+
+    @*@Scripts.Render("~/bundles/app")*@
+
+    <script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+
+    @RenderSection("scripts", required: false)
+
+    <script type="text/javascript">
+
+        var rootHost = "@Scripts.Url("~/")";
+
+        function onAjaxBeginForm() {
+
+            $("body").css("cursor", "progress");
+            waitingDialog.show();
+        }
+
+        function onAjaxCompleteForm() {
+
+            $("body").css("cursor", "default");
+            waitingDialog.hide();
+        }
+
+        $(document).ajaxStart(function () {
+            onAjaxBeginForm();
+        });
+
+        $(document).ajaxStop(function () {
+            onAjaxCompleteForm();
+        });
+
+        $(window).on('beforeunload', function () {
+            $('*').css("cursor", "progress");
+            waitingDialog.show();
+        });
+
+        setInterval(verifySession, 300000);
+
+        function verifySession() {
+
+            fetch(`${rootHost}Account/VerificarSesionDeUsuario`, {
+                method: 'POST'
+            })
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res);
+                    if (res.msn == "success") {
+                    } else {
+                        location.href = `${rootHost}Seguridad/Login`
+                    }
+                })
+                .catch(function () {
+                    location.href = `${rootHost}Seguridad/Login`
+                });
+
+        }
+
+
+    </script>
+
+</body>
+</html>

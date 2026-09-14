@@ -1,0 +1,17 @@
+﻿
+<div class="position-relative mb-4">
+    <canvas height="100" id="@ViewBag.canvasID"></canvas>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var ausentismoCodigoIndicador = '@ViewBag.ausentismoCodigoIndicador';
+        var canvasID = '@ViewBag.canvasID';
+
+        ausentismoIndicadores.ObtenerDatosDeIndicadoresParaGraficar(ausentismoCodigoIndicador, canvasID);
+
+    });
+
+</script>

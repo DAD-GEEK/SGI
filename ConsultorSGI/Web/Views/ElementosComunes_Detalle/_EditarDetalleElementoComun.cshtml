@@ -1,0 +1,118 @@
+﻿@model Models.DTO.ElementosComunes_DetalleDTO
+
+<input type="hidden" id="elementoComunID" value="@Model.IntElementoComunID" />
+<input type="hidden" id="elementoComunDetalleID" value="@Model.IntDetalleID" />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarDetalleGlobal" method="post" action="#">
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline">
+
+                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = $"Asociar numerales")
+
+                <div class="card-body pt-1">
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+
+                            @foreach (var item in Model.listaNumeralesDTO.GroupBy(x => x.IntNormaID))
+                            {
+                                SelectList listaNumeralesPorNorma = null;
+                                var numeralesNorma = Model.listaNumeralesDTO.Where(norma => norma.IntNormaID == item.Key).ToList();
+                                var numeralSeleccionado = Model.ElementosComunes_Detalle_Numerales.Where(x => x.Numerales.IntNormaID == item.Key).FirstOrDefault();
+
+                                if (numeralSeleccionado != null)
+                                {
+                                    listaNumeralesPorNorma = new SelectList(numeralesNorma, "IntNumeralID", "StrDescripcion", numeralSeleccionado.IntNumeralID);
+                                }
+                                else
+                                {
+                                    listaNumeralesPorNorma = new SelectList(numeralesNorma, "IntNumeralID", "StrDescripcion");
+                                }
+
+                                ViewBag.numerales = listaNumeralesPorNorma;
+
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="elementoComunDetalleNormas_@item.Key">@Model.listaNumeralesDTO.FirstOrDefault(norma => norma.IntNormaID == item.Key).StrDescripcionNorma<span class="text-danger font-weight-bold">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        @Html.DropDownList("numerales", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control elementoComunDetalleNumerales", style = "width: 100%;", id = $"elementoComunDetalleNormas_{item.Key}", data_norma = $"{item.Key}" })
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+
+                        <div class="col-md-12">
+
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="elementoComunDetalleInterpretacion">Interpretación<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <textarea class="form-control border-right-0" placeholder="Ingrese aquí la interpretación..." id="elementoComunDetalleInterpretacion" rows="5" data-parsley-length="[5,2000]" data-parsley-required>@Model.StrInterpretacion</textarea>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-cogs"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group  ">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-primary d-inline">
+                                        <input type="checkbox" id="elementoComunDetalleActivo" checked="@Model.BitActivo">
+                                        <label for="elementoComunDetalleActivo">
+                                            ¿Activo?
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                @Html.Partial("_Card_Footer")
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#btnAtras").click(function () {
+            elementosComunesCRUD.getElementoComunByEditarAsync($("#elementoComunID").val());
+        });
+
+        elementosComunesDetalleCRUD.guardarElementoComunDetalleAsync();
+
+    });
+
+
+</script>
+
+
+

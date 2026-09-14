@@ -1,0 +1,103 @@
+﻿@using Models.DTO;
+@model Models.PlantillasListasDeVerificacionDetalle
+
+@{
+    Layout = null;
+}
+
+<input type="hidden" id="procesoID" value="@Model.IntProcesoID" />
+<input type="hidden" id="plantillaDetalleID" value="@Model.IntPlantillaDetalleID" />
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center m-2" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+
+    <div class="card card-primary card-outline">
+
+        @Html.Partial("_Card_Titulo", ViewData["Titulo"] = $"({Model.Procesos.StrDescripcion}) Editar lista de verificación")
+
+        <div class="card-body pt-0 pb-0">
+            <form id="formGuardarDetalleGlobal" method="post" action="#">
+                @Html.AntiForgeryToken()
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-control-label font-weight-bold" for="plantillaDetalleDescripcion">Descripción<span class="text-danger">*</span></label>
+                            <div class=" input-group with-focus">
+                                <input class="form-control border-right-0" type="text" id="plantillaDetalleDescripcion" value="@Model.StrTitulo" placeholder="Ingrese aquí el nombre del item de la lista de verificación..." autocomplete="off" maxlength="100" required />
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <em class="fas fa-tags"></em>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-group clearfix">
+                                <div class="icheck-primary d-inline">
+                                    <input type="checkbox" id="plantillaDetalleEstado" checked="@Model.BitEstado">
+                                    <label for="plantillaDetalleEstado">
+                                        ¿Activo?
+                                    </label>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                @{
+                    NumeralesGenericosDTO numeralesGenericosDTO = new NumeralesGenericosDTO();
+                    numeralesGenericosDTO.TerceroID = 0;
+                    numeralesGenericosDTO.ProcesoID = Model.IntProcesoID;
+                    numeralesGenericosDTO.RegistroID = Model.IntPlantillaDetalleID;
+                    numeralesGenericosDTO.Controlador = "PlantillasListasDeVerificacionDetalle";
+                }
+
+                @Html.Partial("_SeleccionarNumerales_Inicial", numeralesGenericosDTO)
+            </div>
+        </div>
+
+        @Html.Partial("_Card_Footer")
+
+    </div>
+
+}
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var procesoID = $("#procesoID").val();
+        esVistaGlobal = true;
+        esVistaListaVerificacion = true;
+
+        $("#btnAtras").click(function () {
+            procesosCRUD.getProcesoByEditarAsync(procesoID, esVistaGlobal, esVistaListaVerificacion);
+        });
+
+        plantillaListasDeVerificacionDetalleCRUD.guardarPalntillaListaVerificacionDetalleAsync(esVistaGlobal, esVistaListaVerificacion);
+
+    });
+
+</script>
+
+
+

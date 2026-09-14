@@ -1,0 +1,203 @@
+﻿@model Models.Ausentismo
+@{
+    Model.Empleados = ViewBag.Empleado;
+}
+
+<input type="hidden" id="ausentismoID" value="@Model.IntAusentismoID" />
+<input type="hidden" id="ausentismoEmpleadoID" value="@Model.IntAusentismoID" />
+<input type="hidden" id="ausentismoEmpleado" value="@Model.IntEmpleadoID" />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobal">
+            @Html.AntiForgeryToken()
+            <div class="row">
+
+                <div class="col-md-3">
+                    <div class="card card-primary card-outline">
+                        <div class="card-body box-profile">
+                            <div id="divGetDatosEmpleado">
+                                @Html.Partial("_GetDatosEmpleado", Model.Empleados)
+                            </div>
+
+                            <br />
+
+                            <div id="divGetCostosAusentismo"></div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="card card-primary card-outline">
+
+                        @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Información de la incapacidad")
+
+                        <div class="card-body pt-0">
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="ausentismoEmpleadoNombre">Empleado<span class="text-danger">*</span></label>
+                                        <div class="input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="ausentismoEmpleadoNombre" value="@Model.Empleados.StrNombreCompleto" placeholder="Ingrese aquí la fecha de la incapacidad..." autocomplete="off" readonly required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted border-left-0">
+                                                    <i class="fas fa-user"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="ausentismoTipoEvento">Tipo de evento<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            @Html.DropDownList("listaTipoEventos", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "ausentismoTipoEvento", placeholder = "-- Seleccione una opción", required = "required" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="ausentismoFecha">Fecha de incapacidad<span class="text-danger">*</span></label>
+                                        <div class="input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="ausentismoFecha" value="@Model.DatFechaInicial.ToString("yyyy-MM-dd") - @Model.DatFechaFinal.ToString("yyyy-MM-dd")" placeholder="Ingrese aquí la fecha de la incapacidad..." autocomplete="off" required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <i class="fas fa-calendar-check"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="ausentismoProrroga">Agregar prórroga</label>
+                                        <div class="input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="ausentismoProrroga" placeholder="Ingrese aquí la fecha prorroga..." autocomplete="off" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <i class="fas fa-calendar-check"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12">
+                                    <div id="divGetProrrogas">
+
+                                        @if (Model.AusentismoProrrogas.Count() != 0)
+                                        {
+                                            @Html.Partial("_GetProrrogas", Model.AusentismoProrrogas.ToList())
+                                        }
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="ausentismoCodigoDiagnostico">Código del diagnóstico<span class="text-danger">*</span></label>
+                                        <div class="input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="ausentismoCodigoDiagnostico" value="@Model.Diagnosticos.StrCodigo" data-diagnosticoid="@Model.Diagnosticos.IntDiagnosticoID" placeholder="Ingrese aquí el código de diagnóstico..." autocomplete="off" required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <i class="fas fa-search"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span class="text-sm text-red" id="mensajeErrorDiagnostico"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="ausentismoBtnBuscarCodigo">&nbsp;</label>
+                                        <button type="button" class="btn btn-outline-primary btn-block" id="ausentismoBtnBuscarCodigo" data-toggle="tooltip" data-placement="top" title="Buscar código del diagnóstico"><i class="fas fa-search mr-1"></i>Buscar diagnóstico</button>
+                                        <span class="text-sm text-red" id="mensajeErrorDiagnostico"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="ausentismoDescripcionDiagnostico">Descripción del diagnostico</label>
+                                        <div class="input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="ausentismoDescripcionDiagnostico" value="@Model.Diagnosticos.StrDescripcion" placeholder="Descripción del diganóstico..." autocomplete="off" readonly required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted border-left-0">
+                                                    <i class="fas fa-tags"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="ausentismoDiasProrroga">Observaciones</label>
+                                        <div class=" input-group with-focus">
+                                            <textarea class="form-control border-right-0" rows="4" id="ausentismoObservaciones" placeholder="Ingrese aquí las observaciones de la incapacidad..." maxlength="500">@Model.StrObservaciones</textarea>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <i class="fas fa-check"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        @Html.Partial("_Card_Footer")
+
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        elementosComunesAusentismoUsuarios.index();
+        ausentismoCRUD.registrarAusentismoAsync();
+        ausentismoCRUD.getCostosAusentismoAsync();
+
+        $("#btnAtras").click(function () {
+            ausentismoCRUD.getAllAusentismoAsync();
+        });
+
+
+
+    });
+
+
+</script>
+
+
+

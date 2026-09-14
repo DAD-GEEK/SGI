@@ -1,0 +1,106 @@
+﻿@{
+    Layout = null;
+}
+
+<input type="hidden" id="auditoriaDetalleACID" value="0" />
+
+<div class="modal-dialog " style=" max-width:600px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Programación plan de auditoría" }, { "icono", "fas fa-cogs" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarDetalleACGlobal">
+                @Html.AntiForgeryToken()
+                <div class="modal-body pt-1">
+                    <div class="container-fluid">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="auditoriaDetalleACFecha">Fecha<span class="text-danger">*</span></label>
+                                    <div class="input-group with-focus">
+                                        <input class="form-control border-right-0 fechaIndividual" type="text" id="auditoriaDetalleACFecha" placeholder="Fecha ingreso..." autocomplete="off" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <i class="fas fa-calendar-check"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="auditoriaDetalleACHoraInicial">Hora inicial<span class="text-danger">*</span></label>
+                                    <div class="input-group date with-focus" id="datetimepickerInicial">
+                                        <input type="text" class="form-control border-right-0" placeholder="Hora inicial..." title="" id="auditoriaDetalleACHoraInicial" autocomplete="off" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <i class="fas fa-clock"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="auditoriaDetalleACHoraFinal">Hora final<span class="text-danger">*</span></label>
+                                    <div class="input-group date with-focus" id="datetimepickerFinal">
+                                        <input type="text" class="form-control border-right-0" placeholder="Hora final..." title="" id="auditoriaDetalleACHoraFinal" autocomplete="off" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <i class="fas fa-clock"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="auditoriaDetalleACDetalle">Detalle<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <textarea class="form-control border-right-0" type="text" id="auditoriaDetalleACDetalle" rows="3" placeholder="Ingrese aquí el detalle del evento..." autocomplete="off" maxlength="200" required></textarea>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-users-cog"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                @Html.Partial("_Modal_Footer")
+
+            </form>
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {       
+        auditoriaDetalleACCRUD.guardarDetalleAperturaCierreAsync();
+    });
+
+</script>

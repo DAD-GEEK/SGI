@@ -1,0 +1,83 @@
+﻿@{
+    Layout = null;
+}
+
+<input type="hidden" id="documentoDiganosticoID" value="0" />
+
+<div class="modal-dialog" style="max-width:500px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="frmCrearDocumento">
+
+                @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Crear documento diagnóstico" }, { "icono", "fas fa-clipboard-check" } })
+
+                <div class="modal-body pt-1" style="overflow-y:auto!important; max-height: 70vh !important;">
+
+                    <div class="container-fluid">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="documentoFecha">Fecha documento<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 fechaIndividual" type="text" id="documentoFecha" placeholder="Ingrese aquí la fecha del documento..." autocomplete="off" maxlength="10" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-calendar-check"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-footer bg-light">
+
+                    <div class="row">
+
+                        <div class="col-12 col-md-6">
+                            <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Volver a la vista anterior"><i class="fas fa-undo-alt mr-1"></i>Cerrar</button>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <button type="submit" class="btn btn-outline-primary btn-block" data-toggle="tooltip" data-placement="top" title="Generar documento diagnóstico"><i class="fas fa-cloud-upload-alt mr-1"></i>Generar</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        documentosDiagnosticoCRUD.crearDocumento();
+
+    });
+
+
+</script>
+
+
+

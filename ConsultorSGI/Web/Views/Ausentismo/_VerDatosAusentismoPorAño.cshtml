@@ -1,0 +1,32 @@
+﻿20022
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        elementosComunesAusentismoUsuarios.index();
+        ausentismoCRUD.registrarAusentismoAsync();
+
+        var diasProrroga = $("#ausentismoDiasProrroga");
+        diasProrroga.keyup(function () {
+
+            var valor = $(this).val();
+            console.log(valor);
+            if (valor.length == 0 || valor == '') {
+                $(this).val("0");
+                valor = 0;
+            }
+
+            $(this).val(parseInt(valor));
+            ausentismoCRUD.calcularTiempoAusentismo();
+        });
+
+    });
+
+
+</script>
+
+
+

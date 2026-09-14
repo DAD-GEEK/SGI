@@ -1,0 +1,187 @@
+﻿@model Models.Modulos
+
+@{
+    Layout = null;
+}
+
+<input type="hidden" id="moduloRegistroID" value="@Model.IntModuloID" />
+
+<div class="modal-dialog " style=" max-width:800px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", $"{Model.StrModulo}" }, { "icono", "fas fa-laptop" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <div class="modal-body pt-1">
+                <div class="container-fluid">
+                    <div class="card-header pl-0 pr-0 pt-0 mb-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#general" data-toggle="tab">General</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#detalle" data-toggle="tab">Detalle</a></li>
+                        </ul>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="general">
+                                <form id="formEditarGlobal">
+                                    @Html.AntiForgeryToken()
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="moduloNombre">Nombre del módulo<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="moduloNombre" placeholder="Nombre del módulo..." value="@Model.StrModulo" autocomplete="off" maxlength="50" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-laptop"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="moduloOrden">Orden en el menú<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 numerico" type="number" id="moduloOrden" value="@Model.TIntOrden" placeholder="Orden en el menú..." autocomplete="off" min="0" max="255" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-sort-amount-down-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="moduloDescripcion">Descripción<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 validarParsley" type="text" id="moduloDescripcion" value="@Model.StrDescripcion" placeholder="Descripción del módulo..." autocomplete="off" maxlength="200" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-tags"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="moduloIcono">Ícono<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 validarParsley" type="text" id="moduloIcono" value="@Model.StrIcono" placeholder="Icono del módulo..." autocomplete="off" maxlength="50" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-icons"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group  ">
+                                                <div class="form-group clearfix">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="checkbox" id="moduloActivo" checked="@Model.BitActivo">
+                                                        <label for="moduloActivo">
+                                                            ¿Activo?
+                                                        </label>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </form>
+
+
+                            </div>
+
+                            <div class="tab-pane" id="detalle">
+                                <div id="divGetAllModulosDetalle"></div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @Html.Partial("_Modal_Footer")
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(function () {
+
+        var moduloID = $("#moduloRegistroID").val();
+        modulosCRUD.updateModuloAsync();
+        modulosDetalleCRUD.getAllModulosDetalleAsync(moduloID);
+
+        $('#moduloFecha').daterangepicker({
+            "singleDatePicker": true,
+            "showDropdowns": true,
+            "minYear": 1901,
+            "maxYear": parseInt(moment().format('YYYY'), 10),
+            "locale": {
+                "format": "YYYY-MM-DD",
+                "separator": " - ",
+                "applyLabel": "Guardar",
+                "cancelLabel": "Cancelar",
+                "fromLabel": "Desde",
+                "toLabel": "Hasta",
+                "customRangeLabel": "Personalizar",
+                "daysOfWeek": [
+                    "Do",
+                    "Lu",
+                    "Ma",
+                    "Mi",
+                    "Ju",
+                    "Vi",
+                    "Sa"
+                ],
+                "monthNames": [
+                    "Enero",
+                    "Febrero",
+                    "Marzo",
+                    "Abril",
+                    "Mayo",
+                    "Junio",
+                    "Julio",
+                    "Agosto",
+                    "Setiembre",
+                    "Octubre",
+                    "Noviembre",
+                    "Diciembre"
+                ],
+            },
+
+            "opens": "center"
+        });
+
+    });
+
+</script>
+

@@ -1,0 +1,135 @@
+﻿<input type="hidden" id="ausentismoVariableID" value="0" />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobal">
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline">
+
+                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Agregar variable")
+
+                <div class="card-body pt-0">
+                    <div class="row">
+
+                        <div class="col-md-3 col-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="turnoCodigo">Año<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0 numerico" type="text" id="ausentismoVariableAnio" value="@DateTime.Now.Year" placeholder="Ingrese aquí el código..." autocomplete="off" maxlength="4" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-cogs"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="ausentismoVariablePeriodo">Mes<span class="text-danger">*</span></label>
+                                <div class="input-group with-focus">
+                                    <select class="form-control" id="ausentismoVariablePeriodo" required>
+                                        <option value="1">Enero</option>
+                                        <option value="2">Febrero</option>
+                                        <option value="3">Marzo</option>
+                                        <option value="4">Abril</option>
+                                        <option value="5">Mayo</option>
+                                        <option value="6">Junio</option>
+                                        <option value="7">Julio</option>
+                                        <option value="8">Agosto</option>
+                                        <option value="9">Septiembre</option>
+                                        <option value="10">Octubre</option>
+                                        <option value="11">Noviembre</option>
+                                        <option value="12">Diciembre</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="ausentismoVariableTotalEmpleados">Total empleados activos<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0 numerico" type="text" id="ausentismoVariableTotalEmpleados" value="@ViewBag.cantidadEmpleadosActivos" placeholder="Ingrese aquí el total de empleados..." autocomplete="off" maxlength="6" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-sort-numeric-up-alt"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="ausentismoVariableTotalHorasHombreProgramadas">Horas hombres programadas<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0 numerico" type="text" id="ausentismoVariableTotalHorasHombreProgramadas" placeholder="Ingrese aquí el total de horas hombre..." autocomplete="off" maxlength="6" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-sort-numeric-up-alt"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2 col-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="ausentismoVariableTotalHorasHombre">Horas hombres trabajadas<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0 numerico" type="text" id="ausentismoVariableTotalHorasHombre" placeholder="Ingrese aquí el total de horas hombre..." autocomplete="off" maxlength="6" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-sort-numeric-up-alt"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Card_Footer")
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#btnAtras").click(function () {
+            ausentismoVariablesCRUD.getAllAusentismoVariablesAsync();
+        });
+
+        var fechaActual = new Date();
+        var mesActual = fechaActual.getMonth() + 1;
+        $("#ausentismoVariablePeriodo option[value='" + mesActual + "']").attr("selected", true);
+        ausentismoVariablesCRUD.GuardarAusentismoVariableAsync();
+
+    });
+
+
+</script>
+
+
+

@@ -1,0 +1,370 @@
+﻿
+<a href="@Url.Action("Index","Home")" class="brand-link text-center">
+    @*<img src="~/Content/images/logo_circular.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">*@
+    <span class="brand-text font-weight-light "><b class="h4">Consultor</b><b class="text-primary font-weight-bold h1"> SGI</b></span>
+</a>
+
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        @*<div class="image">
+                <img src="@Model.TerceroImagen" class="img-circle elevation-2" alt="Logo empresa">
+            </div>*@
+        <div class="info" style="word-wrap: break-word!important;">
+            <a href="#" class="text-sm"></a>
+        </div>
+    </div>
+
+    <!-- SidebarSearch Form -->
+    <div class="form-inline">
+        <div class="input-group" data-widget="sidebar-search">
+            <input class="form-control form-control-sidebar" type="search" placeholder="Buscar" aria-label="Search">
+            <div class="input-group-append">
+                <button class="btn btn-sidebar">
+                    <i class="fas fa-search fa-fw"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-0">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
+
+            <li class="nav-header">CONSULTOR SGI</li>
+
+
+
+
+            <!--</ul>
+                </li>
+            }-->
+
+
+
+
+            <li class="nav-item">
+                <a href="@Url.Action("Index","Terceros")" class="nav-link menuTerceros">
+                    <i class="nav-icon fas fa-users-cog"></i>
+                    <p>
+                        Terceros
+                        <span class="right badge badge-danger">New</span>
+                    </p>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
+                    <p>
+                        Normas
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>SG Calidad</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>SG Ambiental</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>SG SST</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>SG Integral</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                    <i class="nav-icon fas fa-book-reader"></i>
+                    <p>
+                        Resolución 0312:2019
+                        <span class="right badge badge-danger">New</span>
+                    </p>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                    <i class="nav-icon fas fas fa-user-times"></i>
+                    <p>
+                        Autentismo
+                        <span class="right badge badge-danger">New</span>
+                        <i class="right fas fa-angle-left"></i>
+
+                    </p>
+                </a>
+
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index","Empleados")" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Perfil Sociodemográfico</p>
+
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                    <i class="nav-icon fas fas fa-code-branch"></i>
+                    <p>
+                        RC&ACPM
+                        <span class="right badge badge-success">Nuevo</span>
+                    </p>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                    <i class="nav-icon fas fa-book"></i>
+                    <p>
+                        Informes
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>SG Calidad</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>SG Ambiental</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>SG SST</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>SG Integral</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+
+            <li class="nav-header">INFORMATIVO</li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                    <i class="nav-icon far fa-circle text-info"></i>
+                    <p>Manual de usuario</p>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+
+@*<script type="text/javascript">
+        $('ul').Treeview();
+
+
+        $(document).ready(function () {
+
+        });
+
+    </script>*@
+
+
+
+@*<div id="divMenuDinamico"></div>*@
+
+@*<div class="sidebar">
+
+        <nav class="mt-0">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                <li class="nav-header">CONSULTOR SGI</li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user-lock"></i>
+                        <p>
+                            Administrador
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="@Url.Action("Index","Seguridad")" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Seguridad</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="nav-item">
+                    <a href="@Url.Action("Index","Terceros")" class="nav-link menuTerceros">
+                        <i class="nav-icon fas fa-users-cog"></i>
+                        <p>
+                            Terceros
+                            <span class="right badge badge-danger">New</span>
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>
+                            Normas
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>SG Calidad</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>SG Ambiental</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>SG SST</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>SG Integral</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                        <i class="nav-icon fas fa-book-reader"></i>
+                        <p>
+                            Resolución 0312:2019
+                            <span class="right badge badge-danger">New</span>
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                        <i class="nav-icon fas fas fa-user-times"></i>
+                        <p>
+                            Autentismo
+                            <span class="right badge badge-danger">New</span>
+                            <i class="right fas fa-angle-left"></i>
+
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="@Url.Action("Index","Empleados")" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Perfil Sociodemográfico</p>
+
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                        <i class="nav-icon fas fas fa-code-branch"></i>
+                        <p>
+                            RC&ACPM
+                            <span class="right badge badge-success">Nuevo</span>
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                        <i class="nav-icon fas fa-book"></i>
+                        <p>
+                            Informes
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>SG Calidad</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>SG Ambiental</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>SG SST</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>SG Integral</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+
+                <li class="nav-header">INFORMATIVO</li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("ModuloEnMantenimiento","Home")" class="nav-link">
+                        <i class="nav-icon far fa-circle text-info"></i>
+                        <p>Manual de usuario</p>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>*@
+
+
+
+

@@ -1,0 +1,31 @@
+﻿@model List<Models.AusentismoProrrogas>
+
+<span class="font-weight-bold">Prórrogas</span>
+@{ 
+    int contadorProrrogas = 0;
+    int contadorDias = 0;
+}
+<ul>
+   @foreach (var item in Model)
+   {
+       contadorProrrogas++;
+       contadorDias = contadorDias + Convert.ToInt32(item.DatFechaFinal.Subtract(item.DatFechaInicial).Days) + 1;
+
+       <li><a href="#" onclick="ausentismoCRUD.deleteProrrogaAsync(@item.IntProrrogaID)"><i class="fas fa-times text-danger mr-1"></i></a> <span class="text-primary font-weight-bold">Prórroga N° @contadorProrrogas: </span>  @item.DatFechaInicial.ToString(" dddd dd MMMM yyyy") - @item.DatFechaFinal.ToString("dddd dd MMMM yyyy") <span class="font-weight-bold font-italic"> (@Convert.ToInt32(item.DatFechaFinal.Subtract(item.DatFechaInicial).Days + 1) días)</span> </li>
+   }
+</ul>
+
+<input type="hidden" id="totalDiasProrroga" value="@contadorDias" />
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var diasIncapacidad = $("#lblAusentismoDiasIncapacidad").html();
+        var diasProrroga = $("#totalDiasProrroga").val();
+
+        $("#lblAusentismoDiasProrroga").html(diasProrroga);
+        $("#lblAusentismoTotalDiasIncapacidad").html(parseInt(diasIncapacidad) + parseInt(diasProrroga));
+
+    });
+
+</script>

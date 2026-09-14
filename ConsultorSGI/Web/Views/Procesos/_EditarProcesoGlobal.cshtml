@@ -1,0 +1,142 @@
+﻿@using Models.DTO;
+@model Models.Procesos
+
+<input type="hidden" id="procesoID" value="@Model.IntProcesoID" />
+<input type="hidden" id="procesoNombre" value="@Model.StrDescripcion" />
+<input class="d-none" type="checkbox" id="esVistaGlobal" checked />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobalPR" method="post" action="#">
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline">
+
+                @*<div class="card-header p-2">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a class="nav-link active" href="#proceso" data-toggle="tab" id="labelProceso">Proceso</a></li>
+                <li class="nav-item"><a class="nav-link" href="#listasVerificacion" data-toggle="tab" id="labelListasVerificacion">Listas de verificación</a></li>
+
+            </ul>
+        </div>*@
+
+                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = $"Proceso: {Model.StrCodigo} - {Model.StrDescripcion}")
+
+                <div class="card-body pt-2 pb-0">
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="procesoCodigo">Código<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="procesoCodigo" value="@Model.StrCodigo" placeholder="Ingrese aquí el código..." autocomplete="off" maxlength="5" data-parsley-type="alphanum" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-cogs"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="procesoDescripcion">Descripción<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="procesoDescripcion" value="@Model.StrDescripcion" placeholder="Ingrese aquí la descripción..." autocomplete="off" maxlength="200" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-tags"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group  ">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-primary d-inline">
+                                        <input type="checkbox" id="procesoActivo" checked="@Model.BitActivo">
+                                        <label for="procesoActivo">
+                                            ¿Activo?
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Listas de verificación" } })
+
+                <div class="card-header fondoOscuroSGI card-no-radius">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-outline-light" name="True" data-toggle="modal" id="btnAgregarItem"><i class="fas fa-list-alt"></i>&nbsp;&nbsp;Agregar item a la lista&nbsp;&nbsp;</button>                          
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-body">
+
+                    <div id="divPlantillaDetalle">
+                    </div>
+
+                </div>
+
+
+                @Html.Partial("_Card_Footer")
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var terceroGlobal = 0;
+        var esVistaGlobal = true;
+        var procesoID = $("#procesoID").val();
+        var procesoNombre = $("#procesoNombre").val();
+        var btnAgregarItem = $("#btnAgregarItem");
+
+        btnAgregarItem.click(function () {
+            plantillaListasDeVerificacionDetalleCRUD.crearPlantillaListaDeVerificacionDetalle(procesoID, procesoNombre, esVistaGlobal);
+        });
+
+        $("#btnAtras").click(function () {
+            procesosCRUD.getAllProcesosAsync(terceroGlobal, esVistaGlobal)
+        });
+
+        procesosCRUD.guardarProcesoAsync(esVistaGlobal);
+
+        plantillaListasDeVerificacionDetalleCRUD.getAllPlantillasListasDeVerificacionDetalleAsync(procesoID, esVistaGlobal);
+
+    });
+
+
+</script>
+
+
+

@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{52BB7CFE-9A4E-4E16-9B12-E47AB995A418}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CoreBusiness</RootNamespace>
+    <AssemblyName>CoreBusiness</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.8.9\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.3.2.10, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.3.2\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="LinqToExcel, Version=1.11.0.0, Culture=neutral, PublicKeyToken=9c8ea65a58f03f1f, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqToExcel.1.11.0\lib\LinqToExcel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI, Version=2.5.5.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.5.5\lib\net45\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.5.5.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.5.5\lib\net45\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.5.5.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.5.5\lib\net45\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.5.5.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.5.5\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqToExcel.1.11.0\lib\Remotion.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Data.Linq, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqToExcel.1.11.0\lib\Remotion.Data.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Interfaces, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqToExcel.1.11.0\lib\Remotion.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.8\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Archivos.cs" />
+    <Compile Include="AspNetTercerosRolesCoreBusiness.cs" />
+    <Compile Include="AspNetRolesCoreBusiness.cs" />
+    <Compile Include="AspNetUsersCoreBusiness.cs" />
+    <Compile Include="AusentismoIndicadores_InformacionPorEmpresaCoreBusiness.cs" />
+    <Compile Include="ListasDeVerificacion_RequisitosCoreBusiness.cs" />
+    <Compile Include="DocumentosDiagnosticoDetalle_PlanesDeAccionCoreBusiness.cs" />
+    <Compile Include="DocumentosDiagnosticoDetalleCoreBusiness.cs" />
+    <Compile Include="DocumentosDiagnosticoCoreBusiness.cs" />
+    <Compile Include="DocumentosDiagnosticoPasos_NivelesCoreBusiness.cs" />
+    <Compile Include="DocumentosDiagnosticoPasos_DocumentoEvidenciaCoreBusiness.cs" />
+    <Compile Include="DocumentosDiagnosticoPasos_CriteriosCoreBusiness.cs" />
+    <Compile Include="DocumentosDiagnosticoPasosCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAusentismoIndicadores_InformacionPorEmpresaCoreBusiness.cs" />
+    <Compile Include="Interfaces\IListasDeVerificacion_RequisitosCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITerceros_ClientesCoreBusiness.cs" />
+    <Compile Include="NivelesDeRiesgoCoreBusiness.cs" />
+    <Compile Include="FuncionesGlobalesCoreBusiness.cs" />
+    <Compile Include="AusentismoProrrogasCoreBusiness.cs" />
+    <Compile Include="Interfaces\INivelesDeRiesgoCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAusentismoIndicadoresCoreBusiness.cs" />
+    <Compile Include="Interfaces\IDocumentosDiagnosticoDetalle_PlanesDeAccionCoreBusiness.cs" />
+    <Compile Include="Interfaces\IDocumentosDiagnosticoDetalleCoreBusiness.cs" />
+    <Compile Include="Interfaces\IDocumentosDiagnosticoCoreBusiness.cs" />
+    <Compile Include="Interfaces\IDocumentosDiagnosticoPasos_NivelesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IDocumentosDiagnosticoPasos_DocumentoEvidenciaCoreBusiness.cs" />
+    <Compile Include="Interfaces\IDocumentosDiagnosticoPasos_CriteriosCoreBusiness.cs" />
+    <Compile Include="Interfaces\IFasesCoreBusiness.cs" />
+    <Compile Include="Interfaces\INivelesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAusentismoProrrogasCoreBusiness.cs" />
+    <Compile Include="Interfaces\IElementosComunes_DetalleCoreBusiness.cs" />
+    <Compile Include="Interfaces\IElementosComunes_Detalle_NumeralesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IElementosComunes_NormasCoreBusiness.cs" />
+    <Compile Include="ElementosComunes_NormasCoreBusiness.cs" />
+    <Compile Include="ElementosComunes_Detalle_NumeralesCoreBusiness.cs" />
+    <Compile Include="ElementosComunes_DetalleCoreBusiness.cs" />
+    <Compile Include="ElementosComunesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IFuncionesGlobalesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IPlantillasListasDeVerificacionDetalleCoreBusiness.cs" />
+    <Compile Include="Interfaces\IPlantillasListasDeVerificacion_NumeralesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IElementosComunesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IDocumentosDiagnosticoPasosCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITerceros_SistemasDeGestion_NormasCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITerceros_SistemasDeGestionCoreBusiness.cs" />
+    <Compile Include="Interfaces\ISistemasDeGestionCoreBusiness.cs" />
+    <Compile Include="FasesCoreBusiness.cs" />
+    <Compile Include="NivelesCoreBusiness.cs" />
+    <Compile Include="PlantillasListasDeVerificacion_NumeralesCoreBusiness.cs" />
+    <Compile Include="PlantillasListasDeVerificacionDetalleCoreBusiness.cs" />
+    <Compile Include="ListasDeVerificacionCoreBusiness.cs" />
+    <Compile Include="AuditoriasDetalleACCoreBusiness.cs" />
+    <Compile Include="AuditoriasDetalleCoreBusiness.cs" />
+    <Compile Include="Auditorias_ProcesosCoreBusiness.cs" />
+    <Compile Include="Auditorias_NormasCoreBusiness.cs" />
+    <Compile Include="AusentismoIndicadoresCoreBusiness.cs" />
+    <Compile Include="AusentismoVariablesCoreBusiness.cs" />
+    <Compile Include="AusentismoCoreBusiness.cs" />
+    <Compile Include="AusentismoTiemposCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAuditoriasDetalleACCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAuditoriasDetalleCoreBusiness.cs" />
+    <Compile Include="Interfaces\IListasDeVerificacionCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITerceros_NormasCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAuditorias_ProcesosCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAuditorias_NormasCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAuditoriasCoreBusiness.cs" />
+    <Compile Include="Interfaces\INormasCoreBusiness.cs" />
+    <Compile Include="Interfaces\INumeralesCoreBusiness.cs" />
+    <Compile Include="Servicios\ServicioUsuarioCoreBusiness.cs" />
+    <Compile Include="Terceros_ClientesBusiness.cs" />
+    <Compile Include="Terceros_SistemasDeGestion_NormasCoreBusiness.cs" />
+    <Compile Include="Terceros_SistemasDeGestionCoreBusiness.cs" />
+    <Compile Include="Terceros_NormasCoreBusiness.cs" />
+    <Compile Include="AuditoriasCoreBusiness.cs" />
+    <Compile Include="NumeralesCoreBusiness.cs" />
+    <Compile Include="NormasCoreBusiness.cs" />
+    <Compile Include="Interfaces\IProcesosCoreBusiness.cs" />
+    <Compile Include="ProcesosCoreBusiness.cs" />
+    <Compile Include="AreasCoreBusiness.cs" />
+    <Compile Include="ConfiguracionPorTerceroCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAreasCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAspNetTerceroRolesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAusentismoTiemposCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAusentismoVariablesCoreBusiness.cs" />
+    <Compile Include="Interfaces\ICommonCoreBusiness.cs" />
+    <Compile Include="Interfaces\IConfiguracionPorTerceroCoreBusiness.cs" />
+    <Compile Include="Interfaces\IEmailCoreBusiness.cs" />
+    <Compile Include="Interfaces\IManageCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITiposContratoCoreBusiness.cs" />
+    <Compile Include="ManageCoreBusiness.cs" />
+    <Compile Include="TipoEventosAusentismoCoreBusiness.cs" />
+    <Compile Include="CommonCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAusentismoCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITipoEventosAusentismoCoreBusiness.cs" />
+    <Compile Include="ModulosPorRolCoreBusiness.cs" />
+    <Compile Include="CentrosDeTrabajoCoreBusiness.cs" />
+    <Compile Include="CargosCoreBusiness.cs" />
+    <Compile Include="DiagnosticosCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAspNetRolesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IModulosDetalleCoreBusiness.cs" />
+    <Compile Include="Interfaces\IModulosCoreBusiness.cs" />
+    <Compile Include="Interfaces\IModulosPorRolCoreBusiness.cs" />
+    <Compile Include="Interfaces\ISeguridadCoreBusiness.cs" />
+    <Compile Include="ModulosDetalleCoreBusiness.cs" />
+    <Compile Include="ModulosCoreBusiness.cs" />
+    <Compile Include="EstratosCoreBusiness.cs" />
+    <Compile Include="FilesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IAspNetUsersCoreBusiness.cs" />
+    <Compile Include="Interfaces\IDiagnosticosCoreBusiness.cs" />
+    <Compile Include="Interfaces\IEstratosCoreBusiness.cs" />
+    <Compile Include="Interfaces\IFilesCoreBusiness.cs" />
+    <Compile Include="SeguridadCoreBusiness.cs" />
+    <Compile Include="TiposFondoCoreBusiness.cs" />
+    <Compile Include="FondosCoreBusiness.cs" />
+    <Compile Include="Interfaces\IFondosCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITiposFondoCoreBusiness.cs" />
+    <Compile Include="TiposContratoCoreBusiness.cs" />
+    <Compile Include="SistemasDeGestionCoreBusiness.cs" />
+    <Compile Include="TurnosCoreBusiness.cs" />
+    <Compile Include="EstadosCivilesCoreBusiness.cs" />
+    <Compile Include="EscolaridadesCoreBusiness.cs" />
+    <Compile Include="Interfaces\ICargosCoreBusiness.cs" />
+    <Compile Include="Interfaces\ICentrosDeTrabajoCoreBusiness.cs" />
+    <Compile Include="Interfaces\IEscolaridadesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IEstadosCivilesCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITipoIdentificacionCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITurnosCoreBusiness.cs" />
+    <Compile Include="TipoIdentificacionCoreBusiness.cs" />
+    <Compile Include="EmpleadosCoreBusiness.cs" />
+    <Compile Include="Interfaces\ICiudadesCoreBusiness.cs" />
+    <Compile Include="Interfaces\IEmpleadosCoreBusiness.cs" />
+    <Compile Include="Interfaces\ILogsExceptionCoreBusiness.cs" />
+    <Compile Include="Interfaces\IParametrosCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITercerosCoreBusiness.cs" />
+    <Compile Include="Interfaces\ITercerosUsuariosCoreBusiness.cs" />
+    <Compile Include="LogsExceptionCoreBusiness.cs" />
+    <Compile Include="ParametrosCoreBusiness.cs" />
+    <Compile Include="EmailCoreBusiness.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AccountCoreBusiness.cs" />
+    <Compile Include="CiudadesCoreBusiness.cs" />
+    <Compile Include="TercerosUsuariosCoreBusiness.cs" />
+    <Compile Include="TercerosCoreBusiness.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Across\Across.csproj">
+      <Project>{19e88a3a-a499-4201-9c92-3c3fa426a5fa}</Project>
+      <Name>Across</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+      <Project>{10a280cb-80e3-4211-8c0b-12585f642be1}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Models\Models.csproj">
+      <Project>{50aeef56-04c6-44a6-a5a8-6638cf485704}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+</Project>

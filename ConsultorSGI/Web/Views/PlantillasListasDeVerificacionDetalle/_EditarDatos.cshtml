@@ -1,0 +1,40 @@
+﻿@using Models.DTO;
+@model Models.PlantillasListasDeVerificacionDetalle
+
+@{
+    Layout = null;
+}
+
+<form id="formGuardarDetalleGlobal" method="post" action="#">
+    @Html.AntiForgeryToken()
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="form-control-label font-weight-bold" for="plantillaDetalleDescripcion">Descripción<span class="text-danger">*</span></label>
+                <div class=" input-group with-focus">
+                    <input class="form-control border-right-0" type="text" id="plantillaDetalleDescripcion" value="@Model.StrTitulo" placeholder="Ingrese aquí el nombre del item de la lista de verificación..." autocomplete="off" maxlength="100" required />
+                    <div class="input-group-append">
+                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                            <em class="fas fa-tags"></em>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+<div>
+
+    @{
+        NumeralesGenericosDTO numeralesGenericosDTO = new NumeralesGenericosDTO();
+        numeralesGenericosDTO.TerceroID = Model.Procesos.IntTerceroClienteID;
+        numeralesGenericosDTO.ProcesoID = Model.IntProcesoID;
+        numeralesGenericosDTO.RegistroID = Model.IntPlantillaDetalleID;
+        numeralesGenericosDTO.Controlador = "PlantillasListasDeVerificacionDetalle";
+    }
+
+    @Html.Partial("_SeleccionarNumerales_Inicial", numeralesGenericosDTO)
+
+</div>

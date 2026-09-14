@@ -1,0 +1,81 @@
+﻿@model Models.Procesos
+
+@{
+    Layout = null;
+}
+
+<input type="hidden" id="procesoID" value="@Model.IntProcesoID" />
+
+<div class="modal-dialog " style=" max-width: 1000px !important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h5" id="myModalLabel"><span class=""><em class="fa fa-cogs text-gray "></em></span>&nbsp; @Model.StrCodigo - @Model.StrDescripcion</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+
+
+            <div class="modal-body" style="overflow-y: auto!important; max-height: 70vh !important;">
+                <div class="container-fluid">
+
+                    <div id="divGetProcesosNumerales"></div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+
+                                <div class="col-xs-12 col-md-6">
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark"><i class="fas fa-undo-alt mr-1"></i>Cancelar</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var procesoID = '@Model.IntProcesoID';
+        var normaID = 0;
+        procesosCRUD.vistaObtenerNumeralesPorProcesoAsync(procesoID, normaID);
+    });
+
+
+</script>
+
+
+

@@ -1,0 +1,111 @@
+﻿@model Models.DTO.AusentismoCostosDTO
+
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    <ul class="list-group list-group-unbordered mb-3">
+        <li class="list-group-item pt-1 pb-1">
+            Días de incapacidad <a class="float-right" id="lblAusentismoDiasIncapacidad">@Model.DiasIncapacidad</a>
+        </li>
+        <li class="list-group-item pt-1 pb-1">
+            Días de prórroga <a class="float-right" id="lblAusentismoDiasProrroga">@Model.DiasProrroga</a>
+        </li>
+        <li class="list-group-item">
+            <i class="fas fa-plus text-primary mr-1"></i> <b>Total días incapacidad</b> <a class="float-right font-weight-bold" id="lblAusentismoTotalDiasIncapacidad">@Model.TotalDiasIncapacidad</a>
+        </li>
+
+        <li class="list-group-item pt-1 pb-1">
+            <i class="fas fa-hand-holding-usd mr-1 text-primary"></i> Salario base <a class="float-right">
+                @if (string.IsNullOrEmpty(Convert.ToInt32(Model.Salario.Value).ToString("#,##")))
+                {
+                    <span>$0</span>
+                }
+                else
+                {
+                    <span>$@Convert.ToInt32(Model.Salario.Value).ToString("#,##")</span>
+                }
+            </a>
+        </li>
+        <li class="list-group-item pt-1 pb-1">
+            <i class="fas fa-hand-holding-usd mr-1 text-primary"></i> Salario x día <a class="float-right">
+                @if (string.IsNullOrEmpty(Convert.ToInt32(Model.SalarioBaseDia.Value).ToString("#,##")))
+                {
+                    <span>$0</span>
+                }
+                else
+                {
+                    <span>$@Convert.ToInt32(Model.SalarioBaseDia.Value).ToString("#,##")</span>
+                }
+            </a>
+        </li>
+        <li class="list-group-item pt-1 pb-1">
+            <i class="fas fa-calendar-check mr-1 text-success"></i> Total días asegurados <a class="float-right">@Model.DiasAsegurados</a>
+        </li>
+
+        <li class="list-group-item pt-1 pb-1">
+            <i class="fas fa-dollar-sign mr-1 text-success"></i> Costos asegurados <a class="float-right">
+                @if (string.IsNullOrEmpty(Convert.ToInt32(Model.CostosAsegurados.Value).ToString("#,##")))
+                {
+                    <span>$0</span>
+                }
+                else
+                {
+                    <span>$@Convert.ToInt32(Model.CostosAsegurados.Value).ToString("#,##")</span>
+                }
+            </a>
+        </li>
+
+        <li class="list-group-item pt-1 pb-1">
+            <i class="fas fa-calendar-check mr-1 text-danger"></i> Días asumidos por la empresa <a class="float-right">@Model.DiasAsumidos</a>
+        </li>
+
+        <li class="list-group-item pt-1 pb-1">
+            <i class="fas fa-dollar-sign mr-1 text-danger"></i> Costos asumidos por la empresa <a class="float-right">
+                @if (string.IsNullOrEmpty(Convert.ToInt32(Model.CostosAsumidos.Value).ToString("#,##")))
+                {
+                    <span>$0</span>
+                }
+                else
+                {
+                    <span>$@Convert.ToInt32(Model.CostosAsumidos.Value).ToString("#,##")</span>
+                }
+            </a>
+        </li>
+
+        <li class="list-group-item">
+            <i class="fas fa-plus text-primary mr-1"></i> <b>Total costo incapacidad</b> <a class="float-right font-weight-bold">
+                @if (string.IsNullOrEmpty(Convert.ToInt32(Model.Salario.Value).ToString("#,##")) || string.IsNullOrEmpty(Convert.ToInt32(Model.TotalDiasIncapacidad).ToString("#,##")))
+                {
+                    <span>$0</span>
+                }
+                else
+                {
+                    <span>$@Convert.ToInt32(Model.CostosAsegurados + Model.CostosAsumidos).ToString("#,##")</span>
+                }
+            </a>
+        </li>
+
+    </ul>
+
+
+
+}
+
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+    });
+
+
+</script>

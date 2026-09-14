@@ -1,0 +1,96 @@
+﻿@model List<Models.DTO.AusentismoIndicadoresDTO>
+
+@{
+    string claseActivePestana = "active";
+    string claseActiveCuerpo = "active";
+}
+
+<input type="hidden" id="ausentismoIndicaroresAnio" value="@ViewBag.anioActual" />
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center m-2" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    <div class="card-header pt-2 mt-0">
+        <ul class="nav nav-pills">
+
+            @foreach (var item in Model.OrderBy(x => x.IntOrdenamiento))
+            {
+                <li class="nav-item"><a class="nav-link @claseActivePestana" href="#@item.StrCodigo" data-toggle="tab"><span> @item.StrNombreIndicador</span></a></li>
+
+                claseActivePestana = string.Empty;
+            }
+        </ul>
+    </div>
+
+    <div class="card-body">
+        <div class="tab-content">
+
+            @Html.AntiForgeryToken()
+
+            @foreach (var item in Model.OrderBy(x => x.IntOrdenamiento))
+            {
+                <div class="@claseActiveCuerpo tab-pane" id="@item.StrCodigo">
+
+                    @if (item.StrCodigo == Across.Enumeraciones.enumCodigosAusentismoIndicadores.ausentismoPorCausaMedica.ToString() || item.StrCodigo == Across.Enumeraciones.enumCodigosAusentismoIndicadores.ausentismoPor_AT_EL.ToString())
+                    {
+                        @Html.Partial("_MedicionGeneralDeAusentismo", item)
+                    }
+                    else
+                    {
+                        @Html.Partial("_InformacionIndicesGraficos", item)
+                    }
+
+                </div>
+
+                claseActiveCuerpo = string.Empty;
+            }
+
+        </div>
+    </div>
+
+    <div class="card-footer bg-light">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+
+
+                </div>
+
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-8">
+
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <a href="~/AusentismoIndicadores/Index" class="btn btn-block btn-outline-dark" id="btnAtras" data-toggle="tooltip" data-placement="top" title="Volver a la vista anterior"><i class="fas fa-undo-alt mr-1"></i>Atras</a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/vistasParciales")
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+
+
+        });
+
+
+    </script>
+}
+
+
+
+

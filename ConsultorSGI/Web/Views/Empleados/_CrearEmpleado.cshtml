@@ -1,0 +1,687 @@
+﻿
+
+<input type="hidden" id="empleadoID" value="0" />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobal" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline">
+
+                        <div class="card-header">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#personal" data-toggle="tab">Información personal</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#laboral" data-toggle="tab">Información laboral</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#medicos" data-toggle="tab">Datos médicos</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#contacto" data-toggle="tab">Contacto</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#imagen" data-toggle="tab">Imágen</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-content">
+
+                            <div class="active tab-pane" id="personal">
+
+                                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Datos generales")
+
+                                <div class="card-body pt-0">
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoIdentificacion">Identificación<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 numerico" type="text" id="empleadoIdentificacion" placeholder="Identificación o nit..." autocomplete="off" minlength="6" maxlength="12" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-id-card-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoTipoIdentificacion">Tipo identificación<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaTipoIdentificacion", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoTipoIdentificacion", placeholder = "-- Seleccione una opción", required = "required" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoPrimerApellido">Primer apellido<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 nombreEmpleado" type="text" id="empleadoPrimerApellido" placeholder="Primer apellido..." autocomplete="off" maxlength="50" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-user-tag"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoSegundoApellido">Segundo apellido</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 nombreEmpleado" type="text" id="empleadoSegundoApellido" placeholder="Segundo apellido..." autocomplete="off" maxlength="50" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-user-tag"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoPrimerNombre">Primer nombre<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 nombreEmpleado" type="text" id="empleadoPrimerNombre" placeholder="Primer nombre..." autocomplete="off" maxlength="50" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-user-tag"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoSegundoNombre">Segundo nombre</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 nombreEmpleado" type="text" id="empleadoSegundoNombre" placeholder="Segundo nombre..." autocomplete="off" maxlength="50" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-user-tag"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Ubicación")
+
+                                <div class="card-body pt-0">
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoTelefonoFijo">Teléfono</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="empleadoTelefonoFijo" placeholder="Teléfono fijo..." data-inputmask='"mask": "999-9999"' data-mask autocomplete="off" maxlength="20" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-phone"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoTelefonoMovil">Celular</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="empleadoTelefonoMovil" placeholder="Teléfono movil..." data-inputmask='"mask": "999 999-9999"' data-mask autocomplete="off" maxlength="20" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-mobile-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoMail">Email</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="email" name="empleadoMail" id="empleadoMail" placeholder="Email..." autocomplete="off" maxlength="50" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fa fa-envelope"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoCiudadNacimiento">Ciudad de nacimiento<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaCiudades", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoCiudadNacimiento", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoCiudadResidencia">Ciudad de residencia<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaCiudades", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoCiudadResidencia", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoDireccion">Dirección</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="empleadoDireccion" placeholder="Direccion..." autocomplete="off" maxlength="200" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fa fa-map-marked-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Otros datos")
+
+                                <div class="card-body pt-0">
+                                    <div class="row">
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoFechaNacimiento">Fecha de nacimiento<span class="text-danger">*</span></label>
+                                                <div class="input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="empleadoFechaNacimiento" placeholder="Fecha nacimiento..." autocomplete="off" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-calendar-check"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoEscolaridad">Escolaridad<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaEscolaridad", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoEscolaridad", placeholder = "-- Seleccione una opción", required = "required" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoEstadoCivil">Estado civil<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaEstadoCivil", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoEstadoCivil", placeholder = "-- Seleccione una opción", required = "required" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoEstrato">Estrato social<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaEstratos", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoEstrato", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoNumeroHijos">Número de hijos</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 numerico" type="text" value="0" id="empleadoNumeroHijos" placeholder="Número de hijos..." autocomplete="off" maxlength="1" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-sort-numeric-up-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoPersonasACargo">Personas a cargo<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 numerico" type="text" value="0" id="empleadoPersonasACargo" placeholder="Número de personas a cargo..." autocomplete="off" maxlength="1" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-baby"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoNacionalidad">Nacionalidad</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" name="empleadoNacionalidad" id="empleadoNacionalidad" placeholder="Nacionalidad..." autocomplete="off" maxlength="50" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fab fa-font-awesome-flag"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group clearfix">
+                                                <div class="form-group">
+                                                    <label class="form-control-label font-weight-bold">Género<span class="text-danger">*</span></label>
+                                                    <div class=" input-group with-focus">
+                                                        <div class="icheck-primary d-inline">
+
+                                                            <input type="radio" id="empleadoGeneroMasculino" name="r1" data-required="true">
+                                                            <label for="empleadoGeneroMasculino">
+                                                                Masculino
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="radio" id="empleadoGeneroFemenino" name="r1" data-required="true">
+                                                            <label for="empleadoGeneroFemenino">
+                                                                Femenino
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="form-group clearfix">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="checkbox" id="empleadoActivo" checked>
+                                                        <label for="empleadoActivo">
+                                                            ¿Activo?
+                                                        </label>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="tab-pane" id="laboral">
+
+                                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Empresa")
+
+                                <div class="card-body pt-0">
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoArea">Área<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaAreas", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoArea", placeholder = "-- Seleccione una opción", required = "required" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                      
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoCentroDeTrabajo">Centro de trabajo<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaCentrosDeTrabajo", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoCentroDeTrabajo", placeholder = "-- Seleccione una opción", required = "required" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoCargo">Cargo<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaCargos", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoCargo", placeholder = "-- Seleccione una opción", required = "required" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoTurno">Turno<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaTurnos", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoTurno", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoCiudadLaboral">Ciudad donde labora<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaCiudades", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoCiudadLaboral", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Contrato laboral")
+
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoARL">Tipo de contrato<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaTiposContrato", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoTipoContrato", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoSalario">Salario<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 monedaEU" type="text" id="empleadoSalario" placeholder="Salario..." autocomplete="off" maxlength="10" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fa fa-dollar-sign"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoFechaIngreso">Fecha de ingreso<span class="text-danger">*</span></label>
+                                                <div class="input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="empleadoFechaIngreso" placeholder="Fecha ingreso..." autocomplete="off" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-calendar-check"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Seguridad social")
+
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoEPS">EPS<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaEps", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoEPS", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoAFP">AFP<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaAfp", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoAFP", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoARL">ARL<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaArl", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "empleadoARL", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="medicos">
+
+                                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Historial médico")
+
+                                <div class="card-body pt-0">
+
+                                    <div class="row">
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoCondicionesDeSalud">Condiciones de salud</label>
+                                                <div class=" input-group with-focus">
+                                                    <textarea class="form-control border-right-0" rows="5" type="text" id="empleadoCondicionesDeSalud" placeholder="Condiciones de salud..." autocomplete="off" data-parsley-length="[0,1000]">Ninguna</textarea>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-notes-medical"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoAlergias">Alergias</label>
+                                                <div class=" input-group with-focus">
+                                                    <textarea class="form-control border-right-0" rows="5" type="text" id="empleadoAlergias" placeholder="Alergias..." autocomplete="off" data-parsley-length="[0,1000]">Ninguna</textarea>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-bacteria"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoMedicinas">Medicinas que toma</label>
+                                                <div class=" input-group with-focus">
+                                                    <textarea class="form-control border-right-0" rows="5" type="text" id="empleadoMedicinas" placeholder="Medicinas que toma..." autocomplete="off" data-parsley-length="[0,1000]">Ninguna</textarea>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-syringe"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoGrupoSanguineo">Grupo Sanguíneo</label>
+                                                <div class=" input-group with-focus">
+                                                    <select class="select2bs4 form-control" id="empleadoGrupoSanguineo">
+                                                        <option value="">-- Seleccione una opción --</option>
+                                                        <option value="O-">O negativo</option>
+                                                        <option value="O-">O positivo</option>
+                                                        <option value="A-">A negativo</option>
+                                                        <option value="A-">A posotivo</option>
+                                                        <option value="B-">B negativo</option>
+                                                        <option value="B+">B positivo</option>
+                                                        <option value="AB-">AB negativo</option>
+                                                        <option value="AB+">AB positivo</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+
+                                        </div>
+                                        <div class="col-md-4">
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="contacto">
+
+                                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "General")
+
+                                <div class="card-body pt-0">
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoContactos">Contactos en caso de emergencia</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="empleadoContactos" placeholder="Contactos..." autocomplete="off" data-parsley-length="[0,200]" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fa fa-users"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoParentesco">Parentesco</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="empleadoParentesco" placeholder="Parentesco..." autocomplete="off" data-parsley-length="[0,50]" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fa fa-users"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="empleadoTelefonoContacto">Teléfonos</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="empleadoTelefonoContacto" placeholder="Teléfonos de contacto..." autocomplete="off" data-parsley-length="[0,50]" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fa fa-phone"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="imagen">
+                                <div class="row">
+
+                                    <div class="col-md-4"></div>
+                                    <div class="col-sm-4 text-center pt-2" style="width:100%!important;margin:auto!important;">
+                                        <div class="kv-avatar">
+                                            <div class="file-loading" style="width:100%;">
+                                                <input id="empleadoImagen" name="empleadoImagen" type="file" accept="image/*">
+                                            </div>
+                                        </div>
+                                        <div class="kv-avatar-hint">
+                                            <small>Seleccione una imagen < 1000 KB</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>
+
+                                <div id="kv-avatar-errors-1" class="text-center" style="display:none"></div>
+                            </div>
+
+                        </div>
+
+                        @Html.Partial("_Card_Footer")
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var empleadoImagen = $("#empleadoImagen").fileinput({
+            overwriteInitial: true,
+            resizeImage: true,
+            language: 'es',
+            previewClass: 'text-center',
+            dropZoneTitle: 'Arrastre o deje caer la imagen del empleado aquí...',
+            frameClass: 'block-center',
+            maxFileSize: 1000,
+            showClose: false,
+            showCaption: false,
+            browseLabel: 'Agregar imagen',
+            removeLabel: 'Remover',
+            browseIcon: '<i class="fas fa-plus-circle"></i>',
+            removeIcon: '<i class="fas fa-times"></i>',
+            removeTitle: 'Cancelar',
+            elErrorContainer: '#kv-avatar-errors-1',
+            msgErrorClass: 'alert alert-block alert-danger',
+            layoutTemplates: { main2: '{preview} {remove} {browse}' },
+            allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+            removeFromPreviewOnError: false, //Remover preview si hay error
+            browseOnZoneClick: false, //Abrir buscador al dar click en la imagen
+        });
+        empleadosCRUD.guardarEmpleadoAsync();
+        empleadosCRUD.commonEmpleados();
+
+        $("#btnAtras").click(function () {
+            empleadosCRUD.getAllEmpleadosAsync();
+        });
+
+
+    });
+
+
+</script>
+
+
+

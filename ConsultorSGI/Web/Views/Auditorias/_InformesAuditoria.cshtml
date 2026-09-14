@@ -1,0 +1,377 @@
+﻿@using Across;
+@using CoreBusiness;
+@model Models.Auditorias
+
+@{
+    var urlImagen = Archivos.GetUrlImagenTerceroOrUrlDefault(Model.Terceros_Clientes.StrRutaImagen);
+
+    string fechaDeVersion = string.Empty;
+
+    if (!string.IsNullOrEmpty(Model.DatFechaVersion.ToString()))
+    {
+        fechaDeVersion = Model.DatFechaVersion.Value.ToString("yyyy-MM-dd");
+    }
+
+    var listaAuditados = new List<string>();
+    var listaAuditores = new List<string>();
+
+    foreach (var item in Model.AuditoriasDetalle)
+    {
+        var listaNombresAuditados = item.StrAuditado.Trim().Split(',');
+        var listaNombresAuditores = item.StrAuditor.Trim().Split(',');
+
+        foreach (var nombre in listaNombresAuditados.Distinct())
+        {
+            listaAuditados.Add(nombre.Trim());
+        }
+
+        foreach (var nombre in listaNombresAuditores.Distinct())
+        {
+            listaAuditores.Add(nombre.Trim());
+        }
+    }
+
+}
+
+<input type="hidden" id="usuarioActualNombre" value="@ViewBag.usuarioActualNombre" />
+<input type="hidden" id="auditoriaID" value="@Model.IntAuditoriaID" />
+<input type="hidden" id="tipoVista" value="informeAuditoria" />
+<input class="d-none" type="checkbox" id="isVistaInforme" checked />
+
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobal">
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline text-muted">
+
+                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", $"Informe de auditoría" }, { "claseTexto", "d-none" } })
+
+                <div class="jumbotron jumbotron-fluid pt-0 pb-0">
+                    <div class="card-body pt-1 pb-3 mb-0 ml-4 mr-4">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="text-muted letraMediana float-right">
+
+                                    @if (!string.IsNullOrEmpty(@Model.StrVersion))
+                                    {
+                                        <span class="font-weight-bold">Versión documento: </span>@Model.StrVersion<span> | </span>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(fechaDeVersion))
+                                    {
+                                        <span class="font-weight-bold">Fecha de versión: </span>@fechaDeVersion <span> | </span>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.StrCodigo))
+                                    {
+                                        <span class="font-weight-bold"> | Código de documento: </span>@Model.StrCodigo
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-8 text-muted">
+
+                                <div class="row">
+
+                                    <div class="col-md-2" style="margin:auto!important">
+                                        <div class="text-center">
+                                            <img class=" img-circle"
+                                                 src="@urlImagen"
+                                                 style="width:100%!important; margin:auto!important"
+                                                 alt="logo">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-10" style="margin:auto">
+                                        <h4 class="font-weight-bold mb-0">@Model.Terceros_Clientes.StrNombre</h4>
+                                        <p class="text-sm pt-0 mt-0 mb-0">Nit: @Model.Terceros_Clientes.StrIdentificacion</p>
+                                        <p class="text-sm pt-0 mt-0 mb-0">Dirección: @Model.Terceros_Clientes.StrDireccion</p>
+                                        <p class="text-sm pt-0 mt-0 mb-0">Telefóno: @Model.Terceros_Clientes.StrTelefono</p>
+                                        <p class="text-sm pt-0 mt-0 mb-0">Email: @Model.Terceros_Clientes.StrEmail</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-2 text-left" style="margin:auto">
+
+                                <div class="text-muted">
+                                    <p class="">
+                                        <b class="d-block text-uppercase">Fecha auditoría</b>
+                                        @Model.DatFechaInicial.ToString("dd MMMM ' del ' yyyy") <br />
+
+                                        @if (Model.DatFechaElaboracionInforme != null)
+                                        {
+                                            <b class="d-block text-uppercase">Fecha informe</b>
+                                            @Model.DatFechaElaboracionInforme.Value.ToString("dd MMMM ' del ' yyyy")
+                                        }
+
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-center" style="margin:auto">
+                                <h1 class="text-danger font-weight-bold">@Model.IntConsecutivo</h1>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-body pt-0">
+                    <div class="row text-muted pt-0 mt-0 ">
+                        <div class="col-md-6 pl-2 pl-4">
+
+                            <div class="card card-outline card-primary card-sombra pl-2">
+
+                                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Objetivo" }, { "claseTexto", "d-none pt-0" }, { "claseColorTexto", "text-muted" } })
+
+                                <div class="card-body pt-0">
+
+                                    <p class="text-sm cajaTexto">@Model.StrObjetivo</p>
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 pr-4">
+
+
+                            <div class="card card-outline card-primary card-sombra pl-2">
+
+                                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Alcance" }, { "claseTexto", "d-none pt-0" }, { "claseColorTexto", "text-muted" } })
+
+                                <div class="card-body pt-0">
+
+                                    <p class="text-sm">@Model.StrAlcance</p>
+
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Auditados" }, { "claseTexto", "d-none" }, { "claseColorTexto", "text-muted" } })
+
+                            <div class="card-body pt-1 ">
+
+                                @{
+                                    foreach (var auditado in listaAuditados.Distinct().OrderBy(x => x))
+                                    {
+                                        <p class="pt-0 mt-0 pb-0 mb-0 text-sm text-muted"><i class="fas fa-check text-primary pr-2" style="font-size:8px;"></i>@auditado</p>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+
+                            @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Auditores" }, { "claseTexto", "d-none pt-0 ml-4 mr-4" }, { "claseColorTexto", "text-muted" } })
+
+                            <div class="card-body pt-1">
+
+                                @{
+
+                                    foreach (var auditor in listaAuditores.Distinct().OrderBy(x => x))
+                                    {
+                                        <p class="pt-0 mt-0 pb-0 mb-0 text-sm text-muted"><i class="fas fa-check text-primary pr-2" style="font-size:8px;"></i>@auditor</p>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+
+                            @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Criterios de la auditoría" }, { "claseTexto", "d-none" }, { "claseColorTexto", "text-muted" } })
+
+                            <div class="card-body pt-1">
+
+                                @foreach (var norma in Model.Auditorias_Normas)
+                                {
+                                    <p class="pt-0 mt-0 pb-0 mb-0 text-muted"><i class="fas fa-check text-primary pr-2" style="font-size:8px;"></i><span class="font-weight-bold font-italic">@norma.Normas.StrCodigo: </span> @norma.Normas.StrDescripcion </p>
+
+
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 pl-4 pr-4">
+
+                            <div class="card card-outline card-primary card-sombra">
+
+                                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Fortalezas" }, { "claseTexto", "d-none pt-0" }, { "claseColorTexto", "text-muted" } })
+
+                                <span class="badge badge-danger m-1" id="mensajeNotificacionFortalezas"></span>
+
+                                <div class="card-body pt-0 pb-0">
+                                    <textarea class="form-control text-sm border-0 pb-2 mb-2" id="auditoriaFortalezas" rows="5" placeholder="Escriba aquí las fortalezas encontradas..." data-parsley-length="[5,10000]" data-parsley-required>@Model.StrFortalezas</textarea>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+
+                            @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Reporte de hallazgos" }, { "claseTexto", "d-none" }, { "claseColorTexto", "text-muted" } })
+
+                            <div class="card-body pt-1">
+                                <div id="divNoConformidades"></div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-12 pl-4 pr-4">
+
+                            <div class="card card-outline card-primary card-sombra">
+
+                                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Conclusiones" }, { "claseTexto", "d-none border-0" }, { "claseColorTexto", "text-muted" } })
+
+                                <span class="badge badge-danger m-1" id="mensajeNotificacionConclusiones"></span>
+
+                                <div class="card-body pt-0 pb-0 ">
+                                    <textarea class="form-control text-sm border-0 pb-2 mb-2" id="auditoriaConclusiones" rows="5" placeholder="Escriba aquí las conclusiones de la auditoría..." data-parsley-length="[5,10000]" data-parsley-required>@Model.StrConclusiones</textarea>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-12 ml-4 mr-4 pt-4" style="margin-top:80px;">
+
+                            <div class="row">
+
+                                <div class="col-md-5">
+
+                                    @if (!string.IsNullOrEmpty(ViewBag.usuarioModelo.NombreImagenFirma) && (bool)Model.BitFirma)
+                                    {
+                                        var urlFirma = Archivos.GetUrlImagenUsuarioFirma(ViewBag.usuarioModelo.NombreImagenFirma);
+
+                                        if (!string.IsNullOrEmpty(urlFirma))
+                                        {
+                                            <img src="@urlFirma" class="img align-content-lg-around" style="height:100px; width:100%" alt="Alternate Text" />
+                                        }
+                                    }
+
+                                    <div class="border-top">
+                                        <span class="font-weight-bold">@ViewBag.usuarioModelo.NombreUsuario</span>
+                                        <p class="mt-0 mb-0 pt-0 pb-0">AUDITOR PRINCIPAL</p>
+                                        <p class="mt-0 mb-0 pt-0 pb-0">@Empresa.RazonSocial</p>
+                                        <p class="mt-0 mb-0 pt-0 pb-0">NIT: @Empresa.Nit</p>
+                                        <br />
+                                    </div>
+
+
+                                </div>
+
+                                <div class="col-md-2"></div>
+                                <div class="col-md-5"></div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 ml-4 mr-4">
+                            <div class="form-group">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-primary d-inline">
+                                        <input type="checkbox" id="auditoriaEstado" checked="@Model.BitEstado">
+                                        <label for="auditoriaEstado">
+                                            Finalizar auditoría
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-3">
+
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-outline-dark btn-block" title="Regresar a la vista anterior" data-toggle="tooltip" data-placement="top" onclick="auditoriasCRUD.getAllAuditoriasAsync();"><i class="fas fa-undo-alt mr-1"></i>Atras</button>
+                        </div>
+
+                        <div class="col-md-3">
+                            <a href="@Url.Action("DescargarInformeDeAuditoriaEnPDFAsync","Auditorias", new { auditoriaID = Model.IntAuditoriaID, isVistaInforme = true })" target="_blank" class="btn btn-outline-danger btn-block" title="Exportar el informe a PDF" data-toggle="tooltip" data-placement="top"><i class="fas fa-file-pdf mr-1"></i>Exportar a PDF</a>
+
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-outline-primary btn-block" id="btnGuardarInforme" title="Guardar informe de auditoría" data-toggle="tooltip" data-placement="top"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar informe</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+
+
+@Scripts.Render("~/bundles/vistasParciales")
+<script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+<script src="~/signalr/hubs"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        auditoriasCRUD.notificacionesEnTiempoReal_InformesAuditoria();
+
+        var auditoriaID = $("#auditoriaID").val();
+        var isVistaInforme = true;
+
+        listasDeVerificacionCRUD.obtenerNoConformidadesAuditoriaAsync(auditoriaID, isVistaInforme);
+        auditoriasCRUD.guardarInformeAsync();
+
+        $("textarea").each(function () {
+            this.setAttribute("style", "height:" + (this.scrollHeight) + "px;overflow-y:hidden;");
+        }).on("input", function () {
+            this.style.height = "auto";
+            this.style.height = (this.scrollHeight) + "px";
+        });
+
+
+
+    });
+
+
+</script>
+
+
+

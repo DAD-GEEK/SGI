@@ -1,0 +1,84 @@
+﻿@model Models.AspNetRoles
+@{
+    Layout = null;
+}
+
+<input type="hidden" id="rolID" value="@Model.Id" />
+
+<div class="modal-dialog " style=" max-width:500px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", $"Permisos para: {Model.Name}" }, { "icono", "fas fa-users-cog" }, { "claseTexto", "d-none" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formCrearGlobal">
+                @Html.AntiForgeryToken()
+                <div class="modal-body pt-1" style="max-height: 70vh !important; overflow-y: auto!important;">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div id="treePermisos"></div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light overflow-auto ">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark"><i class="fas fa-undo-alt mr-1"></i>Cancelar</button>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="submit" class="btn btn-outline-primary btn-block" id="btnCrearUsuario"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+@Scripts.Render("~/bundles/app")
+
+<script type="text/javascript">
+
+    $(function () {
+
+        var tree = $('#treePermisos').tree({
+            primaryKey: 'id',
+            uiLibrary: 'bootstrap4',
+            dataSource: rootHost + 'Seguridad/GetTreePermisosByRoles?rolID=' + "@Model.Id",
+            checkboxes: true
+        });
+
+        seguridad.guardarPermisosByRolAsync(tree);
+
+    });
+
+</script>
+

@@ -1,0 +1,104 @@
+﻿@using Web.Models
+@model LoginViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,500&display=swap" rel="stylesheet">
+
+<style type="text/css">
+
+    #textoSGI {
+        font-family: 'Kanit', sans-serif;
+    }z
+
+</style>
+
+<div class="d-lg-flex half">
+    <div class="bg order-1 order-md-2" style="background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../Content/images/login01.jpg'); display: flex; flex-direction: column; align-items: center; justify-content: center; ">
+
+        <img class="img-thumbnail img-circle" src="~/Content/images/logo.png" alt="Image" style="height: 200px !important;" />
+        &nbsp;&nbsp;
+        <h2 id="textoSGI" class="text-white">¡SU ASESOR, SU ALIADO!</h2>
+
+    </div>
+
+    <div class="contents order-2 order-md-1">
+
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-md-7">
+
+                    @*<img src="~/Content/images/consultorSGI_negro.png" class="img-fluid img-responsive" style="width:100%;" />*@
+
+                    <div class="card-header text-center">
+                        <a href="@Url.Action("Login","Seguridad")" class="h1" style="text-decoration:none; font-weight:700; color: black">Consultor <b class="text-primary ">SGI</b></a>
+                    </div>
+
+                    <form class="form-horizontal" id="formLogin">
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group first">
+                            <label for="usuarioLogin">Usuario</label>
+                            <input class="form-control" type="email" id="usuarioLogin" placeholder="Ingrese aquí su email..." autocomplete="off" maxlength="50" required />
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger text-sm" })
+                        </div>
+                        <div class="form-group last">
+                            <label for="usuarioClave">Contraseña</label>
+                            <input class="form-control" type="password" id="usuarioClave" placeholder="Ingrese aquí su contraseña..." autocomplete="off" maxlength="20" required />
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger text-sm" })
+                        </div>
+                        <span class="text-red " id="respuestaError">@ViewBag.error</span>
+
+                        @*<div class="d-flex mb-2 mt-3 align-items-center">
+                                <label class="control control--checkbox mb-0">
+                                    <span class="caption">Recordarme</span>
+                                    <input type="checkbox" id="usuarioRecordarme" />
+                                    <div class="control__indicator"></div>
+                                </label>
+                            </div>*@
+
+                        <div class="pb-2">
+                            <span class="ml-auto"><i class="fas fa-lock-open mr-2 text-primary"></i><a href="@Url.Action("RecuperarContraseña","Seguridad")" class="forgot-pass">Olvidé mi contraseña</a></span>
+                            <br />
+                            <span class="forgot-pass text-primary"><i class="fas fa-user-plus mr-2 text-primary"></i>@Html.ActionLink("Registrar un nuevo usuario", "Registro")</span>
+                        </div>
+
+                        <div class="">
+                            <button type="submit" class="btn btn-block btn-primary" id="btnIngresar"><i class="fas fa-sign-in-alt mr-1"></i>Ingresar</button>
+                        </div>
+
+                    </form>
+
+                    @*<div class="row">
+                            <div class="col-md-12">
+                                <section id="socialLoginForm">
+                                    @Html.Partial("_LoginExterno", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                                </section>
+                            </div>
+                        </div>*@
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="@Scripts.Url("~/Vendor/jquery/dist/jquery.min.js")"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        seguridad.loginAsync();
+
+    });
+
+</script>
+
+

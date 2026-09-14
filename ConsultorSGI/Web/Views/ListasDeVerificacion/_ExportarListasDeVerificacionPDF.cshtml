@@ -1,0 +1,399 @@
+﻿@using CoreBusiness;
+@using Across;
+@model Models.DTO.InformeAuditoriaDTO
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<style type="text/css">
+
+    .letraMediana {
+        font-size: 13px;
+        line-height: 17px;
+    }
+
+    h6.titulo {
+        display: inline-block;
+        position: relative;
+    }
+
+        h6.titulo::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 2px;
+            background-color: #007bff;
+            top: 1.3em;
+            left: 0px;
+        }
+
+        h6.titulo::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 2px;
+            background-color: #007bff;
+            top: 1.3em;
+            left: 65px;
+        }
+
+
+    :root {
+        --card-color: rgba(54, 0, 204, 0.555);
+        --card-header-color: crimson;
+        --card-body-color: rgb(40, 4, 124);
+        --card-footer-color: indigo;
+    }
+
+    text-primary {
+        color: #007bff !important;
+    }
+
+    .card-primary.card-outline {
+        border-top: 3px solid #007bff;
+    }
+
+    .card-sombra {
+        box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    }
+
+    .card {
+        margin: 0 auto;
+        background: var(--card-color);
+        color: #6c757d;
+        width: 100%;
+        padding: 20px;
+        border-radius: 20px;
+        word-wrap: break-word;
+    }
+
+    .card-header {
+        background-color: transparent;
+        padding: 0.75rem 1.25rem;
+        position: relative;
+        border-top-left-radius: 0.25rem;
+        border-top-right-radius: 0.25rem;
+        border-bottom: none
+    }
+
+    .card-body {
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        min-height: 1px;
+        padding: 1.25rem;
+    }
+
+    .marcaDeAgua {
+        /* the image you want to 'watermark' */
+        height: 300px; /* or whatever, equal to the image you want 'watermarked' */
+        width: 100%; /* as above */
+        background-repeat: repeat;
+        position: absolute;
+        opacity: 0.08;
+        top: 250px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tbody {
+        display: table-row-group;
+    }
+
+    tfoot {
+        display: table-row-group
+    }
+
+    .firmas {
+        page-break-inside: avoid;
+    }
+
+</style>
+
+@{
+    var urlImagen = Archivos.GetUrlImagenTerceroOrUrlDefault(Model.Auditoria.Terceros_Clientes.StrRutaImagen);
+
+    string fechaDeVersion = string.Empty;
+
+    if (!string.IsNullOrEmpty(Model.Auditoria.DatFechaVersion.ToString()))
+    {
+        fechaDeVersion = Model.Auditoria.DatFechaVersion.Value.ToString("yyyy-MM-dd");
+    }
+
+    var listaAuditados = new List<string>();
+    var listaAuditores = new List<string>();
+
+    var listaNombresAuditados = Model.AuditoriaDetalle.StrAuditado.Trim().Split(',');
+    var listaNombresAuditores = Model.AuditoriaDetalle.StrAuditor.Trim().Split(',');
+
+    foreach (var nombre in listaNombresAuditados.Distinct())
+    {
+        listaAuditados.Add(nombre.Trim());
+    }
+
+    foreach (var nombre in listaNombresAuditores.Distinct())
+    {
+        listaAuditores.Add(nombre.Trim());
+    }
+}
+
+<div class="container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <div>
+            <div class="card-body" style="padding-top:0px;padding-bottom:10px;margin-top:0px;">
+
+                <div class="text-muted letraMediana float-right">
+                    @if (!string.IsNullOrEmpty(Model.Auditoria.StrVersion))
+                    {
+                        <span class="font-weight-bold">Versión documento: </span>@Model.Auditoria.StrVersion<span> | </span>
+                    }
+
+                    @if (!string.IsNullOrEmpty(fechaDeVersion))
+                    {
+                        <span class="font-weight-bold">Fecha de versión: </span>@fechaDeVersion <span> | </span>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Auditoria.StrCodigo))
+                    {
+                        <span class="font-weight-bold"> | Código de documento: </span>@Model.Auditoria.StrCodigo
+                    }
+
+                </div>
+
+                <table style="width:100%" class="letraMediana text-muted p-0 m-0">
+                    <tr>
+                        <td style="width:15%">
+                            <div class="text-center">
+                                <img class=" img-circle"
+                                     src="@urlImagen"
+                                     style="width:100%!important; margin:auto!important;max-height:300px;"
+                                     alt="Logo @Model.Auditoria.Terceros_Clientes.StrNombre.ToLower()">
+                            </div>
+                        </td>
+
+                        <td style="width:70%; text-align:left;">
+                            <h3 class="font-weight-bold mb-0 text-black text-center">LISTA DE VERIFICACIÓN</h3>
+
+                        </td>
+
+                        <td style="width:15%">
+                            <h1 class="text-danger font-weight-bold text-left">@Model.Auditoria.IntConsecutivo</h1>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="marcaDeAgua">
+            <img src="https://app.gestionintegralsgi.com.co/Content/images/logo.png" style="width:100%" alt="logo SGI" />
+        </div>
+
+        <div class="text-muted pt-2 letraMediana pl-0">
+
+            <div class="row">
+                <div class="col-6">
+
+                    <div class="card-header pb-0">
+                        <h6 class="font-weight-bold titulo">CRITERIOS DE AUDITORÍA</h6>
+                    </div>
+
+                    <div class="card-body pt-0">
+
+                        @foreach (var norma in Model.Auditoria.Auditorias_Normas)
+                        {
+                            <p class="pt-0 mt-0 pb-0 mb-0 text-muted">- <span class="font-weight-bold font-italic">@norma.Normas.StrCodigo: </span> @norma.Normas.StrDescripcion </p>
+                        }
+                    </div>
+
+                </div>
+
+               
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+
+                    <div class="card-header pb-0">
+                        <h6 class="font-weight-bold titulo">AUDITORES</h6>
+                    </div>
+
+                    <div class="card-body pt-0">
+
+                        @foreach (var auditor in listaAuditores.Distinct().OrderBy(x => x))
+                        {
+                            <p class="pt-0 mt-0 pb-0 mb-0 text-sm text-muted">- @auditor</p>
+                        }
+                    </div>
+
+                </div>
+
+                <div class="col-6">
+
+                    <div class="card-header pb-0">
+                        <h6 class="font-weight-bold titulo">AUDITADOS</h6>
+                    </div>
+
+                    <div class="card-body pt-0">
+
+                        @foreach (var auditado in listaAuditados.Distinct().OrderBy(x => x))
+                        {
+                            <p class="pt-0 mt-0 pb-0 mb-0 text-sm text-muted">- @auditado</p>
+                        }
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-12 pb-1 pl-0">
+
+                    <div class="card-header pb-0">
+                        <h4 class="font-weight-bold titulo text-uppercase">@Model.AuditoriaDetalle.Procesos.StrDescripcion</h4>
+                    </div>
+
+                    <div class="card-body pt-0 pb-0">
+                        <table id="tblNoConformidades" class="table dt-responsive table-condensed table-sm center-block mt-2 text-sm text-muted letraMediana" style="width:100%">
+                           
+                            <tr class="text-center card-sombra" style="border-radius: 10px; background-color: #eae8e8">
+                                <th class="text-left">Numerales</th>
+                                <th class="text-left">Hallazgo</th>
+                                <th class="text-center">Clasificación</th>
+                            </tr>
+
+                            <tbody class="text-sm text-muted">
+
+                                @foreach (var item in Model.ListaDeVerificacionDTO.OrderBy(x => x.Orden))
+                                {
+                                    <tr>
+                                        <td class="text-left">
+
+                                            @Html.Partial("_NumeralesPorNorma", item.NormasDTO.ToList())
+
+                                        </td>
+
+                                        <td class="text-left">
+
+                                            <h6 class="font-weight-bold text-primary">@item.StrTitulo</h6>
+                                            <p class="text-justify">@item.StrHallazgo</p>
+
+                                        </td>
+
+                                        @if (item.BitNoConformidad)
+                                        {
+                                            <td class="text-center"><span class="badge badge-danger">NO CONFORMIDAD</span></td>
+                                        }
+
+                                        @if (item.BitObservacion)
+                                        {
+                                            <td class="text-center"><span class="badge badge-warning">OBSERVACIÓN</span></td>
+                                        }
+
+                                        @if (item.BitConformidad)
+                                        {
+                                            <td class="text-center"><span class="badge badge-primary">CONFORME</span></td>
+                                        }
+
+                                    </tr>
+                                }
+                            </tbody>
+
+                            <tfoot>
+                                <tr>
+                                    @{
+                                        int totalHallazgos = Model.ListaDeVerificacionDTO.Count();
+                                        int totalOBS = Model.ListaDeVerificacionDTO.Where(x => x.BitObservacion == true).Count();
+                                        int totalNC = Model.ListaDeVerificacionDTO.Where(x => x.BitNoConformidad == true).Count();
+                                        int totalC = Model.ListaDeVerificacionDTO.Where(x => x.BitConformidad == true).Count();
+                                    }
+                                    <th colspan="4" class="text-left">En total se identifican @totalHallazgos items: @totalC Conformidades(C), @totalNC No conformidades (NC) y @totalOBS Observaciones (OBS)</th>
+                                </tr>
+
+                                @*@{
+                                    List<Models.DTO.NormasDTO> listaCantidadNormas = Model.ListaNormasDTO;
+
+                                    foreach (var item in listaCantidadNormas.GroupBy(x => x.IntNormaID))
+                                    {
+                                        var cantidadNoConformidades = listaCantidadNormas.FirstOrDefault(x => x.IntNormaID == item.Key && x.BitNoConformidad == true).CantidadNoConformidades;
+
+
+                                        var cantidadObservacion = 0;
+
+                                        if (listaCantidadNormas.FirstOrDefault(x => x.IntNormaID == item.Key && x.BitObservacion == true) != null)
+                                        {
+                                            cantidadObservacion = listaCantidadNormas.FirstOrDefault(x => x.IntNormaID == item.Key && x.BitObservacion == true).CantidadNoConformidades;
+                                        }
+
+                                        var normaInformacion = listaCantidadNormas.FirstOrDefault(x => x.IntNormaID == item.Key);
+
+                                        <tr>
+                                            <th colspan="5"><span class="badge badge-primary">@normaInformacion.StrCodigo</span> No conformidades @cantidadNoConformidades || Observaciones @cantidadObservacion</th>
+                                        </tr>
+                                    }
+                                }*@
+                            </tfoot>
+                        </table>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="text-muted letraMediana firmas" style="padding-top:100px">
+
+            <div class="row">
+                <div class="col-6">
+                    @if (!string.IsNullOrEmpty(Model.Usuario.NombreImagenFirma) && (bool)Model.Auditoria.BitFirma)
+                    {
+                        var urlFirma = Archivos.GetUrlImagenUsuarioFirma(Model.Usuario.NombreImagenFirma);
+                        <img src="@urlFirma" class="img align-content-lg-around" style="height:100px; width:100%" alt="Alternate Text" />
+                    }
+                </div>
+                <div class="col-6"></div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-6">
+
+                    <div class="border-top">
+                        <p class="mt-0 mb-0 pt-0 pb-0">AUDITOR</p>
+                        <p class="mt-0 mb-0 pt-0 pb-0">@Empresa.RazonSocial</p>
+                        <p class="mt-0 mb-0 pt-0 pb-0">NIT: @Empresa.Nit</p>
+                        <br />
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    }
+
+</div>
+
+
+
+
+

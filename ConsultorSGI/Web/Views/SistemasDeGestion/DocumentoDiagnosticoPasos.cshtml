@@ -1,0 +1,52 @@
+﻿<div class="content-header pt-0 mt-0 pb-1">
+    <div class="container-fluid pt-0 mt-0">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-dark font-weight-bold">Documento diagnóstico para @ViewBag.sistemaDeGestionID</h1>
+                <small>Módulo para configurar el documento diagnóstico de los diferentes sistemas de gestión.</small>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Documento diagnóstico</a></li>
+                    <li class="breadcrumb-item active">Sistemas de gestión</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input hidden type="checkbox" id="sistemaDeGestionExiste" checked="@ViewBag.existeSistemaDeGestion" />
+
+@if (ViewBag.Error != null)
+{
+    @Html.Partial("_AlertaNovedades", ViewData["error"] = ViewBag.Error)
+}
+else
+{
+    <div id="divDocumentoDiagnosticoPasos"></div>
+}
+
+@section BodyArea {
+    <div class=" modal fade fade bd-example-modal-sm" id="modal" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor">
+
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var existeSistemaDeGestion = $("#sistemaDeGestionExiste").is(":checked");
+
+            if (existeSistemaDeGestion)
+                documentosDiagnosticoPasosCRUD.getAllPorSistemaDeGestion('@ViewBag.sistemaDeGestionID');
+
+        });
+
+    </script>
+}

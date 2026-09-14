@@ -1,0 +1,58 @@
+﻿@model Web.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0)
+    {
+        <div>
+            <p>
+                No hay un servicio de autenticación externa, comuniquese con el área encargada.
+            </p>
+        </div>
+    }
+    else
+    {
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl }, FormMethod.Post, new { @class = "", role = "form", id = "formAutenticacionExterna" }))
+        {
+            @Html.AntiForgeryToken()
+            <div id="socialLoginList" class="pt-2 m-0">
+                <p>
+                    @foreach (AuthenticationDescription p in loginProviders)
+                    {
+                        <button type="submit" class="btn btn-block btn-danger" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Iniciar sesion con su cuenta de @p.Caption"><i class="fab fa-google-plus-g fa-1x mr-1"></i>Acceder con @p.AuthenticationType+ </button>
+                    }
+                </p>
+            </div>
+            <div class="pt-2 m-0">
+                <div class="card card-danger d-none" id="btnProcesarGoogle">
+                    <div class="card-tools">
+                        <button type="button" class="btn text-center btn-danger btn-block " data-source="widgets.html" data-card-widget="card-refresh" data-source-selector="#card-refresh-content">
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+        }
+    }
+}
+
+<script src="@Scripts.Url("~/Vendor/jquery/jquery.js")"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        var formularioLogin = $("#formAutenticacionExterna");
+        var btnGoogle = $("#Google");
+        var btnProcesarGoogle = $("#btnProcesarGoogle");
+        var socialLoginList = $("#socialLoginList");
+
+        formularioLogin.submit(function () {
+            btnGoogle.addClass('d-none');
+            socialLoginList.addClass('d-none');
+            btnProcesarGoogle.removeClass('d-none');
+        });
+    });
+
+</script>

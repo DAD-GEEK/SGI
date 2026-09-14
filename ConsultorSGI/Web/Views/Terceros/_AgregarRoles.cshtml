@@ -1,0 +1,61 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:600px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Agregar permisos" }, { "icono", "fa fa-cogs" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarGlobalModal">
+
+                @Html.AntiForgeryToken()
+                <div class="modal-body pt-1" style="overflow-y:auto!important; max-height: 70vh !important;">
+                    <div class="container-fluid">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="terceroRoles">Módulos<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        @Html.DropDownList("listaTerceroRoles", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "terceroRoles", placeholder = "-- Seleccione una opción", required = "required" })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Modal_Footer")
+
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        tercerosCRUD.agregarRolesAsync();
+    });
+
+
+</script>
+
+
+

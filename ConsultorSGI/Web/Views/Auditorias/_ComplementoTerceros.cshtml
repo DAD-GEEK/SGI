@@ -1,0 +1,74 @@
+﻿@*@model List<Models.ElementosComunes>*@
+@{
+    int contador = 0;
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center m-2" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label class="form-control-label font-weight-bold" for="auditoriaProcesos">Procesos a auditar<span class="text-danger">*</span></label>
+            <div class=" input-group with-focus">
+                @Html.DropDownList("listaProcesos", null, null, htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "auditoriaProcesos", placeholder = "-- Seleccione una opción", required = "required", Multiple = "Multiple" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="form-group">
+            <label class="form-control-label font-weight-bold" for="auditoriaNormas">Criterios de auditoría<span class="text-danger">*</span></label>
+            <div class=" input-group with-focus">
+                @Html.DropDownList("listaNormas", null, null, htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "auditoriaNormas", placeholder = "-- Seleccione una opción", required = "required", Multiple = "Multiple" })
+            </div>
+        </div>
+    </div>
+
+    @*
+
+        @if (Model.Count() != 0)
+        {
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="callout callout-success">
+                        <i class="fas fa-check text-success mr-1"></i>Se detectaron elementos comunes para aplicar a la auditoría: <span class="font-weight-bold text-primary">
+
+                            @foreach (var item in Model)
+                            {
+                                contador = contador + 1;
+                                @item.StrDescripcion if (Model.Count() != contador)
+                                {
+                                    <span>- </span>
+                                }
+                            }
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="callout callout-danger">
+                        <i class="fas fa-times text-danger mr-1"></i> No se encontraron elementos comunes para las normas seleccionadas, por lo tanto se aplicará la configuración establecida en los numerales de la norma.
+
+                    </div>
+                </div>
+            </div>
+        }
+
+    *@
+
+</div>
+}
+
+@Scripts.Render("~/bundles/vistasParciales")
+@Scripts.Render("~/bundles/app")

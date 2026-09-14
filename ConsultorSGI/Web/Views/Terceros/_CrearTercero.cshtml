@@ -1,0 +1,324 @@
+﻿
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobal" method="post" action="#">
+            @Html.AntiForgeryToken()
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline">
+
+                        @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Agregar tercero")
+
+                        <div class="card-body pt-1">
+                            <div class="row">
+
+                                <div class="col-md-4 text-center" style="width: 100% !important;">
+                                    <div class="kv-avatar">
+                                        <div class="file-loading" style="width:100%;">
+                                            <input id="terceroLogo" type="file" accept="image/*">
+                                        </div>
+                                    </div>
+                                    <div class="kv-avatar-hint">
+                                        <small>Seleccione una imagen < 1000 KB</small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroIdentificacion">Identificación/Nit<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 numerico" type="text" name="terceroIdentificacion" id="terceroIdentificacion" placeholder="Identificación o nit..." autocomplete="off" minlength="6" maxlength="12" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <em class="fas fa-id-card-alt"></em>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroDV">Dígito de verificación<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" name="terceroDV" id="terceroDV" placeholder="Dígito de verificación..." autocomplete="off" readonly />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted border-left-0">
+                                                            <i class="fas fa-user-check"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroRazonSocial">Razón social<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" name="terceroRazonSocial" id="terceroRazonSocial" placeholder="Razón social o nombre..." autocomplete="off" required maxlength="200" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-user"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroSigla">Sigla</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" name="terceroSigla" id="terceroSigla" placeholder="Sigla..." autocomplete="off" data-parsley-type="alphanum" maxlength="20" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-file-code"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroMail">Email</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="email" name="terceroMail" id="terceroMail" placeholder="Email..." autocomplete="off" maxlength="100" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fa fa-envelope"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroTelefono">Teléfono</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" name="terceroTelefono" id="terceroTelefono" placeholder="Teléfono..." autocomplete="off" maxlength="50" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-phone"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroDireccion">Dirección</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" name="terceroDireccion" id="terceroDireccion" placeholder="Direccion..." autocomplete="off" maxlength="100" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fa fa-map-marked-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroCiudad">Ciudad</label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaCiudades", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "terceroCiudad", placeholder = "-- Seleccione una opción", data_parsley_required = "required" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroSede">Sede</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" name="terceroSede" id="terceroSede" placeholder="Sede..." autocomplete="off" maxlength="50" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-building"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroResolucion">N° de resolución</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" name="terceroResolucion" id="terceroResolucion" placeholder="Número de resolución de habilitación..." autocomplete="off" maxlength="50" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-folder-open"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroActividadEconomica">Actividad económica</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" name="terceroActividadEconomica" id="terceroActividadEconomica" placeholder="Actividad económica..." autocomplete="off" maxlength="50" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-people-carry"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroRepresentanteLegal">Representante legal<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="terceroRepresentanteLegal" placeholder="Representante legal de la empresa..." autocomplete="off" maxlength="200" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-user-cog"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroNumeroDeEmpleados">Número de empleados<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="terceroNumeroDeEmpleados" value="0" placeholder="Representante legal de la empresa..." autocomplete="off" maxlength="200" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-users"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroEmpleadosContratistas">Número de contratistas empleados<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="terceroEmpleadosContratistas" value="0" placeholder="Representante legal de la empresa..." autocomplete="off" maxlength="200" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-users"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="terceroNumeroDeVehiculos">Número de vehículos<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="terceroNumeroDeVehiculos" value="0" placeholder="Representante legal de la empresa..." autocomplete="off" maxlength="200" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-car"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="form-group clearfix">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="checkbox" id="terceroActivo" checked>
+                                                        <label for="terceroActivo">
+                                                            ¿Activo?
+                                                        </label>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+
+                            </div>
+
+                        </div>
+
+                        @Html.Partial("_Card_Footer")
+
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var terceroID = 0;
+
+        elementosComunesTercerosUsuarios.index();
+        tercerosCRUD.guardarTerceroAsync(terceroID);
+        usuariosCRUD.getAllUsuarios(terceroID);
+        tercerosCRUD.index();
+
+        $("#btnAtras").click(function () {
+            tercerosCRUD.getAllTerceros();
+        });
+
+        $("#terceroLogo").fileinput({
+            overwriteInitial: true,
+            resizeImage: false,
+            language: 'es',
+            previewClass: 'text-center',
+            dropZoneTitle: 'Arrastre o deje caer el logo aquí...',
+            frameClass: 'block-center',
+            maxFileSize: 1000,
+            showClose: false,
+            showCaption: false,
+            browseLabel: 'Agregar imagen',
+            removeLabel: 'Remover',
+            browseIcon: '<i class="fas fa-plus-circle"></i>',
+            removeIcon: '<i class="fas fa-times"></i>',
+            removeTitle: 'Cancelar',
+            elErrorContainer: '#kv-avatar-errors-1',
+            msgErrorClass: 'alert alert-block alert-danger',
+            layoutTemplates: { main2: '{preview} {remove} {browse}' },
+            allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+            removeFromPreviewOnError: false, //Remover preview si hay error
+            browseOnZoneClick: false, //Abrir buscador al dar click en la imagen
+        });
+
+    });
+
+
+</script>
+
+
+

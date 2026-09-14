@@ -1,0 +1,132 @@
+﻿@model List<Models.DTO.AusentismoIndicadoresDTO>
+
+@{
+    string Estado = string.Empty;
+
+}
+
+<div class="card-header border-bottom border-top pt-2 pb-0">
+    <h5 class="font-weight-bold text-uppercase"><i class="fas fa-chart-area mr-1 text-primary"></i> Indicadores de ausentismo</h5>
+</div>
+
+<div class="card-body pt-4">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        @Html.AntiForgeryToken()
+        <table id="tblIndicadores" class="table table-bordered dt-responsive table-sm center-block" style="width:100%">
+            <thead class="text-center text-white fondoColorSGI">
+                <tr>
+                    <th class="text-center">Orden</th>
+                    <th class="text-center">Nombre</th>
+                    <th class="text-center">Tipo de ausentismo</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.IntOrdenamiento</td>  
+                        <td>@item.StrNombreIndicador</td>  
+                        <td class="text-center">
+
+                            @{ 
+                                string tipoDeAusentismoClase = string.Empty;
+                            }
+
+                           @if (item.StrTipoEventoAusentismo == Across.Enumeraciones.enumTiposGlobalesDeIncapacidad.EG_AC.ToString())
+                           {
+                               tipoDeAusentismoClase = "badge-primary";
+                           }
+                           else
+                           {
+                               tipoDeAusentismoClase = "badge-success";
+                           }
+
+                            <span class="badge @tipoDeAusentismoClase">@item.StrTipoEventoAusentismo</span>  
+
+                        </td>  
+
+                        <td class="text-center">
+
+                            <button type="button" title="Editar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm  glyphicon glyphicon-edit" data-registroid="@item.StrId" data-tipoevento="editar"><i class="fa fa-edit fa-fw mr-1"></i>Editar indicador</button>
+
+                        </td>  
+
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var tblIndicadores = $('#tblIndicadores').DataTable({
+
+            "order": [[0, "asc"]],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblIndicadores tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+
+            if (tipoEvento == 'editar')
+                return ausentismoIndicadores.editarIndicador(registroID);
+
+        });
+
+    });
+
+
+</script>
+
+

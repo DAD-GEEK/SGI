@@ -1,0 +1,112 @@
+﻿@model Models.TercerosUsuarios
+
+@{
+    Layout = null;
+}
+
+<input type="hidden" id="usuarioRegistroID" value="@Model.IntRegistroID" />
+<input type="hidden" id="usuarioTercero" value="@Model.IntTerceroID" />
+
+<div class="modal-dialog " style=" max-width:800px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", $"{Model.StrUsuarioNombre}" }, { "icono", "fa fa-user-plus" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formEditarGlobal">
+                @Html.AntiForgeryToken()
+                <div class="modal-body pt-1">
+
+                    <div class="container-fluid">
+
+                        <!--No cambiar por la etiqueta Form-->
+                        <div id="formCrearGlobal">
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="usuarioNombre">Nombre<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            <input class="form-control border-right-0 validarParsley" type="text" name="usuarioNombre" id="usuarioNombre" value="@Model.StrUsuarioNombre" placeholder="Nombre..." autocomplete="off" minlength="6" maxlength="50" required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-user-tag"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="usuarioEmail">Email<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            <input class="form-control border-right-0 validarParsley" type="email" name="usuarioEmail" id="usuarioEmail" value="@Model.StrUsuarioEmail" placeholder="Usuario de la aplicación..." autocomplete="off" minlength="5" maxlength="50" required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-user-check"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (ViewBag.registrado && ViewBag.esGestionIntegral)
+                                {
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label font-weight-bold" for="usuarioTercero">Roles<span class="text-danger">*</span></label>
+                                            <div class=" input-group with-focus">
+                                                @Html.DropDownList("listaRoles", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "usuarioRoles", placeholder = "-- Seleccione una opción", multiple = "multiple" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="col-md-12">
+                                    <div class="form-group  ">
+                                        <div class="form-group clearfix">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="checkbox" id="opcEstado" checked="@Model.OpcEstado">
+                                                <label for="opcEstado">
+                                                    ¿Activo?
+                                                </label>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                @Html.Partial("_Modal_Footer")
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(function () {
+        seguridad.updateUsuarioAsync();
+    });
+
+</script>

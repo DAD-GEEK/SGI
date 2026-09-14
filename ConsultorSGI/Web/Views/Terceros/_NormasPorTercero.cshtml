@@ -1,0 +1,44 @@
+﻿@model List<Models.Terceros_Normas>
+
+<div class="pt-2">
+    <button type="button" class="btn btn-primary" id="btnAgregarNorma"><i class="fas fa-award mr-2"></i>Agregar norma</button>
+</div>
+<table id="tblAuditorias" class="table dt-responsive table-condensed table-sm center-block mt-2" style="width:100%">
+    <thead class="text-center" style="border-radius:10px">
+        <tr>
+            <th style="display:none">Id</th>
+            <th class="text-left">Norma</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="display:none">@item.IntID</td>
+                <td class="text-left" style="width:80%"><span class="font-weight-bold">@item.Normas.StrCodigo: </span>@item.Normas.StrDescripcion</td>
+                <td class=" text-center" style="width:20%!important">
+                    <button type="button" title="Eliminar norma" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm  glyphicon glyphicon-edit" onclick="tercerosCRUD.eliminarNormaPorTerceroAsync('@item.IntID')"><i class="fa fa-trash-alt fa-fw"></i></button>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var btnAgregarNorma = $("#btnAgregarNorma");
+
+        btnAgregarNorma.click(function () {
+            tercerosCRUD.vistaAgregarNormas();
+        });
+
+    });
+
+
+</script>

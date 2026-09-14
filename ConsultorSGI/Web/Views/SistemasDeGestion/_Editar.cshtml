@@ -1,0 +1,97 @@
+﻿@model Models.SistemasDeGestion
+
+<input type="hidden" id="sistemaDeGestionID" value="@Model.StrCodigoID" />
+<input type="hidden" id="sistemaDeGestionTipoDeAccion" value="@Across.Enumeraciones.enumTipoDeAccion.Editar.ToString()" />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        @Html.Partial("_AlertaNovedades", ViewData["error"] = ViewBag.Error)
+    }
+    else
+    {
+        <form id="formGuardarGlobal" method="post" action="#">
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline">
+
+                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = $"{Model.StrCodigoID} - {Model.StrDescripcion}")
+
+                <div class="card-body pt-0">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="sistemaDeGestionCodigo">Descripción<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="sistemaDeGestionCodigo" value="@Model.StrDescripcion" placeholder="Ingrese aquí la descripción..." autocomplete="off" maxlength="100" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-tags"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="sistemaDeGestionIcono">Ícono<span class="text-danger">*</span>&nbsp;<a href="https://fontawesome.com/v5/search?o=r&m=free" target="_blank" class="text-sm font-italic">Haga click aquí para ver mas íconos</a></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="sistemaDeGestionIcono" value="@Model.StrIcono" placeholder="Ingrese aquí la clase del ícono..." autocomplete="off" maxlength="100" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-cog"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+
+                            <div class="small-box">
+                                <div class="inner">
+                                    <h3>Diagnóstico</h3>
+
+                                    <p>Configuración de documento</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fas fa-tools text-primary"></i>
+                                </div>
+                                <a href="@Url.Action("DocumentoDiagnosticoPasos","SistemasDeGestion", new { sistemaDeGestion = Model.StrCodigoID })" class="small-box-footer bg-primary">
+                                    Ver mas... <i class="fas fa-arrow-circle-right"></i>
+                                </a>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Card_Footer")
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        sistemasDeGestionCRUD.guardar();
+
+        $("#btnAtras").click(function () {
+            sistemasDeGestionCRUD.getAll();
+        });
+    });
+
+</script>
+
+
+

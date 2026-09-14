@@ -1,0 +1,46 @@
+﻿@model List<Models.DTO.SistemasDeGestionDTO>
+
+@if (ViewBag.Error != null)
+{
+    @Html.Partial("_AlertaNovedades", ViewData["error"] = ViewBag.Error)
+}
+else
+{
+    <div class="row">
+
+        @foreach (var item in Model.OrderBy(x => x.TIntOrden))
+        {
+
+            <div class="col-md-3 col-12">
+
+                <div class="small-box">
+                    <div class="inner">
+                        <h4 class="font-weight-bold">@item.StrCodigoID</h4>
+
+                        <p>@item.StrDescripcion</p>
+                    </div>
+                    <div class="icon">
+                        <i class="@item.StrIcono text-primary"></i>
+                    </div>
+                    <a href="@Url.Action("Disenio","SistemasDeGestion", new {sistemaDeGestion = item.StrCodigoID})" class="small-box-footer bg-primary mt-1">
+                        Ver más... <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+
+            </div>
+        }
+    </div>
+
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+    });
+
+
+</script>
+
+
