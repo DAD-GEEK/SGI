@@ -4,6 +4,39 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.4.11] - 2026-09-14
+
+### 🎨 Refinamiento de UI de Login, Ayuda Contextual y Sello Corporativo Waloyo Group
+- **Simplificación y Pulido Visual del Login (`Login.tsx`)**:
+  - Subtítulo ajustado a **"Portal de Software"** para mayor sobriedad corporativa.
+  - Botón de submit estandarizado a **"Iniciar Sesión"**.
+  - Badge inferior simplificado a **"Conexión Cifrada"**.
+  - Validación programática previa de formato de correo electrónico corporativo mediante expresión regular estandarizada.
+- **Ayuda Contextual Interactiva en Recordar Sesión (`Login.tsx`)**:
+  - Incorporado botón/icono de ayuda (`?` / `HelpCircle`) junto a la casilla "Recordar esta sesión" con tooltip flotante explicativo: aclara que guarda el correo en el equipo para agilizar accesos futuros y que por seguridad jamás almacena contraseñas.
+- **Sello Corporativo Waloyo Group (`Login.tsx` & `CrmSidebar.tsx`)**:
+  - Añadido pie de página corporativo con hipervínculo seguro a `https://waloyogroup.com/` ("Desarrollado por Waloyo Group — Tecnología resiliente. Operación continua.") en la pantalla de inicio de sesión.
+  - Integrado enlace institucional homólogo en el pie del menú lateral colapsable del CRM.
+
+## [1.4.10] - 2026-09-14
+
+### 🔔 Reactividad en Notificaciones de Credenciales & Depuración Estructural de Asesores Fantasma
+- **Reactividad Instantánea en Centro de Notificaciones (`Dashboard.tsx` & `Login.tsx`)**:
+  - En `Login.tsx`, la llamada de auto-sincronización de credenciales se optimizó con timeout defensivo (2.5s) y genera notificación corporativa informativa tanto cuando se detectan y corrigen claves desactualizadas (`updated: true`) como cuando se confirma que las credenciales ya se encuentran al día (`success: true`).
+  - Despacho del evento personalizado `sgi_notifications_changed` que es capturado en tiempo real por el hook reactivo de `Dashboard.tsx` actualizando el badge de la campana y la lista desplegable sin requerir recargar la página.
+- **Depuración Estructural de Transformación ETL (`UnifiedTransformService.java` & `UnifiedTransformServiceTest.java`)**:
+  - Eliminado por completo el método inactivo `processUsuario` y la inyección residual de `UsuarioRepository`, garantizando que bajo ninguna circunstancia el scheduler de sincronización reactiva vuelva a generar registros no supervisados en `sgi.usuarios_consultores`.
+  - Actualizado el test unitario `UnifiedTransformServiceTest.java` para verificar de forma estricta la ausencia de escrituras de usuarios desde el pipeline ETL.
+- **Script de Saneamiento para Asesores Fantasma en PostgreSQL (`sgi.usuarios_consultores`)**:
+  - Documentado script SQL de purga para eliminar de forma segura los 9 registros de asesores `ASESOR_SENIOR` creados previamente por el ETL histórico en la base de datos de producción y QA.
+- **Keep-Alive Ping Asíncrono contra Cold Start de IIS (`LegacyKeepAliveService.java` & `application.yml`)**:
+  - Implementado servicio programado (`@Scheduled(fixedRate = 180000)`) que despacha pings HTTP asíncronos y no bloqueantes cada 3 minutos a las aplicaciones legadas ASP.NET MVC (`Agenda` y `Consultor`).
+  - Previene que el Application Pool de IIS alcance el límite de inactividad de 5 minutos (*Idle Time-out*) y mate el proceso de trabajo `w3wp.exe`, eliminando por completo la latencia de arranque en frío (*Cold Start* de 15 a 30 segundos) para que los iframes carguen de forma instantánea.
+- **Enrutamiento Canónico a Dominio Corporativo Principal (`App.tsx`)**:
+  - Implementada redirección automática en caliente desde dominios de desarrollo de Firebase (`*.web.app` o `*.firebaseapp.com`) hacia el dominio personalizado oficial `https://crm.gestionintegralsgi.com.co`, preservando ruta, parámetros y hash.
+- **Claridad Visual en Modal de Eliminación de Asesores (`UsuariosView.tsx`)**:
+  - Actualizada la ventana modal de confirmación para reflejar la preservación legal de auditoría del SGSST: informa con claridad que los eventos de agenda asociados al asesor NO se eliminan, sino que se preservan intactos con su nombre y correo histórico inmutable.
+
 ## [1.4.9] - 2026-09-14
 
 ### 📦 Consolidación Arquitectónica: Integración de Aplicaciones Legadas (.NET MVC) en SGI

@@ -31,5 +31,12 @@ class SgiSyncPropertiesTest {
         assertEquals(3, properties.getSync().getRetry().getMaxAttempts());
         assertEquals(300000L, properties.getSync().getRetry().getDelayMs());
         assertTrue(properties.getSync().isEnabled());
+
+        assertNotNull(properties.getLegacy());
+        assertTrue(properties.getLegacy().isKeepAliveEnabled());
+        properties.getLegacy().setAgendaUrl("https://agenda.local");
+        properties.getLegacy().setConsultorUrl("https://consultor.local");
+        assertEquals("https://agenda.local", properties.getLegacy().getAgendaUrl());
+        assertEquals("https://consultor.local", properties.getLegacy().getConsultorUrl());
     }
 }

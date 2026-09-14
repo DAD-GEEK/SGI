@@ -57,6 +57,22 @@ export const Dashboard: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showNotifications]);
 
+  useEffect(() => {
+    const reloadNotifs = () => {
+      try {
+        const stored = localStorage.getItem('sgi_notifications');
+        if (stored) setNotifications(JSON.parse(stored));
+      } catch {}
+    };
+    window.addEventListener('sgi_notifications_changed', reloadNotifs);
+    window.addEventListener('storage', reloadNotifs);
+    return () => {
+      window.removeEventListener('sgi_notifications_changed', reloadNotifs);
+      window.removeEventListener('storage', reloadNotifs);
+    };
+  }, []);
+
+
   return (
     <div className="h-screen bg-[#f7f9fb] flex flex-col md:flex-row font-sans overflow-hidden">
       {/* Shared CrmSidebar */}

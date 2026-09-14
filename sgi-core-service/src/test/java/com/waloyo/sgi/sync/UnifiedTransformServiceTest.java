@@ -1,9 +1,7 @@
 package com.waloyo.sgi.sync;
 
 import com.waloyo.sgi.entity.ClienteEntity;
-import com.waloyo.sgi.entity.UsuarioEntity;
 import com.waloyo.sgi.repository.ClienteRepository;
-import com.waloyo.sgi.repository.UsuarioRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +22,6 @@ class UnifiedTransformServiceTest {
 
     @Mock
     private ClienteRepository clienteRepository;
-
-    @Mock
-    private UsuarioRepository usuarioRepository;
 
     @InjectMocks
     private UnifiedTransformService unifiedTransformService;
@@ -89,6 +84,6 @@ class UnifiedTransformServiceTest {
                 .build();
 
         assertDoesNotThrow(() -> unifiedTransformService.transformAndUpsert(record).block());
-        verify(usuarioRepository, never()).save(any(UsuarioEntity.class));
+        verify(clienteRepository, never()).save(any(ClienteEntity.class));
     }
 }

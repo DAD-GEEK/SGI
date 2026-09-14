@@ -52,6 +52,10 @@ sgi:
       max-attempts: ${SGI_SYNC_MAX_ATTEMPTS:3}
       # Reintentos espaciados en 5 minutos (300,000 milisegundos)
       delay-ms: ${SGI_SYNC_RETRY_DELAY_MS:300000}
+  legacy:
+    keep-alive-enabled: ${SGI_KEEP_ALIVE_ENABLED:true}
+    agenda-url: ${SGI_LEGACY_AGENDA_URL:https://agenda.gestionintegralsgi.com.co}
+    consultor-url: ${SGI_LEGACY_CONSULTOR_URL:https://consultor.gestionintegralsgi.com.co}
   datasource:
     mssql:
       host: ${MSSQL_HOST:server163.tecnoweb.net}

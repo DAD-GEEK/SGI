@@ -557,6 +557,20 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
           <LogOut className="w-3.5 h-3.5 shrink-0" />
           {isExpanded && <span>Cerrar Sesión</span>}
         </button>
+
+        {isExpanded && (
+          <div className="pt-2 text-center text-[10px] text-[#d8e3fb]/60 leading-tight">
+            <span>Desarrollado por </span>
+            <a
+              href="https://waloyogroup.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white hover:text-[#a9c7ff] font-semibold underline underline-offset-2 transition-colors"
+            >
+              Waloyo Group
+            </a>
+          </div>
+        )}
       </div>
     </aside>
   );
