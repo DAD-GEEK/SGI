@@ -17,6 +17,9 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - **Sello Corporativo Waloyo Group (`Login.tsx` & `CrmSidebar.tsx`)**:
   - Añadido pie de página corporativo con hipervínculo seguro a `https://waloyogroup.com/` ("Desarrollado por Waloyo Group — Tecnología resiliente. Operación continua.") en la pantalla de inicio de sesión.
   - Integrado enlace institucional homólogo en el pie del menú lateral colapsable del CRM.
+- **Secuencialidad Estricta de CI antes de Disparar CD (`ci.yml` & `trigger-waloyo-cd.yml`)**:
+  - Integrado el job `dispatch-to-waloyo` como la etapa final y dependiente (`needs: [changes, validate-landing, validate-crm, validate-core-service]`) en `ci.yml`, garantizando que el webhook hacia Waloyo CD se dispare ÚNICAMENTE tras validar con éxito todas las pruebas unitarias y compilación.
+  - Eliminado el trigger paralelo `on: push` en `trigger-waloyo-cd.yml`, restringiéndolo exclusivamente a disparos manuales (`workflow_dispatch`) de emergencia.
 
 ## [1.4.10] - 2026-09-14
 

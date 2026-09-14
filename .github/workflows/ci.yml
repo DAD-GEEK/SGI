@@ -5,6 +5,7 @@ on:
     branches: [ master, main ]
   pull_request:
     branches: [ master, main ]
+  workflow_dispatch:
 
 jobs:
   changes:
@@ -141,4 +142,49 @@ jobs:
           SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_CREATE_NAMESPACES: true
         run: ./mvnw clean test
         working-directory: sgi-core-service
+
+  ci-gate:
+    name: 🛡️ Compuerta de Calidad CI (Status Check Obligatorio)
+    needs: [changes, validate-landing, validate-crm, validate-core-service]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validar Resultados de Validaciones
+        run: |
+          echo "Evaluando resultados de las validaciones..."
+          results="${{ join(needs.*.result, ' ') }}"
+          echo "Resultados: $results"
+          if [[ "$results" =~ "failure" ]] || [[ "$results" =~ "cancelled" ]]; then
+            echo "❌ Uno o más trabajos de validación fallaron o fueron cancelados."
+            exit 1
+          fi
+          echo "✅ Todas las validaciones ejecutadas terminaron con éxito o fueron omitidas justificadamente."
+
+  dispatch-to-waloyo:
+    name: 🚀 Notificar a Waloyo CD (Post-Validación CI)
+    needs: [changes, ci-gate]
+    if: |
+      always() &&
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&
+      needs.ci-gate.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enviar Webhook Dispatch a WaloyoGroup
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.WALOYO_DISPATCH_TOKEN }}
+          repository: DAD-GEEK/WaloyoGroup
+          event-type: sgi-deploy
+          client-payload: |
+            {
+              "sgi_core": "${{ needs.changes.outputs.core }}",
+              "sgi_crm": "${{ needs.changes.outputs.crm }}",
+              "sgi_landing": "${{ needs.changes.outputs.landing }}",
+              "actor": "${{ github.actor }}",
+              "ref": "${{ github.ref }}",
+              "commit": "${{ github.sha }}"
+            }
+
+
 

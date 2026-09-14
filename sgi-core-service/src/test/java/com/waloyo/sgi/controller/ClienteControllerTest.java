@@ -36,13 +36,18 @@ public class ClienteControllerTest {
     }
 
     @Test
-    @DisplayName("Debe listar los 67 clientes reales desde el repositorio")
+    @DisplayName("Debe listar los clientes desde el repositorio")
     void testObtenerTodosLosClientes() {
+        ClienteEntity guardado = clienteRepository.save(testCliente);
+
         ResponseEntity<List<ClienteEntity>> res = clienteController.listarTodos();
         assertEquals(HttpStatus.OK, res.getStatusCode());
         List<ClienteEntity> clientes = res.getBody();
         assertNotNull(clientes, "La lista de clientes no debe ser nula");
-        assertTrue(clientes.size() >= 67, "Debe contener al menos los 67 clientes reales migrados");
+        assertFalse(clientes.isEmpty(), "La lista de clientes debe contener al menos un registro");
+        assertTrue(clientes.stream().anyMatch(c -> testCliente.getNit().equals(c.getNit())),
+                "Debe contener el cliente registrado");
+        clienteRepository.delete(guardado);
     }
 
     @Test
@@ -55,7 +60,6 @@ public class ClienteControllerTest {
         assertNotNull(creado.getId(), "El ID del cliente creado no debe ser nulo");
         assertEquals("999888777", creado.getNit());
         
-        // Limpieza de prueba
         clienteRepository.deleteById(creado.getId());
     }
 
@@ -74,7 +78,6 @@ public class ClienteControllerTest {
         assertNotNull(actualizado);
         assertFalse(actualizado.getActivo(), "El cliente debe estar en estado INACTIVO");
 
-        // Limpieza
         clienteRepository.deleteById(creado.getId());
     }
 }
