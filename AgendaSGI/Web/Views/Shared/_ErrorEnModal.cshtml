@@ -1,0 +1,35 @@
+﻿
+<div class="modal-dialog " style=" max-width:800px!important;">
+
+
+    <div class="modal-content card card-outline card-primary ">
+
+        <div class="card-header">
+            <h3 class="card-title font-weight-bold">
+                <i class="fas fa-bullhorn"></i>
+                ¡Mensaje de alerta!
+            </h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <div class="callout callout-danger">
+                <h5 class="font-weight-bold">¡Alerta!</h5>
+
+                <p>
+                    @ViewBag.Error
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+
+
+

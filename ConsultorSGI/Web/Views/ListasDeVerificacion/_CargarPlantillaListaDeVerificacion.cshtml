@@ -1,0 +1,83 @@
+﻿@{
+    Layout = null;
+}
+
+<input type="hidden" id="listaDeVerificacionID" value="0" />
+
+<div class="modal-dialog " style=" max-width:800px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Cargar lista de verificación" }, { "icono", "fas fa-list-alt" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formCargarListaDeVerificacion">
+
+                <div class="modal-body pt-1" style="overflow-y:auto!important; max-height:90vh!important;">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="cargarPlantillaPlantilla">Numerales por proceso<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        @Html.DropDownList("listaPlantillas", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "cargarPlantillaPlantilla", placeholder = "-- Seleccione una opción", required = "required" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark"><i class="fas fa-undo-alt mr-1"></i>Cancelar</button>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="submit" class="btn btn-outline-primary btn-block"><i class="fas fa-cloud-upload-alt mr-1"></i>Cargar</button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        listasDeVerificacionCRUD.cargarPlantillaListaDeVerificacionAsync();
+    });
+
+</script>
+
+
+

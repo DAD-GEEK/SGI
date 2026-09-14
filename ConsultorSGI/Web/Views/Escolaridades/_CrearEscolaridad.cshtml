@@ -1,0 +1,106 @@
+﻿<input type="hidden" id="escolaridadID" value="0" />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobal" method="post" action="#">
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline">
+
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="escolaridadCodigo">Código<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="escolaridadCodigo" placeholder="Ingrese aquí el código..." autocomplete="off" maxlength="50" data-parsley-type="alphanum" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-cogs"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="escolaridadDescripcion">Descripción<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="escolaridadDescripcion" placeholder="Ingrese aquí la descripción..." autocomplete="off" maxlength="200" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-tags"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group  ">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-primary d-inline">
+                                        <input type="checkbox" id="escolaridadActivo" checked>
+                                        <label for="escolaridadActivo">
+                                            ¿Activo?
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-3">
+
+                        </div>
+                        <div class="col-md-3">
+
+                        </div>
+
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-outline-dark btn-block" onclick="escolaridadesCRUD.getAllEscolaridadesAsync();"><i class="fas fa-undo-alt mr-1"></i>Atras</button>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-outline-primary btn-block"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        escolaridadesCRUD.guardarEscolaridadAsync();
+
+    });
+
+
+</script>
+
+
+

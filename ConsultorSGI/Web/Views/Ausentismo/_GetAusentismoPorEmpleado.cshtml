@@ -1,0 +1,142 @@
+﻿@model Models.DTO.AusentismoAgrupadoPorEmpleadoDTO
+@using Across;
+
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:1200px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><em class="fa fa-calendar-check text-gray "></em></span>&nbsp;Empleados con ausentismo para @Model.TituloModal</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <div class="modal-body ">
+                <div class="container-fluid">
+
+                    <table id="tblAusentismoEmpleados" class="table table-bordered dt-responsive table-sm center-block" style="width:100%">
+                        <thead class="text-center text-white fondoColorSGI">
+                            <tr>
+                                <th style="display:none">Id</th>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+
+                                @foreach (var item in Model.ListaTipoEventos.OrderBy(x => x.IntTipoEventoAusentismoID))
+                                {
+                                    <th>@item.StrCodigo</th>
+                                }
+
+                                <th>Total dias</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var empleado in Model.ListaAusentismoAgrupadoPorEmpleado)
+                            {
+
+                                <tr>
+                                    <td style="display:none">@empleado.EmpleadoID</td>
+                                    @{
+                                        var urlImagen = Archivos.GetUrlImagenOrUrlDefault(empleado.UrlImagen);
+                                        <td class="text-center">
+                                            <img class="img-responsive img-circle img-thumbnail" style="width:70px" src="@urlImagen" alt="@empleado.EmpleadoNombre" />
+                                        </td>
+                                    }
+
+                                    <td class="text-left font-weight-bold h6">@empleado.EmpleadoIdentificacion - @empleado.EmpleadoNombre</td>
+
+                                    @foreach (var tipoEvento in Model.ListaTipoEventos)
+                                    {
+                                        var existeTipoEvento = empleado.TipoEventos.Where(x => x.IntTipoEventoAusentismoID == tipoEvento.IntTipoEventoAusentismoID);
+
+                                        if (existeTipoEvento.Count() != 0)
+                                        {
+                                            <td class="text-center">@existeTipoEvento.Sum(x => x.DiasIncapacidad)</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-center">0</td>
+                                        }
+
+
+                                    }
+
+                                    <td class="text-center font-weight-bold h5">@empleado.TipoEventos.Sum(x => x.DiasIncapacidad)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+
+
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var tblAusentismoEmpleados = $('#tblAusentismoEmpleados').DataTable({
+
+            "order": [[0, "desc"]],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+    });
+
+
+</script>
+
+
+
+

@@ -1,0 +1,150 @@
+﻿@using Across;
+@model List<Models.DTO.AusentismoDTO>
+
+@{
+    string Estado = string.Empty;
+
+}
+
+<div class=" container-fluid">
+
+    <div class=" col-md-12">
+        <div class="card">
+
+            <div class="card-header fondoOscuroSGI">
+                <div class="row">
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-block btn-outline-light" id="btnCrearAusentismo"><i class="fas fa-user-times"></i>&nbsp;&nbsp;Registrar ausentismo</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-block btn-outline-success" data-toggle="modal" id="btnModalArchivos"><i class="fas fa-file-excel"></i>&nbsp;&nbsp; Registrar desde Excel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger block-center" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
+                else
+                {
+                    @Html.AntiForgeryToken()
+                    <table id="tblAusentismo" class="table table-bordered dt-responsive table-sm center-block text-sm" style="width:100%">
+                        <thead class="text-center text-white fondoColorSGI">
+                            <tr>
+                                <th>Id</th>
+                                <th>Imagen</th>
+                                <th>Empleado</th>
+                                <th>Cargo</th>
+                                <th>Fecha inicial</th>
+                                <th>Fecha final</th>
+                                <th>Tipo evento</th>
+                                <th>Cantidad de prórrogas</th>
+                                <th class="text-center">Días incapacidad</th>
+                                <th class="text-center">Días prórroga</th>
+                                <th class="text-center">Total días</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+
+                                <tr>
+                                    <td>@item.IntAusentismoID</td>
+                                    <td class="text-center">
+                                        <img class="img-responsive img-circle img-thumbnail" style="width:40px; height:40px;" src="@item.StrImagenEmpleado" alt="Imagen empleado" />
+                                    </td>
+                                    <td>@item.StrIdentificacionEmpleado - @item.StrNombreEmpleado</td>
+                                    <td>@item.StrCargo</td>
+                                    <td>@item.DatFechaInicial.ToString("dddd, d MMMM 'de' yyyy")</td>
+                                    <td>@item.DatFechaFinal.ToString("dddd, d MMMM 'de' yyyy")</td>
+                                    <td>@item.StrDescripcionEvento</td>
+                                    <td class="text-center font-weight-bold h6">@Common.ConvertirNumerosEnLetras(@item.IntCantidadProrrogas).ToUpperInvariant()</td>
+                                    <td class="text-center font-weight-bold h6">@item.IntDiasIncapacidad</td>
+                                    <td class="text-center font-weight-bold h6">@item.IntDiasProrroga</td>
+                                    <td class="font-weight-bold h6 text-center"><span class="badge badge-primary">@item.IntTotalDiasIncapacidad</span></td>
+                                    <td class=" text-center">
+                                        <button type="button" title="Editar" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm glyphicon glyphicon-edit" data-registroid="@item.IntAusentismoID" data-tipoevento="editar"><i class="fa fa-edit fa-fw"></i></button>
+                                        <button type="button" title="Eliminar" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm glyphicon glyphicon-edit" data-registroid="@item.IntAusentismoID" data-tipoevento="eliminar"><i class="fa fa-trash-alt fa-fw"></i></button>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        elementosComunesAusentismoUsuarios.index();
+
+        var tblAusentismo = $('#tblAusentismo').DataTable({
+
+            "order": [[4, "desc"]],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblAusentismo tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var AusentismoID = $(this).data("registroid");
+
+            if (tipoEvento == 'editar')
+                return ausentismoCRUD.getAusentismoByEditarAsync(AusentismoID);
+
+            if (tipoEvento == 'eliminar')
+                return ausentismoCRUD.deleteAusentismoAsync(AusentismoID);
+
+        });
+
+    });
+
+
+</script>
+
+

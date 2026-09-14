@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CrmSidebar } from '../components/CrmSidebar';
 import {
@@ -13,12 +13,52 @@ import {
   Clock,
   Calendar,
   Filter,
-  Plus
+  Plus,
+  ShieldCheck,
+  X
 } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  const [notifications, setNotifications] = useState<any[]>(() => {
+    try {
+      const stored = localStorage.getItem('sgi_notifications');
+      if (stored) return JSON.parse(stored);
+    } catch {}
+    return [];
+  });
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const markAllAsRead = () => {
+    const updated = notifications.map((n) => ({ ...n, read: true }));
+    setNotifications(updated);
+    localStorage.setItem('sgi_notifications', JSON.stringify(updated));
+  };
+
+  const removeNotification = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const updated = notifications.filter((n) => n.id !== id);
+    setNotifications(updated);
+    localStorage.setItem('sgi_notifications', JSON.stringify(updated));
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        setShowNotifications(false);
+      }
+    };
+    if (showNotifications) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showNotifications]);
+
   return (
-    <div className="min-h-screen bg-[#f7f9fb] flex flex-col md:flex-row font-sans">
+    <div className="h-screen bg-[#f7f9fb] flex flex-col md:flex-row font-sans overflow-hidden">
       {/* Shared CrmSidebar */}
       <CrmSidebar />
 
@@ -38,10 +78,86 @@ export const Dashboard: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <button className="relative p-2 rounded-xl text-[#545f73] hover:bg-[#f2f4f6] transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
-            </button>
+            {/* Notification Center Popover */}
+            <div className="relative" ref={popoverRef}>
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative p-2 rounded-xl text-[#545f73] hover:bg-[#f2f4f6] transition-colors cursor-pointer"
+                title="Notificaciones del sistema"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-white animate-pulse" />
+                )}
+              </button>
+
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-[#c2c6d4]/60 z-50 overflow-hidden">
+                  <div className="p-4 bg-[#055bb2] text-white flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Bell className="w-4 h-4" />
+                      <span className="font-bold text-sm">Notificaciones</span>
+                      {unreadCount > 0 && (
+                        <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                          {unreadCount} nuevas
+                        </span>
+                      )}
+                    </div>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={markAllAsRead}
+                        className="text-[11px] underline text-sky-100 hover:text-white cursor-pointer transition-colors"
+                      >
+                        Marcar leídas
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="max-h-80 overflow-y-auto divide-y divide-[#eceef0]">
+                    {notifications.length === 0 ? (
+                      <div className="p-6 text-center text-[#727783] text-xs">
+                        No hay notificaciones pendientes.
+                      </div>
+                    ) : (
+                      notifications.map((n) => (
+                        <div
+                          key={n.id}
+                          className={`p-3.5 transition-colors flex gap-3 items-start ${
+                            n.read ? 'bg-white hover:bg-slate-50' : 'bg-sky-50/50 hover:bg-sky-50'
+                          }`}
+                        >
+                          <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 shrink-0 mt-0.5">
+                            <ShieldCheck className="w-4 h-4" />
+                          </div>
+                          <div className="flex-grow space-y-1">
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="text-xs font-bold text-[#191c1e] leading-snug">
+                                {n.title}
+                              </p>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span className="text-[10px] text-[#727783] font-mono">
+                                  {n.time}
+                                </span>
+                                <button
+                                  onClick={(e) => removeNotification(n.id, e)}
+                                  className="p-1 rounded-md text-[#727783] hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                                  title="Quitar notificación"
+                                >
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                            <p className="text-[11px] text-[#424752] leading-relaxed">
+                              {n.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
             <Link
               to="/perfil"
               className="p-2 rounded-xl text-[#545f73] hover:bg-[#f2f4f6] transition-colors"

@@ -1,0 +1,38 @@
+﻿<div class="card card-primary card-outline">
+    <div class="card-header p-2">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a class="nav-link active" href="#usuarios" data-toggle="tab">Usuarios</a></li>
+            <li class="nav-item"><a class="nav-link" href="#roles" data-toggle="tab">Roles</a></li>
+            <li class="nav-item"><a class="nav-link" href="#modulos" data-toggle="tab">Módulos</a></li>
+
+        </ul>
+    </div><!-- /.card-header -->
+    <div class="card-body">
+        <div class="tab-content">
+            <div class="active tab-pane" id="usuarios">
+                <div id="divGetAllUsuariosTerceros"></div>
+            </div>
+
+            <div class="tab-pane" id="roles">
+                <div id="divGetAllRoles"></div>
+
+            </div>
+
+            <div class="tab-pane" id="modulos">
+                <div id="divGetAllModulos"></div>
+            </div>
+          
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        seguridad.getAllUsuariosTerceros();
+        rolesCRUD.getAllRolesAsync();
+        modulosCRUD.getAllModulosAsync();
+
+    });
+</script>
+

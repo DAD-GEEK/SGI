@@ -1,0 +1,85 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:800px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Agregar usuario" }, { "icono", "fa fa-user-plus" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formCrearGlobal">
+
+                @Html.AntiForgeryToken()
+                <div class="modal-body pt-1" style="overflow-y:auto!important; max-height: 70vh !important;">
+
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioNombre">Nombre<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 validarParsley" type="text" name="usuarioNombre" id="usuarioNombre" placeholder="Nombre..." autocomplete="off" minlength="6" maxlength="50" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-user-tag"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioEmail">Email<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 validarParsley" type="email" name="usuarioEmail" id="usuarioEmail" placeholder="Usuario de la aplicación..." autocomplete="off" minlength="5" maxlength="50" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-user-check"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioTercero">Tercero<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        @Html.DropDownList("listaTerceros", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "usuarioTercero", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                @Html.Partial("_Modal_Footer")
+
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(function () {
+        seguridad.crearUsuarioAsync();
+    });
+
+</script>

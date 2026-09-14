@@ -1,0 +1,471 @@
+﻿@model Models.Clientes
+
+@{
+    Layout = null;
+}
+
+<input type="hidden" id="clienteID" value="0" />
+<input type="hidden" id="numeroContrato" value="0" />
+
+<div class="modal-dialog " style=" max-width:1200px!important; max-height:75vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><em class="fa fa-user-plus text-gray "></em></span>&nbsp; Agregar cliente</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form method="post" action="#" id="formCrearGlobal">
+            @Html.AntiForgeryToken()
+            <div class="modal-body overflow-auto">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="card card-primary card-outline card-outline-tabs">
+
+                                <div class="card-header p-0 border-bottom-0">
+                                    <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="general" data-toggle="pill" href="#generalTab" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Información general</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="contratos" data-toggle="pill" href="#contratosTab" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Contratos</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="contactos" data-toggle="pill" href="#contactosTab" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Contactos</a>
+                                        </li>
+                                      
+                                    </ul>
+                                </div>
+
+                                <div class="card-body pt-1">
+                                    <div class="tab-content" id="custom-tabs-four-tabContent">
+
+                                        @*Datos Generales*@
+                                        <div class="tab-pane fade show active" id="generalTab" role="tabpanel" aria-labelledby="general">
+
+                                            <div class="row">
+                                                <div class="col-md-12 pb-1 pt-0">
+                                                    <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="clienteIdentificacion">Identificación<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="clienteIdentificacion" id="clienteIdentificacion" type="text" placeholder="Identificación del cliente" autocomplete="off" minlength="7" maxlength="13" data-parsley-required data-parsley-errors-container="#errorClienteIdentificacion" />
+                                                            <div class="input-group-append" id="codigoIcono">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-user"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <span class="text-danger" id="errorClienteIdentificacion"><small></small> </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-2">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="clienteDV">Dígito de verificación<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="clienteDV" id="clienteDV" type="text" readonly placeholder="Dígito de verificación" autocomplete="off" />
+                                                            <div class="input-group-append" id="codigoIcono">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-user-check"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <span class="text-danger" id="errorClienteIdentificacion"><small></small> </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="clienteNombre">Nombre<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="clienteNombre" id="clienteNombre" type="text" placeholder="Nombre del cliente" autocomplete="off" data-parsley-required data-parsley-errors-container="#errorClienteNombre" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-user-tag"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <span class="text-danger" id="errorClienteNombre"><small></small> </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="clienteTelefono">Teléfono<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="clienteTelefono" id="clienteTelefono" type="text" placeholder="Teléfono del cliente" autocomplete="off" data-parsley-required data-parsley-errors-container="#errorClienteTelefono" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-phone"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <span class="text-danger" id="errorClienteTelefono"><small></small> </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="clienteEmail">Email<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="clienteEmail" id="clienteEmail" onkeyup="clientesCRUD.formatearTextoMinusculas(this)" type="email" placeholder="Email del cliente" autocomplete="off" data-parsley-type="email" data-parsley-required data-parsley-errors-container="#errorClienteEmail" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-envelope"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <span class="text-danger" id="errorClienteEmail"><small></small> </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="clienteDireccion">Direccion</label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="clienteDireccion" id="clienteDireccion" type="text" placeholder="Direccion del cliente" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-street-view"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="clienteEmail">Ciudad<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            @Html.DropDownList("listaCiudades", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "clienteCiudad", placeholder = "-- Seleccione una opción", data_parsley_required = "required", data_parsley_errors_container = "#errorclienteCiudad" })
+                                                        </div>
+                                                        <span class="text-danger" id="errorclienteCiudad"><small></small> </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="clienteWeb">Página web</label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="clienteWeb" id="clienteWeb" onkeyup="clientesCRUD.formatearTextoMinusculas(this)" type="text" placeholder="Página web del cliente" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-cloud"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="clienteFechaIngreso">Fecha de ingreso</label>
+                                                        <div class=" input-group with-focus">
+                                                            <div class="input-group date timepickerFecha" id="timepickerFechaIngreso" data-target-input="nearest" data-target="#timepickerFechaIngreso" data-toggle="datetimepicker">
+                                                                <input type="text" class="form-control datetimepicker-input border-right-0" id="clienteFechaIngreso" autocomplete="off" data-target="#timepickerFechaIngreso" />
+                                                                <div class="input-group-append">
+                                                                    x                                                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                        <em class="fas fa-calendar-check"></em>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <span class="text-danger" id="errorFechaIngreso"><small></small> </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane fade show" id="contratosTab" role="tabpanel" aria-labelledby="contratos">
+
+                                            <div class="row">
+                                                <div class="col-md-12 pb-1 pt-0">
+                                                    <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="fechaInicialContrato">Fecha inicial<span class="text-danger">*</span></label>
+                                                        <div class="input-group date timepickerFecha" id="timepickerFechaInicialContrato" data-target-input="nearest" data-target="#timepickerFechaInicialContrato" data-toggle="datetimepicker">
+                                                            <input type="text" class="form-control datetimepicker-input border-right-0" id="fechaInicialContrato" placeholder="Fecha inicial" autocomplete="off" data-target="#timepickerFechaInicialContrato" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-calendar-check"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="fechaFinalContrato">Fecha final<span class="text-danger">*</span></label>
+                                                        <div class="input-group date timepickerFecha" id="timepickerFechaFinalContrato" data-target-input="nearest" data-target="#timepickerFechaFinalContrato" data-toggle="datetimepicker">
+                                                            <input type="text" class="form-control datetimepicker-input border-right-0" id="fechaFinalContrato" placeholder="Fecha inicial" autocomplete="off" data-target="#timepickerFechaFinalContrato" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-calendar-check"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="horasContrato">Horas mensuales<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info contrato" name="horasContrato" id="horasContrato" type="number" placeholder="Horas mensuales" autocomplete="off" />
+                                                            <div class="input-group-append" id="codigoIcono">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-sort-numeric-up"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="valorContrato">Valor mensual<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info contrato" name="valorContrato" id="valorContrato" type="text" placeholder="Valor contrato" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-sort-numeric-up-alt"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="asesorasContrato">Asesor<span class="text-danger">*</span></label>
+                                                        @Html.DropDownList("listaUsuarios", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "form-control select2 select2-purple contrato", style = "width: 100%;", multiple = "multiple", id = "asesorasContrato" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="sistemasContrato">Sistema<span class="text-danger">*</span></label>
+                                                        @Html.DropDownList("listaSistemas", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "form-control select2 contrato", style = "width: 100%;", multiple = "multiple", id = "sistemasContrato" })
+                                                    </div>
+                                                </div>
+
+                                                @*<div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label font-weight-bold" for="emailContrato">Email notificación<span class="text-danger">*</span></label>
+                                                            <div class=" input-group with-focus">
+                                                                <input class="form-control border-right-0 info contrato" name="emailContrato" id="emailContrato"  onkeyup="clientesCRUD.formatearTextoMinusculas(this)" type="email" placeholder="Email notificación" autocomplete="off" quired />
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                        <em class="fa fa-envelope"></em>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="">&nbsp;</label>
+                                                        <div class=" input-group with-focus">
+                                                            <button class="btn btn-primary btn-block" type="button" onclick="clientesCRUD.generarDetalleContratos()">Agregar contrato</button>
+                                                        </div>
+                                                        <span class="text-danger"><small></small> </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card card-outline card-primary">
+
+                                                <div id="divGetAllContratos">
+
+
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+                                        <div class="tab-pane fade show" id="contactosTab" role="tabpanel" aria-labelledby="contactos">
+
+                                            <div class="row">
+                                                <div class="col-md-12 pb-1 pt-0">
+                                                    <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="nombreContacto">Nombre<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus date">
+                                                            <input class="form-control border-right-0 contacto" type="text" name="nombreContacto" id="nombreContacto" placeholder="Nombre del contacto" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-user-tag"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="cargoContacto">Cargo<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus date">
+                                                            <input class="form-control border-right-0 contacto" type="text" name="cargoContacto" id="cargoContacto" placeholder="Cargo del contacto" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-address-card"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="telefonoContacto">Teléfono fijo</label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0" name="telefonoContacto" id="telefonoContacto" type="text" placeholder="Teléfono fijo del contacto" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-phone"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="celularContacto">Celular<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 contacto" name="celularContacto" id="celularContacto" data-masked="" data-inputmask="'mask': '(399) 999-9999'" type="text" placeholder="Celular del contacto" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-mobile-alt"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="emailContacto">Email<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 contacto" name="emailContacto" id="emailContacto" onkeyup="clientesCRUD.formatearTextoMinusculas(this)" type="email" placeholder="Email del contacto" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-envelope"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="">&nbsp;</label>
+                                                        <div class=" input-group with-focus">
+                                                            <button class="btn btn-primary btn-block" type="button" onclick="clientesCRUD.generarDetalleContactos()">Agregar contacto</button>
+                                                        </div>
+                                                        <span class="text-danger"><small></small> </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card card-outline card-primary">
+
+                                                <div id="divGetAllContactos">
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <!-- /.card -->
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 mr">
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="button" data-dismiss="modal" class="btn btn-block btn-dark">Cancelar</button>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-block ">Guardar</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<link href="~/Plugins/Parsley/Parsley.css" rel="stylesheet" />
+<script type="text/javascript">
+
+    $(function () {
+
+        $(document).ready(function () {
+
+            clientesCRUD.getAllContratos();
+            clientesCRUD.getAllContactos();
+            clientesCRUD.crearClienteAsync();
+            clientesCRUD.loadInfoVistas();
+
+            var btnAgregarProceso = $("#btnAgregarProceso");
+
+            btnAgregarProceso.click(function () {
+                clientesCRUD.generarDetalleProcesos();
+            });
+
+
+
+        });
+    });
+
+</script>

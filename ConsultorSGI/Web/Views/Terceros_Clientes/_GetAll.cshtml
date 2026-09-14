@@ -1,0 +1,168 @@
+﻿@using CoreBusiness;
+@model List<Models.Terceros_Clientes>
+
+@{
+    string Estado = string.Empty;
+
+}
+
+<div class=" container-fluid">
+
+    <div class=" col-md-12">
+        <div class="card">
+
+            <div class="card-header fondoOscuroSGI">
+
+                <div class="row">
+
+                    <div class="col-md-3">
+
+                        <button type="button" class="btn btn-outline-light btn-block" data-toggle="modal" id="btnCrearCliente"><i class="fas fa-user-plus"></i>&nbsp;&nbsp;Agregar cliente</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger block-center" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
+                else
+                {
+                    @Html.AntiForgeryToken()
+                    <table id="tblClientes" class="table table-bordered dt-responsive table-sm center-block" style="width:100%">
+                        <thead class="text-center text-white fondoColorSGI">
+                            <tr>
+                                <th>Id</th>
+                                <th>Logo</th>
+                                <th>Identificación</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        terceros_clientesCRUD.crear();
+
+        var tblTerceros = $('#tblClientes').DataTable({
+
+            "order": [[0, "desc"]],
+            "serverSide": true,
+            "processing": true,
+            "filter": true,
+            "responsivePriority": 1,
+            "ajax": {
+                "global": false,
+                "url": rootHost + "Terceros_Clientes/GetPaginacionTercerosClientes",
+                "type": "POST",
+                "dataType": "JSON"
+            },
+
+            "columns": [
+                { "data": "IntTerceroClienteID", "name": "IntTerceroClienteID", "autoWidth": true, "searchable": false,"visible": false, },
+                {
+                    "data": "StrRutaImagen", "visible": true, "autoWidth": false, "searchable": false, "className": "text-center",
+                    render: function (data, type) {
+                        var imagenTerceroCliente = `<img class="img-responsive img-circle img-thumbnail" style="width:40px; height:40px;" src="${data}" alt="Logo clientes" />`;
+
+                        return imagenTerceroCliente;
+                    },
+                },
+                { "data": "StrIdentificacion", "name": "StrIdentificacion", "autoWidth": true, "searchable": true, "className": "text-center font-weight-bold" },
+                { "data": "StrNombre", "name": "StrNombre", "autoWidth": true, "searchable": true },
+                { "data": "StrEmail", "name": "StrEmail", "autoWidth": true, "searchable": true },
+                { "data": "StrTelefono", "name": "StrTelefono", "autoWidth": true, "searchable": true },
+                {
+                    "data": "BitEstado", "name": "BitEstado", "autoWidth": true, "searchable": true, "className": "text-center",
+                    render: function (data, type) {
+
+                        if (data)
+                            return "<span class='badge badge-pill badge-success text-uppercase'>ACTIVO</span>";
+                        else
+                            return "<span class='badge badge-pill badge-danger text-uppercase'>INACTIVO</span>";
+
+                    },
+                },
+                {
+                    data: 'IntTerceroClienteID',
+                    className: "text-center",
+                    render: function (row, type, data) {
+
+                        var acciones = `
+                                        <button type="button" title="Editar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm glyphicon glyphicon-edit" data-registroid="${row}" data-tipoevento="editar"><i class="fa fa-edit fa-fw"></i></button>
+
+                                        <button type="button" title="Eliminar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm glyphicon glyphicon-trash" data-registroid="${row}" data-tipoevento="eliminar"><i class="fa fa-trash fa-fw"></i></button>`
+
+                        return acciones;
+                    },
+                }
+            ],
+
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblClientes tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var clienteID = $(this).data("registroid");
+
+            if (tipoEvento == 'editar')
+                return terceros_clientesCRUD.getByEditar(clienteID);
+
+            if (tipoEvento == 'eliminar')
+                return terceros_clientesCRUD.deleteAsync(clienteID);
+
+        });
+
+    });
+
+
+</script>
+
+

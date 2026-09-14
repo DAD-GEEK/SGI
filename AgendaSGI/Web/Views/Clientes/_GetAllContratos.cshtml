@@ -1,0 +1,51 @@
+﻿@model List<Models.Contratos>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card-body p-0">
+
+            @if (ViewBag.Error  != null)
+            {
+                <div class="alert alert-danger block-center" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+            else
+            {
+                <table class="table table-responsive-lg table-sm " id="tblContratos" style="width:100% !important">
+                    <thead>
+                        <tr class="justify-content-center align-content-center">
+                            <th style="width: 10px; display: none; ">ContratoID</th>
+                            <th style="width: 20px">#</th>
+                            <th>Fecha inicial</th>
+                            <th>Fecha final</th>
+                            <th>Horas</th>
+                            <th>Valor</th>
+                            <th style="display: none; ">AsesoraID</th>
+                            <th>Asesora</th>
+                            <th style="display: none; ">SistemaID</th>
+                            <th class="">Sistema</th>
+                            <th>Notificación</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-right" >&nbsp;</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="divGenerarDetalleContrato">
+                    </tbody>
+                </table>
+
+            }
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+    });
+
+</script>

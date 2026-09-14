@@ -1,0 +1,401 @@
+﻿@model Web.Models.IndexViewModel
+
+<input type="hidden" id="empleadoID" value="@Model.UsuarioModel.Id" />
+<input type="hidden" id="urlImagenUsuario" value="@Model.UsuarioModel.NombreImagen" />
+<input type="hidden" id="urlImagenFirma" value="@Model.UsuarioModel.NombreImagenFirma" />
+<input type="hidden" id="empleadoNombreImagen" value="@ViewBag.nombreImagen" />
+
+<div class="content-header pt-0 mt-0 pb-1">
+    <div class="container-fluid pt-0 mt-0">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-dark font-weight-bold">Mi perfil</h1>
+                <small>Administrar tu perfil dentro de la aplicación</small>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Inicio</a></li>
+                    <li class="breadcrumb-item active">Mi perfil</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+
+    @if (ViewBag.error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarMiPerfil">
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+
+                <div class="col-md-3">
+
+                    <div class="card card-primary card-outline">
+
+                        <div class="card-body box-profile">
+
+                            <div class="row">
+                                <div class="col-sm-12 text-center" style="width:100%!important;margin:auto!important;">
+                                    <div class="kv-avatar">
+                                        <div class="file-loading" style="width:100%;">
+                                            <input id="usuarioImagen" type="file" accept="image/*">
+                                        </div>
+                                    </div>
+                                    <div class="kv-avatar-hint">
+                                        <small>Seleccione una imagen < 1000 KB</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="kv-avatar-errors-1" class="text-center" style="display:none"></div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="card card-primary card-outline">
+
+                        <div class="card-header">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="nav-link active" href="#perfil" data-toggle="tab">Perfil</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#firma" data-toggle="tab">Firma</a></li>
+
+                            </ul>
+                        </div>
+
+                        @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", $"Perfil: {Model.UsuarioModel.NombreUsuario}" } })
+
+                        <div class="card-body pt-1">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="perfil">
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="usuarioNitEmpresa">Nit</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="usuarioNitEmpresa" value="@Model.TerceroUsuarioModel.StrIdentificacion" readonly />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted border-left-0">
+                                                            <i class="fas fa-users-cog"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="usuarioEmpresa">Empresa</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="usuarioEmpresa" value="@Model.TerceroUsuarioModel.StrNombre" readonly />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted border-left-0">
+                                                            <i class="fas fa-users-cog"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="usuarioEmail">Email</label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="usuarioEmail" value="@Model.UsuarioModel.UserName" readonly />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted border-left-0">
+                                                            <i class="fas fa-user-tag"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="usuarioNombre">Nombre<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="usuarioNombre" value="@Model.UsuarioModel.NombreUsuario" placeholder="Nombre de usuario..." autocomplete="off" minlength="6" maxlength="100" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-user"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="usuarioTelefono">Teléfono<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0" type="text" id="usuarioTelefono" value="@Model.UsuarioModel.PhoneNumber" placeholder="Teléfono movil..." data-inputmask='"mask": "999 999-9999"' data-mask autocomplete="off" maxlength="20" required />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <i class="fas fa-mobile-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 pt-0">
+
+                                            <p>
+                                                <dl class="h6 text-warning font-italic pt-0">
+                                                    <dd>
+
+                                                        @if (Model.HasPassword)
+                                                        {
+                                                            @Html.ActionLink("Haga click aquí si desea cambiar su contraseña.", "ChangePassword")
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.ActionLink("Haga click aquí para crear una nueva contraseña.", "SetPassword")
+                                                        }
+
+                                                    </dd>
+                                                </dl>
+                                            </p>
+                                            <p class="text-primary" id="respuesta"></p>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="tab-pane" id="firma">
+
+                                    <div class="card-body box-profile">
+
+                                        <div class="row">
+
+                                            <div class="col-md-3"></div>
+
+                                            <div class="col-md-6 text-center" style="width: 100% !important; margin: auto !important;">
+                                                <div class="kv-avatar">
+                                                    <div class="file-loading" style="width:100%;">
+                                                        <input id="usuarioFirma" type="file" accept="image/*">
+                                                    </div>
+                                                </div>
+                                                <div class="kv-avatar-hint">
+                                                    <small>Seleccione una imagen < 1000 KB</small>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3"></div>
+                                        </div>
+
+                                        <div id="kv-avatar-errors-1" class="text-center" style="display:none"></div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-md-2">
+
+                                </div>
+                                <div class="col-md-2">
+
+                                </div>
+
+                                <div class="col-md-4">
+                                    <a href="@Url.Action("Index","Home")" class="btn btn-outline-dark btn-block"><i class="fas fa-undo-alt mr-1"></i>Atras</a>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-outline-primary btn-block"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    }
+
+
+
+</div>
+
+@section BodyArea {
+    <div class=" modal fade fade bd-example-modal-sm" id="modal" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor">
+
+        </div>
+    </div>
+}
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            manage.updateDatosDePerfilDeUsuarioAsync();
+
+            var urlImagen = $("#urlImagenUsuario").val();
+            var urlFirma = $("#urlImagenFirma").val();
+
+            if ($("#urlImagenUsuario").val().length != 0) {
+
+               var usuarioImagen = $("#usuarioImagen").fileinput({
+                    overwriteInitial: true,
+                    resizeImage: true,
+                    language: 'es',
+                    previewClass: 'text-center',
+                    dropZoneTitle: 'Arrastre o deje caer la imagen aquí...',
+                    frameClass: 'block-center',
+                    maxFileSize: 1000,
+                    showClose: true,
+                    showCaption: false,
+                    browseLabel: 'Agregar imagen',
+                    removeLabel: 'Remover',
+                    browseIcon: '<i class="fas fa-plus-circle"></i>',
+                    removeIcon: '<i class="fas fa-times"></i>',
+                    removeTitle: 'Cancelar',
+                    elErrorContainer: '#kv-avatar-errors-1',
+                    msgErrorClass: 'alert alert-block alert-danger',
+                    append: true,
+                    layoutTemplates: {
+                        main2: '{preview} {browse}',
+                    },
+                    initialPreview: [
+                        urlImagen,
+                    ],
+                    initialPreviewAsData: true, // identify if you are sending preview data only and not the raw markup
+                    initialPreviewFileType: 'image', // image is the default and can be overridden in config below
+                    initialPreviewDownloadUrl: urlImagen, // includes the dynamic `filename` tag to be replaced for each config
+                    initialPreviewConfig: [
+                        {
+                            key: '@Model.UsuarioModel.UserName',
+                            caption: "@Model.UsuarioModel.NombreUsuario",
+                            description: "<h5>@Model.UsuarioModel.NombreUsuario</h5> Email: @Model.UsuarioModel.UserName",
+                            size: @ViewBag.tamañoImagen,
+                            width: "100%",
+                            url: rootHost + 'Manage/EliminarAvatarDeUsuarioAsync',
+                        },
+                    ],
+                    allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+                    removeFromPreviewOnError: false, //Remover preview si hay error
+                   browseOnZoneClick: false, //Abrir buscador al dar click en la imagen
+               });
+            }
+            else {
+
+               var usuarioImagen = $("#usuarioImagen").fileinput({
+                    overwriteInitial: true,
+                    resizeImage: false,
+                    language: 'es',
+                    previewClass: 'text-center',
+                    dropZoneTitle: 'Arrastre o deje caer la imagen aquí...',
+                    frameClass: 'block-center',
+                    maxFileSize: 1000,
+                    showClose: false,
+                    showCaption: false,
+                    browseLabel: 'Agregar imagen',
+                    removeLabel: 'Remover',
+                    browseIcon: '<i class="fas fa-plus-circle"></i>',
+                    removeIcon: '<i class="fas fa-times"></i>',
+                    removeTitle: 'Cancelar',
+                    elErrorContainer: '#kv-avatar-errors-1',
+                    msgErrorClass: 'alert alert-block alert-danger',
+                    layoutTemplates: { main2: '{preview} {browse}' },
+                    allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+                    removeFromPreviewOnError: false, //Remover preview si hay error
+                    browseOnZoneClick: false //Abrir buscador al dar click en la imagen
+               });
+            }
+
+             if ($("#urlImagenFirma").val().length != 0) {
+
+               var usuarioImagen = $("#usuarioFirma").fileinput({
+                    overwriteInitial: true,
+                    resizeImage: true,
+                    language: 'es',
+                    previewClass: 'text-center',
+                    dropZoneTitle: 'Arrastre o deje caer la imagen aquí...',
+                    frameClass: 'block-center',
+                    maxFileSize: 1000,
+                    showClose: true,
+                    showCaption: false,
+                    browseLabel: 'Agregar imagen',
+                    removeLabel: 'Remover',
+                    browseIcon: '<i class="fas fa-plus-circle"></i>',
+                    removeIcon: '<i class="fas fa-times"></i>',
+                    removeTitle: 'Cancelar',
+                    elErrorContainer: '#kv-avatar-errors-1',
+                    msgErrorClass: 'alert alert-block alert-danger',
+                    append: true,
+                    layoutTemplates: {
+                        main2: '{preview} {browse}',
+                    },
+                    initialPreview: [
+                        urlFirma,
+                    ],
+                    initialPreviewAsData: true, // identify if you are sending preview data only and not the raw markup
+                    initialPreviewFileType: 'image', // image is the default and can be overridden in config below
+                   initialPreviewDownloadUrl: urlFirma, // includes the dynamic `filename` tag to be replaced for each config
+                    initialPreviewConfig: [
+                        {
+                            key: '@Model.UsuarioModel.UserName',
+                            caption: "@Model.UsuarioModel.NombreUsuario",
+                            description: "<h5>@Model.UsuarioModel.NombreUsuario</h5> Email: @Model.UsuarioModel.UserName",
+                            size: @ViewBag.tamañoImagenFirma,
+                            width: "100%",
+                            url: rootHost + 'Manage/EliminarFirmaDeUsuarioAsync',
+                        },
+                    ],
+                    allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+                    removeFromPreviewOnError: false, //Remover preview si hay error
+                   browseOnZoneClick: false, //Abrir buscador al dar click en la imagen
+               });
+            }
+            else {
+
+               var usuarioImagen = $("#usuarioFirma").fileinput({
+                    overwriteInitial: true,
+                    resizeImage: false,
+                    language: 'es',
+                    previewClass: 'text-center',
+                    dropZoneTitle: 'Arrastre o deje caer la imagen aquí...',
+                    frameClass: 'block-center',
+                    maxFileSize: 1000,
+                    showClose: false,
+                    showCaption: false,
+                    browseLabel: 'Agregar imagen',
+                    removeLabel: 'Remover',
+                    browseIcon: '<i class="fas fa-plus-circle"></i>',
+                    removeIcon: '<i class="fas fa-times"></i>',
+                    removeTitle: 'Cancelar',
+                    elErrorContainer: '#kv-avatar-errors-1',
+                    msgErrorClass: 'alert alert-block alert-danger',
+                    layoutTemplates: { main2: '{preview} {browse}' },
+                    allowedFileExtensions: ["jpg", "png", "gif", "jpeg"],
+                    removeFromPreviewOnError: false, //Remover preview si hay error
+                   browseOnZoneClick: false, //Abrir buscador al dar click en la imagen
+               });
+            }
+
+        });
+
+    </script>
+}

@@ -1,0 +1,138 @@
+﻿@model List<Models.Escolaridades>
+
+@{
+    string Estado = string.Empty;
+
+}
+
+<div class=" container-fluid">
+
+    <div class=" col-md-12">
+        <div class="card">
+
+            <div class="card-header fondoOscuroSGI">
+                <button type="button" class="btn btn-outline-light" data-toggle="modal" id="btnCrearEscolaridad"><i class="fas fa-graduation-cap"></i>&nbsp;&nbsp;Agregar escolaridad</button>
+            </div>
+
+            <div class="card-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger block-center" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
+                else
+                {
+                    @Html.AntiForgeryToken()
+                    <table id="tblEscolaridades" class="table table-bordered dt-responsive table-sm center-block" style="width:100%">
+                        <thead class="text-center text-white fondoColorSGI">
+                            <tr>
+                                <th>Id</th>
+                                <th class="text-center">Codigo</th>
+                                <th>Descripción</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                Estado = (item.BitActivo == true ? "ACTIVO" : "INACTIVO");
+
+                                <tr>
+                                    <td>@item.IntEscolaridadID</td>
+
+                                    <td class="text-center font-weight-bold h6">@item.StrCodigo</td>
+
+                                    <td>@item.StrDescripcion</td>
+
+                                    @if (item.BitActivo == true)
+                                    {
+                                        <td class="text-center"><span class="badge badge-success">@Estado</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center"><span class="badge badge-danger">@Estado</span></td>
+                                    }
+
+                                    <td class=" text-center">
+                                        <button type="button" title="Editar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm glyphicon glyphicon-edit" data-registroid="@item.IntEscolaridadID" data-tipoevento="editar"><i class="fa fa-edit fa-fw"></i></button>
+                                        <button type="button" title="Eliminar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm glyphicon glyphicon-trash" data-registroid="@item.IntEscolaridadID" data-tipoevento="eliminar"><i class="fa fa-trash fa-fw"></i></button>
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var btnCrearEscolaridad = $("#btnCrearEscolaridad");
+
+        btnCrearEscolaridad.click(function () {
+            escolaridadesCRUD.crearEscolaridad();
+        });
+
+        var tblEscolaridades = $('#tblEscolaridades').DataTable({
+
+            "order": [[1, "asc"]],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblEscolaridades tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+
+            if (tipoEvento == 'editar') return escolaridadesCRUD.getEscolaridadByEditarAsync(registroID);
+            if (tipoEvento == 'eliminar') return escolaridadesCRUD.deleteEscolaridadAsync(registroID);
+
+        });
+
+    });
+
+
+</script>
+
+

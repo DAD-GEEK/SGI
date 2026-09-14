@@ -1,0 +1,103 @@
+﻿@model Models.DTO.AusentismoIndicadoresDTO
+
+<div class="row">
+
+    <div class="col-md-4" id="divAnioActual">
+
+        <div class="row">
+
+            <div class="col-md-12">
+
+                <div class="card pt-1">
+                    <div class="card-header">
+                        <span class="float-left font-weight-bold h4 text-uppercase"><i class="fas fa-calendar-check text-primary mr-1"></i> Año</span><span class="float-right h4" id="medicionGeneralAusentismo_anio">@Model.IntAnio</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-12">
+
+                <div class="card" style="width: 100%!important">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="fas fa-tag text-primary mr-2"></i> <span class="">N° total de incapacidades</span> <span class="float-right font-weight-bold" id="medicionGeneralAusentismo_totalIncapacidades"></span>
+                        </li>
+
+                        <li class="list-group-item">
+                            <i class="fas fa-tag text-primary mr-2"></i> <span class="">N° total de dias</span> <span class="float-right font-weight-bold" id="medicionGeneralAusentismo_totalDias"></span>
+                        </li>
+
+                        <li class="list-group-item">
+                            <i class="fas fa-tag text-primary mr-2"></i> <span class="">
+                                N° de incapacidades por
+
+                                @if (Model.StrTipoEventoAusentismo == Across.Enumeraciones.enumTiposGlobalesDeIncapacidad.EG_AC.ToString())
+                                {
+                                    <span>EG - AC</span>
+                                }
+                                else
+                                {
+                                    <span>AT - EL</span>
+                                }
+
+                            </span> <span class="float-right font-weight-bold" id="medicionGeneralAusentismo_incapacidades_EG_AC"></span>
+                        </li>
+
+                        <li class="list-group-item">
+                            <i class="fas fa-tag text-primary mr-2"></i> <span class="">
+                                N° de dias por
+
+                                @if (Model.StrTipoEventoAusentismo == Across.Enumeraciones.enumTiposGlobalesDeIncapacidad.EG_AC.ToString())
+                                {
+                                    <span>EG - AC</span>
+                                }
+                                else
+                                {
+                                    <span>AT - EL</span>
+                                }
+
+                            </span> <span class="float-right font-weight-bold" id="medicionGeneralAusentismo_dias_EG_AC"></span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-8">
+
+        <div class="card pt-1">
+            <div class="card-header">
+                <span class="float-left font-weight-bold h4 text-uppercase">
+                    <i class="fas fa-chart-bar mr-1 text-primary"></i>
+                    @Model.StrNombreIndicador
+                </span>
+            </div>
+
+        </div>
+
+        <div class="position-relative">
+            <canvas id="@Model.StrCanvasID" height="200"></canvas>
+        </div>
+
+    </div>
+</div>
+
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var anioActual = $("#ausentismoIndicaroresAnio").val();
+        var tipoDeAusentismo = '@Model.StrTipoEventoAusentismo';
+        ausentismoIndicadores.obtenerDatosDeIndicadores_MedicionGeneralAusentismo(anioActual, tipoDeAusentismo);
+    });
+
+
+</script>

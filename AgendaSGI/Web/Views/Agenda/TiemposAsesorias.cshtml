@@ -1,0 +1,197 @@
+﻿
+<div class="content-header pt-0 mt-0">
+    <div class="container-fluid pt-0 mt-0">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-dark font-weight-bold">Tiempos de asesoría</h1>
+                <small>Módulo para validar tiempos de asesoría en los clientes</small>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">SGIapp</a></li>
+                    <li class="breadcrumb-item active">Tiempos</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h4 class="card-title font-weight-bold">Busqueda rápida</h4>
+                        </div>
+                        <div class="card-body pt-1">
+
+                            <label class="form-control-label font-weight-bold text-muted" for="asesorBuscar">Asesor</label>
+                            <div class="form-group">
+
+                                @Html.DropDownList("listaUsuarios", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "usuarioID", placeholder = "-- Seleccione una opción" })
+
+                            </div>
+
+                            <label class="form-control-label font-weight-bold text-muted" for="clienteBuscar">Cliente</label>
+                            <div class="form-group">
+
+                                @Html.DropDownList("listaClientes", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "clienteID", placeholder = "-- Seleccione una opción" })
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-12">
+
+                                    <button type="button" class="btn btn-outline-primary btn-block" id="btnBuscarTiempos">
+                                        <i class="fas fa-calendar-check mr-1"></i> Buscar
+                                        <i class="fas fa-caret-down ml-1"></i>
+                                    </button>
+
+                                </div>
+
+                                <div class="col-12 pt-2 ">
+
+                                    <a href="@Url.Action("TiemposAsesorias","Agenda")" class="btn btn-outline-primary btn-block">
+                                        <i class="fas fa-sync mr-1"></i> Refrescar
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-9">
+                    <div class="card card-outline card-primary">
+
+                        <div class="card-header">
+                            <h4 class="card-title font-weight-bold"><i class="fas fa-calendar-check mr-1 text-primary"></i><span id="textoBusqueda">Tiempos de asesoría</span></h4>
+                        </div>
+
+                        <div class="card-body pt-2">
+                            <div id="divGetTiemposAsesoria">
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            
+        </div>
+    </section>
+</div>
+
+@section BodyArea {
+    <div class=" modal fade fade bd-example-modal-sm" id="modal" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor">
+
+        </div>
+    </div>
+
+}
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $(".select2bs4").select2({
+                placeholder: '-- Selecccione una opción --',
+                theme: 'bootstrap4'
+            });
+
+            $('#btnBuscarTiempos').daterangepicker(
+                {
+                    autoUpdateInput: true,
+                    ranges: {
+                        'Hoy': [moment(), moment()],
+                        'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
+                        'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
+                        'Mes actual': [moment().startOf('month'), moment().endOf('month')],
+                        'Mes anterior': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().add(1, 'days'),
+                    endDate: moment().add(1, 'days'),
+                    "locale": {
+                        "format": "YYYY-MM-DD",
+                        "separator": " - ",
+                        "applyLabel": "Aplicar",
+                        "cancelLabel": "Cancelar",
+                        "fromLabel": "De",
+                        "toLabel": "A",
+                        "customRangeLabel": "Personalizar",
+                        "daysOfWeek": [
+                            "Do",
+                            "Lu",
+                            "Ma",
+                            "Mi",
+                            "Ju",
+                            "Vi",
+                            "Sa"
+                        ],
+                        "monthNames": [
+                            "Enero",
+                            "Febrero",
+                            "Marzo",
+                            "Abril",
+                            "Mayo",
+                            "Junio",
+                            "Julio",
+                            "Agosto",
+                            "Septiembre",
+                            "Octubre",
+                            "Noviembre",
+                            "Diciembre"
+                        ],
+                        "firstDay": 1
+                    }
+                },
+                function (start, end) {
+
+                    $('#btnBuscarTiempos').on('apply.daterangepicker', function (ev, picker) {
+
+                        var usuarioID = $("#usuarioID").val();
+                        var clienteID = $("#clienteID").val();
+                     
+                        if (usuarioID.length == 0)
+                            usuarioID = 0;
+
+                        if (clienteID.length == 0)
+                            clienteID = 0;   
+
+                        var fechaInicial = picker.startDate.format('YYYY-MM-DD');
+                        var fechaFinal = picker.endDate.format('YYYY-MM-DD');
+
+                        $("#textoBusqueda").html(`Tiempos de asesoría entre ${fechaInicial} y ${fechaFinal}`);
+
+                        agendaCRUD.getTiemposAsesoriasAsync(usuarioID, clienteID, fechaInicial, fechaFinal);
+                        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+
+                    });
+
+                }
+            );
+
+
+          
+        });
+
+    </script>
+}
+
+

@@ -1,0 +1,39 @@
+﻿
+        <div class="card-body pt-0">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger block-center m-2" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+            else
+            {
+                <div class="d-flex">
+                    <p class="d-flex flex-column">
+                        <span class="text-bold text-lg">@ViewBag.TotalHoras</span>
+                        <span>Total horas x Año</span>
+                    </p>
+                  
+                </div>
+
+                <div class="position-relative mb-4">
+                    <canvas id="sales-chart" height="200"></canvas>
+                </div>
+               
+            }
+        </div>
+    
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        indexInforme.datosBarrasHorasByAnoByAsesor();       
+
+    });
+
+
+</script>
+
+

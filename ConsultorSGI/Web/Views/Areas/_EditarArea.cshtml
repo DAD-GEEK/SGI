@@ -1,0 +1,98 @@
+﻿@model Models.Areas
+
+<input type="hidden" id="areaID" value="@Model.IntAreaID" />
+
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:800px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", $"{Model.StrDescripcion}" }, { "icono", "fa fa-building" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarGlobalAR">
+
+                <div class="modal-body ">
+                    <div class="container-fluid">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="areaCodigo">Código<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="areaCodigo" value="@Model.StrCodigo" placeholder="Ingrese aquí el código..." autocomplete="off" maxlength="50" data-parsley-type="alphanum" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-cogs"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="areaCodigo">Descripción<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="areaDescripcion" value="@Model.StrDescripcion" placeholder="Ingrese aquí la descripción..." autocomplete="off" maxlength="200" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-tags"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group  ">
+                                    <div class="form-group clearfix">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="areaActivo" checked="@Model.BitActivo">
+                                            <label for="areaActivo">
+                                                ¿Activo?
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Modal_Footer")
+
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        areasCRUD.guardarAreaAsync();
+
+    });
+
+
+</script>
+
+

@@ -30,9 +30,9 @@ public class UnifiedTransformService {
 
             if (table.contains("cliente") || table.contains("tercero")) {
                 processCliente(record);
-            } else if (table.contains("usuario") || table.contains("aspnetuser")) {
-                processUsuario(record);
             }
+            // La creación y unificación de usuarios asesores se gestiona exclusivamente por gobierno centralizado
+            // para evitar generación automática de usuarios con rol ASESOR_SENIOR no supervisados.
         }).subscribeOn(Schedulers.boundedElastic()).then();
     }
 

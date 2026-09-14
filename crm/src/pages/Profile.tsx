@@ -10,7 +10,12 @@ import {
   ArrowLeft,
   LayoutDashboard,
   CheckCircle2,
-  FileText
+  FileText,
+  Lock,
+  KeyRound,
+  AlertCircle,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { supabase } from '../config/supabaseClient';
 import { API_BASE_URL } from '../config/apiConfig';
@@ -25,6 +30,15 @@ export const Profile: React.FC = () => {
   const [role, setRole] = useState('ADMIN_TI');
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // Estados para Cambio de Contraseña Voluntario
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
+  const [passLoading, setPassLoading] = useState(false);
+  const [passError, setPassError] = useState<string | null>(null);
+  const [passSuccess, setPassSuccess] = useState(false);
 
   const isAdminTi = role === 'ADMIN_TI';
 
@@ -91,6 +105,66 @@ export const Profile: React.FC = () => {
     } catch (err) {
       console.error('Error al guardar perfil:', err);
       alert('Error al guardar cambios de perfil.');
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPassError(null);
+    setPassSuccess(false);
+
+    if (newPassword.length < 8) {
+      setPassError('La nueva contraseña debe contener al menos 8 caracteres.');
+      return;
+    }
+
+    const hasUpper = /[A-Z]/.test(newPassword);
+    const hasLower = /[a-z]/.test(newPassword);
+    const hasNum = /[0-9]/.test(newPassword);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword);
+
+    if (!hasUpper || !hasLower || !hasNum || !hasSpecial) {
+      setPassError('La contraseña debe incluir mayúsculas, minúsculas, números y un carácter especial.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPassError('Las contraseñas no coinciden. Por favor verifique ambas entradas.');
+      return;
+    }
+
+    setPassLoading(true);
+    try {
+      // 1. Actualizar contraseña en Supabase Auth
+      try {
+        await supabase.auth.updateUser({ password: newPassword });
+      } catch (authErr) {
+        console.warn('Supabase Auth session password update:', authErr);
+      }
+
+      // 2. Notificar al backend Spring Boot para sincronización completa (Supabase + MSSQL Agenda 3DES + MSSQL Consultor Identity)
+      const res = await fetch(`${API_BASE_URL}/usuarios/confirmar-clave`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          password: newPassword
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error('No se pudo sincronizar la contraseña en el servidor.');
+      }
+
+      setPassSuccess(true);
+      setNewPassword('');
+      setConfirmPassword('');
+      setShowPasswordSection(false);
+      setTimeout(() => setPassSuccess(false), 4000);
+    } catch (err: any) {
+      setPassError(err.message || 'Error al actualizar la contraseña.');
+    } finally {
+      setPassLoading(false);
     }
   };
 
@@ -258,6 +332,114 @@ export const Profile: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Seguridad y Cambio de Contraseña */}
+            <div className="bg-white rounded-2xl border border-[#c2c6d4]/40 p-6 elevation-1 space-y-5">
+              <div className="flex items-center justify-between border-b border-[#e0e3e5] pb-3">
+                <div className="flex items-center gap-2">
+                  <KeyRound className="w-5 h-5 text-[#055bb2]" />
+                  <div>
+                    <h3 className="text-base font-bold font-headline text-[#191c1e]">Seguridad & Contraseña</h3>
+                    <p className="text-[11px] text-[#727783]">Actualiza tu clave de acceso en CRM, Supabase y módulos legados (Agenda y Consultor).</p>
+                  </div>
+                </div>
+
+                {!showPasswordSection ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordSection(true)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Cambiar Contraseña</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowPasswordSection(false);
+                      setPassError(null);
+                      setNewPassword('');
+                      setConfirmPassword('');
+                    }}
+                    className="text-xs text-slate-500 hover:text-slate-800 font-semibold cursor-pointer"
+                  >
+                    Cancelar Cambio
+                  </button>
+                )}
+              </div>
+
+              {passSuccess && (
+                <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl flex items-center gap-2.5 text-xs font-semibold">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>Contraseña actualizada y sincronizada en Supabase Auth, Agenda SGI y Consultor SGI.</span>
+                </div>
+              )}
+
+              {showPasswordSection && (
+                <div className="bg-[#f8fafc] border border-slate-200/80 rounded-xl p-5 space-y-4">
+                  {passError && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-3.5 py-2.5 rounded-lg flex items-center gap-2 text-xs font-medium">
+                      <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
+                      <span>{passError}</span>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-semibold text-slate-700">Nueva Contraseña</label>
+                      <div className="relative">
+                        <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <input
+                          type={showPass ? 'text' : 'password'}
+                          placeholder="Mínimo 8 caracteres..."
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          className="w-full pl-9 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-[#055bb2] font-medium"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPass(!showPass)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                        >
+                          {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-semibold text-slate-700">Confirmar Nueva Contraseña</label>
+                      <div className="relative">
+                        <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <input
+                          type={showPass ? 'text' : 'password'}
+                          placeholder="Repita la nueva contraseña..."
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-[#055bb2] font-medium"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-slate-500">
+                    Requisitos: Mínimo 8 caracteres, mayúsculas, minúsculas, números y un carácter especial (ej. <code className="bg-white px-1.5 py-0.5 rounded border border-slate-200 text-slate-700 font-mono">!*</code>).
+                  </p>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      disabled={passLoading}
+                      onClick={handleChangePassword}
+                      className="inline-flex items-center gap-2 bg-[#055bb2] hover:bg-[#3374cd] text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+                    >
+                      <KeyRound className="w-4 h-4" />
+                      <span>{passLoading ? 'Sincronizando...' : 'Confirmar y Sincronizar Clave'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Preferences */}

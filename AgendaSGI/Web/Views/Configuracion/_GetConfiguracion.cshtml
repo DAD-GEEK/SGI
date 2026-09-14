@@ -1,0 +1,234 @@
+﻿
+<div class="container-fluid">
+
+    <form action="#" method="post" id="formCrearGlobal">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-12" style="height:auto">
+
+                <div class="card card-primary card-outline">
+
+                    <div class="card-body pt-1">
+
+                        @if (ViewBag.Error != null)
+                        {
+                            <div class="alert alert-danger block-center" role="alert">
+                                @ViewBag.Error
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <fieldset class="border" style="padding-top:0px;padding-left:10px;padding-right:10px;padding-bottom:5px;">
+                                        <legend class="w-auto text-sm text-bold font-weight-bold" style="margin-bottom:0px!important;">&nbsp;&nbsp;Agenda&nbsp;&nbsp;</legend>
+
+                                        <div class="row">
+                                            <div class="col-md-12 pb-1 pt-0">
+                                                <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">
+
+                                                <div class="form-group">
+                                                    <label class="form-control-label font-weight-bold" for="configuracionHoraInicial">Hora Inicial</label>
+                                                    <div class=" input-group with-focus">
+                                                        <div class="input-group date timepickerFecha" id="timepickerInicio" data-target-input="nearest" data-target="#timepickerInicio" data-toggle="datetimepicker">
+                                                            <input type="text" class="form-control datetimepicker-input border-right-0" id="configuracionHoraInicial" placeholder="Hora de inicio..." autocomplete="off" data-target="#timepickerInicio" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-calendar-check"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label font-weight-bold" for="configuracionHoraFinal">Hora final</label>
+                                                    <div class=" input-group with-focus">
+                                                        <div class="input-group date timepickerFecha" id="timepickerFinal" data-target-input="nearest" data-target="#timepickerFinal" data-toggle="datetimepicker">
+                                                            <input type="text" class="form-control datetimepicker-input border-right-0" id="configuracionHoraFinal" placeholder="Hora de finalización..." autocomplete="off" data-target="#timepickerFinal" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fas fa-clock"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label font-weight-bold " for="configuracionHoraFinal">Vista por defecto</label>
+                                                    <div class=" input-group with-focus">
+                                                        <select class=" select2bs4" id="configuracionVistaDefault" style="width:100%;">
+                                                            <option value="">--Seleccione una opción--</option>
+                                                            <option value="timeGridDay">Vista diaria</option>
+                                                            <option value="timeGridWeek">Vista semanal</option>
+                                                            <option value="dayGridMonth">Vista mensual</option>
+                                                            <option value="listWeek">Vista agenda</option>
+
+
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </fieldset>
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <fieldset class="border" style="padding-top:0px;padding-left:10px;padding-right:10px;padding-bottom:5px;">
+                                        <legend class="w-auto text-sm text-bold font-weight-bold" style="margin-bottom:0px!important;">&nbsp;&nbsp;Envio de correos&nbsp;&nbsp;</legend>
+
+                                        <div class="row">
+                                            <div class="col-md-12 pb-1 pt-0">
+                                                <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label font-weight-bold" for="configuracionEmailRemitente">Email remitente</label>
+                                                    <div class=" input-group with-focus">
+                                                        <input class="form-control border-right-0" name="configuracionEmailRemitente" id="configuracionEmailRemitente" type="text" placeholder="Email remitente..." autocomplete="off" />
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                <em class="fa fa-mail-bulk"></em>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label font-weight-bold" for="configuracionClave">Contraseña email</label>
+                                                    <div class=" input-group with-focus">
+                                                        <input class="form-control border-right-0" name="configuracionClave" id="configuracionClave" type="password" placeholder="Contraseña del correo..." autocomplete="off" />
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                <em class="fa fa-lock"></em>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label font-weight-bold" for="configuracionHost">Servidor de correo</label>
+                                                    <div class=" input-group with-focus">
+                                                        <input class="form-control border-right-0" name="configuracionHost" id="configuracionHost" type="text" placeholder="Host del email..." autocomplete="off" />
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                <em class="fa fa-server"></em>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label font-weight-bold" for="configuracionPuerto">Puerto</label>
+                                                    <div class=" input-group with-focus">
+                                                        <input class="form-control border-right-0" name="configuracionPuerto" id="configuracionPuerto" type="number" placeholder="Puerto de salida..." autocomplete="off" />
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                <em class="fa fa-code-branch"></em>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-12 pb-1">
+                                                <div class="form-group  ">
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="checkbox" id="opcSSL">
+                                                            <label for="opcSSL">
+                                                                Seguridad SSL
+                                                            </label>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+                                    </fieldset>
+
+
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 mt-2">
+                                    <button class="btn btn-primary btn-block font-weight-bold" type="submit" title="Actualizar mi perfil" data-toggle="tooltip" data-placement="left">Guardar cambios</button>
+
+                                </div>
+
+                            </div>
+
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $(".select2bs4").select2({
+            placeholder: '-- Selecccione una opción --',
+            theme: 'bootstrap4'
+        });
+
+
+        configuracionCRUD.crearConfiguracionAsync();
+
+        $('#timepickerInicio').datetimepicker({
+            format: 'h:mm A',
+            locale: 'es',
+            icons: {
+                time: "fa fa-clock",
+            }
+
+        });
+
+        $('#timepickerFinal').datetimepicker({
+            format: 'h:mm A',
+            locale: 'es',
+            icons: {
+                time: "fa fa-clock",
+            }
+
+        });
+
+    });
+
+</script>

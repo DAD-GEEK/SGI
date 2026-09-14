@@ -1,0 +1,202 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:600px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><i class="fas fa-laptop text-gray"></i></span>&nbsp; Módulo detalle</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formCrearDetalleGlobal">
+
+                @Html.AntiForgeryToken()
+                <div class="modal-body ">
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="moduloDetalleNombre">Nombre del módulo</label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="moduloDetalleNombre" placeholder="Nombre del módulo..." autocomplete="off" maxlength="50" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <i class="fas fa-laptop"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="moduloDetalleOrden">Orden en el menú<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 numerico" type="number" id="moduloDetalleOrden" placeholder="Orden en el menú..." autocomplete="off" min="0" max="255" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <i class="fas fa-sort-amount-down-alt"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="moduloDetalleDescripcion">Descripción<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="moduloDetalleDescripcion" placeholder="Descripción del módulo..." autocomplete="off" maxlength="200" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <i class="fas fa-tags"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="moduloDetalleControlador">Controlador<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="moduloDetalleControlador" placeholder="Controlador del módulo..." autocomplete="off" maxlength="50" data-parsley-type="alphanum" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <i class="fas fa-brain"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="moduloDetalleAccion">Acción<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="moduloDetalleAccion" placeholder="Acción del módulo..." autocomplete="off" maxlength="50" data-parsley-type="alphanum" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <i class="fas fa-cogs"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="moduloFecha">Fecha<span class="text-danger">*</span></label>
+                                    <div class="input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="moduloFecha" placeholder="Fecha de creación..." autocomplete="off" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <i class="fas fa-calendar-check"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark"><i class="fas fa-undo-alt mr-1"></i>Cancelar</button>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="submit" class="btn btn-outline-primary btn-block"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(function () {
+        modulosDetalleCRUD.crearModuloDetalleAsync();
+
+        $('#moduloFecha').daterangepicker({
+            "singleDatePicker": true,
+            "showDropdowns": true,
+            "minYear": 1901,
+            "maxYear": parseInt(moment().format('YYYY'), 10),
+            "locale": {
+                "format": "YYYY-MM-DD",
+                "separator": " - ",
+                "applyLabel": "Guardar",
+                "cancelLabel": "Cancelar",
+                "fromLabel": "Desde",
+                "toLabel": "Hasta",
+                "customRangeLabel": "Personalizar",
+                "daysOfWeek": [
+                    "Do",
+                    "Lu",
+                    "Ma",
+                    "Mi",
+                    "Ju",
+                    "Vi",
+                    "Sa"
+                ],
+                "monthNames": [
+                    "Enero",
+                    "Febrero",
+                    "Marzo",
+                    "Abril",
+                    "Mayo",
+                    "Junio",
+                    "Julio",
+                    "Agosto",
+                    "Setiembre",
+                    "Octubre",
+                    "Noviembre",
+                    "Diciembre"
+                ],
+            },
+
+            "opens": "center"
+        });
+
+    });
+
+</script>
+

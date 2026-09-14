@@ -1,0 +1,135 @@
+﻿@model Models.DTO.AusentismoAgrupadoPorProcesoDTO
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formCrearGlobal">
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline">
+                <div class="card-header ">
+                    <a href="#"><i class="fas fa-angle-double-left fa-2x mr-2" onclick="ausentismoCRUD.getAusentismoAgrupadoPorProcesoAsync(-1)"></i></a>
+                    <span class="h2 font-weight-bold" id="ausentismoAnio">@Model.Año</span>
+                    <a href="#"><i class="fas fa-angle-double-right fa-2x ml-2" onclick="ausentismoCRUD.getAusentismoAgrupadoPorProcesoAsync(1)"></i></a>
+
+                    <button type="button" class="btn btn-outline-dark float-right" onclick="ausentismoCRUD.getAllAusentismoAsync()"><i class="fas fa-undo-alt mr-1"></i>Voler a ausentismo</button>
+
+                </div>
+                <div class="card-body box-profile">
+
+                    <div class="card-title">
+                        <p class="font-weight-bold text-primary font-italic h5">Ausentismo anual agrupado por procesos</p>
+                    </div>
+
+                    <table id="tblAusentismoAgrupado" class="table dt-responsive table-sm center-block" style="width:100%">
+                        <thead class="text-center">
+                            <tr>
+                                <th style="display:none">Id</th>
+                                <th class="text-left">PROCESOS</th>
+                                @foreach (var item in Model.ListaTipoEventos.OrderBy(x => x.IntTipoEventoAusentismoID))
+                                {
+                                    <th>@item.StrCodigo</th>
+
+                                }
+
+                                <th>Total dias de incapacidad</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var proceso in Model.ListaProcesos)
+                            {
+
+                                <tr>
+                                    <td style="display:none">@proceso.IntProcesoID</td>
+
+                                    <td class="h6">@proceso.StrDescripcion</td>
+
+                                    @foreach (var tipoEvento in Model.ListaTipoEventos.OrderBy(x => x.IntTipoEventoAusentismoID))
+                                    {
+                                        var existeProceso = Model.ListaAusentismoAgrupadoPorProceso.Where(x => x.ProcesoID == proceso.IntProcesoID);
+
+                                        if (existeProceso.Count() != 0)
+                                        {
+                                            var ausentismoPorTipoEvento = existeProceso.FirstOrDefault().TipoEventos.Where(x => x.IntTipoEventoAusentismoID == tipoEvento.IntTipoEventoAusentismoID);
+                                            <td class="text-center">@ausentismoPorTipoEvento.Sum(x => x.DiasIncapacidad)</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-center">0</td>
+                                        }
+
+                                    }
+
+                                    @if (@Model.ListaAusentismoAgrupadoPorProceso.Where(x => x.ProcesoID == proceso.IntProcesoID).Count() != 0)
+                                    {
+                                        <td class="text-center h5 font-weight-bold">@Model.ListaAusentismoAgrupadoPorProceso.Where(x => x.ProcesoID == proceso.IntProcesoID).FirstOrDefault().TotalDiasIncapacidad</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center h5 font-weight-bold">0</td>
+                                    }
+
+
+                                    <td class="text-center">
+                                        <button type="button" title="Ver empleados" data-toggle="tooltip" data-placement="left" class="btn btn-outline-primary btn-sm glyphicon glyphicon-user" data-procesoid="@proceso.IntProcesoID" data-tipoevento="buscarEmpleados"><i class="fa fa-users fa-fw"></i></button>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td class="text-left font-weight-bold h5">TOTAL</td>
+                                @foreach (var item in Model.ListaTipoEventos)
+                                {
+                                    <td>&nbsp;</td>
+                                }
+                                <td class="text-center h4 font-weight-bold ">@Model.ListaAusentismoAgrupadoPorProceso.Sum(x => x.TotalDiasIncapacidad)</td>
+                                <td>&nbsp;</td>
+
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#tblAusentismoAgrupado tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var procesoID = $(this).data("procesoid");
+
+            if (tipoEvento == 'buscarEmpleados')
+                return ausentismoCRUD.getAusentismoAgrupadoPorProceso_EmpleadoAsync(procesoID);
+
+        });
+
+
+    });
+
+
+</script>
+
+
+

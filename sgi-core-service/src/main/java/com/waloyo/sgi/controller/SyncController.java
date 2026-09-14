@@ -14,7 +14,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sync")
-@CrossOrigin(origins = "*")
 public class SyncController {
 
     private final DatabaseSyncScheduler syncScheduler;

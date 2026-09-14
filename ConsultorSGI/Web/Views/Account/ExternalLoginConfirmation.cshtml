@@ -1,0 +1,141 @@
+﻿@model Web.Models.ExternalLoginConfirmationViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+<div class="fondoRegistro"></div>
+<div class="register-box">
+    <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+            <a href="@Url.Action("Login","Account")" class="h1">Consultor<b class="text-primary ">SGI</b></a>
+        </div>
+        <div class="card-body">
+            <p class="login-box-msg">Confirma tu correo electrónico para asociar tu cuenta de @ViewBag.LoginProvider con nuestra aplicación</p>
+
+            @using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "formRegistroExterno" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="input-group with-focus mb-3">
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control border-right-0 validarParsley", type = "email", placeholder = "Ingrese su correo Google", autocomplete="off", required = "required", id = "inputRegistroExterno", @readonly = true })
+                                <div class="input-group-append">
+                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                        <i class="fa fa-envelope"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <button type="button" id="btnValidarRegistroExterno" class="btn btn-block btn-danger">
+                            <i class="fab fa-google-plus mr-2"></i>
+                            Registrarse con Google+
+                        </button>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="card card-danger m-0 p-0 d-none btnProcesarGoogle">
+                            <div class="card-header rounded m-0 p-0">
+
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-block text-center font-weight-bold " data-source="widgets.html" data-card-widget="card-refresh" data-source-selector="#card-refresh-content">
+                                    &nbsp;</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        @ViewBag.ErrorAutenticacion
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+
+
+        </div>
+    </div><!-- /.card -->
+</div>
+
+
+<script src="@Scripts.Url("~/Vendor/jquery/jquery.min.js")"></script>
+<script src="@Scripts.Url("~/Scripts/common/parsley.js")"></script>
+<script src="@Scripts.Url("~/Scripts/modulos/Funciones_Globales/parsleyValidationsForms.js")"></script>
+<script src="@Scripts.Url("~/Scripts/modulos/Funciones_Globales/parsleyValidationsForms.js")"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+
+        $("input").parsley();
+
+        var formRegistro = $("#formRegistroExterno");
+        var btnValidar = $("#btnValidarRegistroExterno");
+        var inputEmail = $("#inputRegistroExterno");
+
+        btnValidar.click(function () {
+
+            inputEmail.parsley().validate();
+
+            if (inputEmail.parsley().isValid()) {
+                formRegistro.submit();
+            }
+        });
+
+
+        var btnProcesarGoogle = $(".btnProcesarGoogle");
+
+        formRegistro.submit(function () {
+            btnValidar.addClass('d-none');
+            btnProcesarGoogle.removeClass('d-none');
+        });
+
+
+    });
+
+</script>
+
+
+
+
+
+@*@model Web.Models.ExternalLoginConfirmationViewModel
+    @{
+        ViewBag.Title = "Registero";
+    }
+    <h2>@ViewBag.Title.</h2>
+    <h3>Associate your @ViewBag.LoginProvider account.</h3>
+
+    @using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <h4>Association Form</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <p class="text-info">
+            You've successfully authenticated with <strong>@ViewBag.LoginProvider</strong>.
+            Please enter a user name for this site below and click the Register button to finish
+            logging in.
+        </p>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-default" value="Register" />
+            </div>
+        </div>
+    }
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@

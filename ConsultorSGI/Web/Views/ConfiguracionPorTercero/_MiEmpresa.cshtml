@@ -1,0 +1,117 @@
+﻿@using CoreBusiness;
+@model Models.Terceros
+@{
+    Model.StrRutaImagen = Archivos.GetUrlImagenTerceroOrUrlDefault(Model.StrRutaImagen);
+}
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobal" method="post" action="#">
+            @Html.AntiForgeryToken()
+            <div class="row">
+
+                <div class="col-md-6">
+                    <div class="card card-primary card-outline">
+
+                        @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Informacion general" }, { "claseTexto", "d-none" } })
+
+                        <div class="card-body pt-1">
+
+                            <div class="row">
+
+                                <div class="col-md-3">
+
+                                    <img src="@Model.StrRutaImagen" class="text-center" style="width:100%; height:100px!" alt="Logo empresa" />
+
+                                </div>
+
+                                <div class="col-md-9">
+                                    <ul class="nav flex-column">
+                                        <li><i class="fas fa-circle text-primary mr-1 text-sm" style="font-size:8px!important;"></i><b>Nit:</b> @Model.StrIdentificacion</li>
+                                        <li><i class="fas fa-circle text-primary mr-1 text-sm" style="font-size:8px!important;"></i><b>Razón social:</b> @Model.StrNombre.ToUpper()</li>
+                                        <li><i class="fas fa-circle text-primary mr-1 text-sm" style="font-size:8px!important;"></i><b>Email:</b> @Model.StrEmail</li>
+                                        <li><i class="fas fa-circle text-primary mr-1 text-sm" style="font-size:8px!important;"></i><b>Dirección:</b> @Model.StrDireccion</li>
+                                        <li><i class="fas fa-circle text-primary mr-1 text-sm" style="font-size:8px!important;"></i><b>Teléfono:</b> @Model.StrTelefono</li>
+                                        <li><i class="fas fa-circle text-primary mr-1 text-sm" style="font-size:8px!important;"></i><b>Representante legal:</b> @Model.StrRepresentanteLegal</li>
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-primary card-outline">
+
+                        @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Áreas" }, { "claseTexto", "d-none" } })
+
+                        <div class="card-body pt-1">
+
+                            <ul class="nav flex-column">
+
+                                @foreach (var item in Model.Areas.ToList().OrderBy(x => x.StrCodigo))
+                                {
+                                    <li class="item"><span class="font-weight-bold">@item.StrCodigo - </span> @item.StrDescripcion</li>
+                                }
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-primary card-outline">
+
+                        @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Centros de trabajo" }, { "claseTexto", "d-none" } })
+
+                        <div class="card-body pt-1">
+
+                            <ul class="nav flex-column">
+
+                                @foreach (var item in Model.CentrosDeTrabajo.ToList().OrderBy(x => x.StrCodigo))
+                                {
+                                    <li class="item"><span class="font-weight-bold">@item.StrCodigo - </span> @item.StrDescripcion</li>
+                                }
+                            </ul>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+
+    });
+
+
+</script>
+
+
+

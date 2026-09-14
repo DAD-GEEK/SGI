@@ -354,14 +354,24 @@ const UsuariosView: React.FC = () => {
     }
   };
 
+  const [filterActivo, setFilterActivo] = useState<string>('todos');
+  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 5;
 
-  const filteredUsuarios = usuarios.filter(u =>
-    (u.nombreCompleto || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (u.documento || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (u.email || '').toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsuarios = usuarios.filter(u => {
+    const matchesSearch =
+      (u.nombreCompleto || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (u.documento || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (u.email || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (u.rol || '').toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesEstado =
+      filterActivo === 'todos' ? true :
+      filterActivo === 'activos' ? u.activo === true :
+      u.activo === false;
+
+    return matchesSearch && matchesEstado;
+  });
 
   const totalPages = Math.ceil(filteredUsuarios.length / itemsPerPage) || 1;
   const currentUsuarios = filteredUsuarios.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -373,10 +383,10 @@ const UsuariosView: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex font-sans text-slate-800 relative">
+    <div className="h-screen bg-[#F8FAFC] flex flex-col md:flex-row font-sans text-slate-800 relative overflow-hidden">
       <CrmSidebar activeTab="usuarios" />
 
-      <main className="flex-1 overflow-y-auto p-8 space-y-6">
+      <main className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
         {/* Toast Notificación del Sistema */}
         {toastMessage && (
           <div className={`fixed top-5 right-5 z-50 px-4 py-3 rounded-xl shadow-xl border flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300 ${
@@ -464,17 +474,48 @@ const UsuariosView: React.FC = () => {
           )}
         </div>
 
-        {/* Search Bar */}
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200/80">
-          <div className="relative w-full">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Buscar por Cédula (CC), nombre de asesor o correo corporativo..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E3A8A]/20 text-sm"
-            />
+        {/* Bento-style Advanced Filter Bar */}
+        <div className="bg-white rounded-2xl p-5 shadow-[0_4px_12px_rgba(30,41,59,0.05)] border border-slate-200 mb-8 grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div className="md:col-span-2">
+            <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Buscar Asesor / Usuario</label>
+            <div className="relative">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Buscar por Cédula (CC), nombre de asesor o correo corporativo..."
+                value={searchTerm}
+                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] focus:outline-none transition-shadow"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Estado</label>
+            <select
+              value={filterActivo}
+              onChange={(e) => { setFilterActivo(e.target.value); setCurrentPage(1); }}
+              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] focus:outline-none cursor-pointer"
+            >
+              <option value="todos">Todos los Estados ({usuarios.length})</option>
+              <option value="activos">Solo Activos ({usuarios.filter(u => u.activo).length})</option>
+              <option value="inactivos">Solo Inactivos ({usuarios.filter(u => !u.activo).length})</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Registros por Vista</label>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); }}
+              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A] focus:outline-none cursor-pointer"
+            >
+              <option value={5}>5 registros por página</option>
+              <option value={10}>10 registros por página</option>
+              <option value={20}>20 registros por página</option>
+              <option value={50}>50 registros por página</option>
+              <option value={100}>100 registros por página</option>
+            </select>
           </div>
         </div>
 
@@ -769,9 +810,9 @@ const UsuariosView: React.FC = () => {
 
         {/* Modal Crear Usuario */}
         {showCreateModal && (
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl border border-slate-200 space-y-5">
-              <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 md:p-6 z-50 overflow-y-auto">
+            <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl border border-slate-200 flex flex-col max-h-[90vh] my-auto">
+              <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100 shrink-0">
                 <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                   <UserCheck className="w-5 h-5 text-[#1E3A8A]" />
                   Registrar Colaborador SGI
@@ -781,133 +822,136 @@ const UsuariosView: React.FC = () => {
                 </button>
               </div>
 
-              {isEmailAlreadyRegistered && (
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-xs flex items-center gap-2">
-                  <KeyRound className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Este correo ya pertenece a un asesor registrado. Se actualizarán sus datos y se le reenviará una nueva clave temporal.</span>
-                </div>
-              )}
+              <form noValidate onSubmit={handleRegisterSubmit} className="flex flex-col flex-1 overflow-hidden">
+                <div className="p-6 space-y-4 text-sm overflow-y-auto max-h-[calc(90vh-140px)]">
+                  {isEmailAlreadyRegistered && (
+                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 text-xs flex items-center gap-2">
+                      <KeyRound className="w-4 h-4 text-blue-600 shrink-0" />
+                      <span>Este correo ya pertenece a un asesor registrado. Se actualizarán sus datos y se le reenviará una nueva clave temporal.</span>
+                    </div>
+                  )}
 
-              <form noValidate onSubmit={handleRegisterSubmit} className="space-y-4 text-sm">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Nombre Completo del Colaborador *</label>
-                  <input
-                    type="text"
-                    value={usuarioForm.nombreCompleto}
-                    onChange={(e) => setUsuarioForm({ ...usuarioForm, nombreCompleto: e.target.value })}
-                    placeholder="Ej: Carlos Mario Restrepo"
-                    className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Tipo de Documento *</label>
-                    <select
-                      value={usuarioForm.tipoDocumento}
-                      onChange={(e) => setUsuarioForm({ ...usuarioForm, tipoDocumento: e.target.value })}
-                      className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
-                    >
-                      <option value="CC">Cédula de Ciudadanía (CC)</option>
-                      <option value="CE">Cédula de Extranjería (CE)</option>
-                      <option value="PP">Pasaporte (PP)</option>
-                      <option value="NIT">Número Identificación Tributaria (NIT)</option>
-                      <option value="PPT">Permiso Protección Temporal (PPT)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Número de Documento *</label>
+                    <label className="block font-semibold text-slate-700 mb-1">Nombre Completo del Colaborador *</label>
                     <input
                       type="text"
-                      value={usuarioForm.documento}
-                      onChange={(e) => setUsuarioForm({ ...usuarioForm, documento: e.target.value })}
-                      placeholder="Ej: 1020304050"
+                      value={usuarioForm.nombreCompleto}
+                      onChange={(e) => setUsuarioForm({ ...usuarioForm, nombreCompleto: e.target.value })}
+                      placeholder="Ej: Carlos Mario Restrepo"
                       className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
                     />
                   </div>
-                </div>
 
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Correo Electrónico Corporativo *</label>
-                  <input
-                    type="email"
-                    value={usuarioForm.email}
-                    onChange={(e) => setUsuarioForm({ ...usuarioForm, email: e.target.value })}
-                    placeholder="usuario@empresa.com"
-                    className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
-                  />
-                </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Tipo de Documento *</label>
+                      <select
+                        value={usuarioForm.tipoDocumento}
+                        onChange={(e) => setUsuarioForm({ ...usuarioForm, tipoDocumento: e.target.value })}
+                        className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
+                      >
+                        <option value="CC">Cédula de Ciudadanía (CC)</option>
+                        <option value="CE">Cédula de Extranjería (CE)</option>
+                        <option value="PP">Pasaporte (PP)</option>
+                        <option value="NIT">Número Identificación Tributaria (NIT)</option>
+                        <option value="PPT">Permiso Protección Temporal (PPT)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Número de Documento *</label>
+                      <input
+                        type="text"
+                        value={usuarioForm.documento}
+                        onChange={(e) => setUsuarioForm({ ...usuarioForm, documento: e.target.value })}
+                        placeholder="Ej: 1020304050"
+                        className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
+                      />
+                    </div>
+                  </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Correo Electrónico Corporativo *</label>
+                      <input
+                        type="email"
+                        value={usuarioForm.email}
+                        onChange={(e) => setUsuarioForm({ ...usuarioForm, email: e.target.value })}
+                        placeholder="usuario@empresa.com"
+                        className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Teléfono Móvil / WhatsApp</label>
+                      <input
+                        type="text"
+                        value={usuarioForm.telefonoMovil}
+                        onChange={(e) => setUsuarioForm({ ...usuarioForm, telefonoMovil: e.target.value })}
+                        placeholder="Ej: 3112490072"
+                        className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">País de Origen / Indicativo</label>
+                      <select
+                        value={usuarioForm.pais}
+                        onChange={(e) => setUsuarioForm({ ...usuarioForm, pais: e.target.value })}
+                        className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
+                      >
+                        <option value="Colombia (+57)">🇨🇴 Colombia (+57)</option>
+                        <option value="México (+52)">🇲🇽 México (+52)</option>
+                        <option value="Perú (+51)">🇵🇪 Perú (+51)</option>
+                        <option value="Ecuador (+593)">🇪🇨 Ecuador (+593)</option>
+                        <option value="Chile (+56)">🇨🇱 Chile (+56)</option>
+                        <option value="Panamá (+507)">🇵🇦 Panamá (+507)</option>
+                        <option value="Estados Unidos (+1)">🇺🇸 Estados Unidos (+1)</option>
+                        <option value="España (+34)">🇪🇸 España (+34)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-slate-700 mb-1">Rol en Sistema</label>
+                      <select
+                        value={usuarioForm.rol}
+                        onChange={(e) => setUsuarioForm({ ...usuarioForm, rol: e.target.value })}
+                        className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
+                      >
+                        <option value="CONSULTOR">Consultor / Asesor</option>
+                        <option value="ADMIN">Administrador SGI</option>
+                        <option value="ADMIN_TI">👑 Administrador TI (Holding / Super Admin)</option>
+                      </select>
+                    </div>
+                  </div>
+
                   <div>
-                    <label className="block font-semibold text-slate-700 mb-1">País de Origen / Indicativo</label>
-                    <select
-                      value={usuarioForm.pais}
-                      onChange={(e) => setUsuarioForm({ ...usuarioForm, pais: e.target.value })}
-                      className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
-                    >
-                      <option value="Colombia (+57)">🇨🇴 Colombia (+57)</option>
-                      <option value="México (+52)">🇲🇽 México (+52)</option>
-                      <option value="Perú (+51)">🇵🇪 Perú (+51)</option>
-                      <option value="Ecuador (+593)">🇪🇨 Ecuador (+593)</option>
-                      <option value="Chile (+56)">🇨🇱 Chile (+56)</option>
-                      <option value="Panamá (+507)">🇵🇦 Panamá (+507)</option>
-                      <option value="Estados Unidos (+1)">🇺🇸 Estados Unidos (+1)</option>
-                      <option value="España (+34)">🇪🇸 España (+34)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Teléfono Móvil / WhatsApp</label>
-                    <input
-                      type="text"
-                      value={usuarioForm.telefonoMovil}
-                      onChange={(e) => setUsuarioForm({ ...usuarioForm, telefonoMovil: e.target.value })}
-                      placeholder="Ej: 3112490072"
-                      className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
-                    />
+                    <label className="block font-semibold text-slate-700 mb-2">Módulos Habilitados</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs">
+                      {Object.entries({
+                        dashboard: '📊 Dashboard General',
+                        clientes: '🏢 Gestión de Clientes',
+                        agenda: '📅 Agenda de Citas',
+                        consultor: '💼 Módulo Consultor (SG-SST/PESV)',
+                        usuarios: '👥 Administración de Usuarios'
+                      }).map(([key, label]) => (
+                        <label key={key} className="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
+                          <input
+                            type="checkbox"
+                            checked={(usuarioForm.modulos as any)[key]}
+                            onChange={(e) => setUsuarioForm({
+                              ...usuarioForm,
+                              modulos: { ...usuarioForm.modulos, [key]: e.target.checked }
+                            })}
+                            className="rounded text-[#1E3A8A]"
+                          />
+                          <span>{label}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Rol en Sistema</label>
-                  <select
-                    value={usuarioForm.rol}
-                    onChange={(e) => setUsuarioForm({ ...usuarioForm, rol: e.target.value })}
-                    className="w-full px-3.5 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:border-[#1E3A8A]"
-                  >
-                    <option value="CONSULTOR">Consultor / Asesor</option>
-                    <option value="ADMIN">Administrador SGI</option>
-                    <option value="ADMIN_TI">👑 Administrador TI (Holding / Super Admin)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-2">Módulos Habilitados</label>
-                  <div className="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs">
-                    {Object.entries({
-                      dashboard: '📊 Dashboard General',
-                      clientes: '🏢 Gestión de Clientes',
-                      agenda: '📅 Agenda de Citas',
-                      consultor: '💼 Módulo Consultor (SG-SST/PESV)',
-                      usuarios: '👥 Administración de Usuarios'
-                    }).map(([key, label]) => (
-                      <label key={key} className="flex items-center gap-2 cursor-pointer font-medium text-slate-700">
-                        <input
-                          type="checkbox"
-                          checked={(usuarioForm.modulos as any)[key]}
-                          onChange={(e) => setUsuarioForm({
-                            ...usuarioForm,
-                            modulos: { ...usuarioForm.modulos, [key]: e.target.checked }
-                          })}
-                          className="rounded text-[#1E3A8A]"
-                        />
-                        <span>{label}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+                <div className="flex justify-end gap-3 px-6 py-3 border-t border-slate-100 bg-slate-50/50 shrink-0">
                   <button
                     type="button"
                     onClick={() => setShowCreateModal(false)}
@@ -929,9 +973,9 @@ const UsuariosView: React.FC = () => {
 
         {/* Modal Editar Usuario */}
         {showEditModal && (
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl border border-slate-200 space-y-5">
-              <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 md:p-6 z-50 overflow-y-auto">
+            <div className="bg-white rounded-2xl w-full max-w-2xl shadow-2xl border border-slate-200 flex flex-col max-h-[90vh] my-auto">
+              <div className="flex justify-between items-center px-6 py-4 border-b border-slate-100 shrink-0">
                 <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
                   <Edit className="w-5 h-5 text-[#1E3A8A]" />
                   Editar Asesor / Permisos
@@ -941,7 +985,8 @@ const UsuariosView: React.FC = () => {
                 </button>
               </div>
 
-              <form noValidate onSubmit={handleEditSubmit} className="space-y-4 text-sm">
+              <form noValidate onSubmit={handleEditSubmit} className="flex flex-col flex-1 overflow-hidden">
+                <div className="p-6 space-y-4 text-sm overflow-y-auto max-h-[calc(90vh-140px)]">
                 <div>
                   <label className="block font-semibold text-slate-700 mb-1">Nombre Completo *</label>
                   <input
@@ -1054,8 +1099,9 @@ const UsuariosView: React.FC = () => {
                     ))}
                   </div>
                 </div>
+                </div>
 
-                <div className="flex justify-between items-center pt-3 border-t border-slate-100">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-3 px-6 py-3 border-t border-slate-100 bg-slate-50/50 shrink-0">
                   <button
                     type="button"
                     onClick={() => {
@@ -1069,13 +1115,13 @@ const UsuariosView: React.FC = () => {
                         activo: usuarioForm.activo
                       });
                     }}
-                    className="px-3.5 py-2 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-lg font-semibold hover:bg-blue-100 flex items-center gap-1.5 cursor-pointer"
+                    className="w-full sm:w-auto px-3.5 py-2 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-lg font-semibold hover:bg-blue-100 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <KeyRound className="w-3.5 h-3.5" />
                     Reenviar Clave Temporal
                   </button>
 
-                  <div className="flex gap-2">
+                  <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
                     <button
                       type="button"
                       onClick={() => setShowEditModal(false)}

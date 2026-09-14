@@ -1,0 +1,140 @@
+﻿@model List<Models.DTO.NormasDTO>
+
+@{
+    string Estado = string.Empty;
+
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center m-2" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Numerales por norma" }, { "claseTexto", "d-none" } })
+
+    <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+
+
+        @foreach (var norma in Model)
+        {
+            <div class="card-header" role="tab" id="@norma.IntNormaID">
+                <div class="row">
+                    <div class="col-md-12">
+                        <a class="active" data-toggle="collapse" data-parent="#accordionEx" href="#norma_@norma.IntNormaID" aria-expanded="true"
+                           aria-controls="norma_@norma.IntNormaID">
+                            <h6 class="mb-0">
+                                <span class="font-weight-bold">@norma.StrCodigo: </span><span class="text-muted">@norma.StrDescripcion</span><i class="ml-2 fas fa-plus rotate-icon"></i>
+                            </h6>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div id="norma_@norma.IntNormaID" class="collapse" role="tabpanel" aria-labelledby="@norma.IntNormaID"
+                 data-parent="#accordionEx">
+
+                <div class="card-body p-0">
+
+                    <table class="table table-sm pl-2 tblNumerales">
+                        <thead>
+                            <tr>
+                                <th style="width:5%"></th>
+                                <th class="text-left"|>Numeral</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm">
+
+                            @foreach (var numeral in norma.NumeralesDTO.OrderBy(x => x.IntCodigoNumerico).ThenBy(x => x.StrCodigo).ThenBy(x => x.IntNivel))
+                            {
+                                string colorFondo = "white";
+                                string clase = string.Empty;
+                                var arrayNumeral = numeral.StrCodigo.Split('.');
+                                if (arrayNumeral.Count() == 1)
+                                {
+                                    colorFondo = "#eae8e8";
+                                    clase = "text-uppercase font-weight-bold";
+                                }
+
+                                <tr style="background-color:@colorFondo" class="@clase">
+                                    <td class="text-center">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="@numeral.StrCodigo-@numeral.IntNumeralID" data-numeralid="@numeral.IntNumeralID" checked="@numeral.BitSeleccionado">
+                                            <label for="@numeral.StrCodigo-@numeral.IntNumeralID">
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td class="font-weight-bold h6">@numeral.StrCodigo</td>
+                                    <td>@numeral.StrDescripcion</td>
+                                </tr>
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+
+}
+
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var controlador = $("#controladorNumerales").val();
+
+        $('.tblNumerales tbody').on('click', 'input', function () {
+
+            var numeralID = $(this).data('numeralid');
+
+            if (controlador === 'Procesos') {
+                var registroID = $("#procesoID").val();
+                var modelo = {
+                    IntProcesoID: registroID,
+                    IntNumeralID: numeralID
+                };
+            };
+
+            if (controlador === 'PlantillasListasDeVerificacionDetalle') {
+                var registroID = $("#plantillaDetalleID").val();
+                var modelo = {
+                    IntPlantillaDetalleID: registroID,
+                    IntNumeralID: numeralID
+                };
+            };
+
+            if (controlador === 'ListasDeVerificacion') {
+                var registroID = $("#listaDeVerificacionID").val();
+                var modelo = {
+                    IntListaVerificacionID: registroID,
+                    IntNumeralID: numeralID
+                };
+            };
+
+
+            funcionesGlobales.seleccionarNumeralsAsync(controlador, modelo);
+
+        });
+
+
+    });
+
+
+</script>
+
+
+
+

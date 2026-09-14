@@ -426,7 +426,7 @@ const ClientesView: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f9fb] flex font-sans text-[#191c1e]">
+    <div className="h-screen bg-[#f7f9fb] flex flex-col md:flex-row font-sans text-[#191c1e] overflow-hidden">
       <CrmSidebar activeTab="clientes" />
 
       <main className="flex-1 overflow-y-auto p-6 md:p-10 w-full transition-all duration-300 ease-in-out">
@@ -638,9 +638,9 @@ const ClientesView: React.FC = () => {
 
       {/* Modal Agregar Cliente (100% Paridad Fiel con la Vista _CrearCliente.cshtml Legada) */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-[#0b1c30]/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-4xl shadow-2xl border border-[#e0e3e5] space-y-5 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center border-b border-[#e0e3e5] pb-3">
+        <div className="fixed inset-0 bg-[#0b1c30]/50 backdrop-blur-xs flex items-center justify-center p-4 md:p-6 z-50 overflow-y-auto">
+          <div className="bg-white rounded-2xl w-full max-w-4xl shadow-2xl border border-[#e0e3e5] flex flex-col max-h-[90vh] my-auto">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-[#e0e3e5] shrink-0">
               <h3 className="font-bold text-lg font-headline text-[#191c1e] flex items-center gap-2">
                 <Building2 className="w-5 h-5 text-[#055bb2]" />
                 Agregar cliente
@@ -651,7 +651,7 @@ const ClientesView: React.FC = () => {
             </div>
 
             {/* Pestañas Modal Agregar (Información general | Contratos | Contactos) */}
-            <div className="flex border-b border-[#e0e3e5]">
+            <div className="flex border-b border-[#e0e3e5] px-6 shrink-0 bg-slate-50/50">
               <button
                 type="button"
                 onClick={() => setModalTab('general')}
@@ -681,9 +681,11 @@ const ClientesView: React.FC = () => {
               </button>
             </div>
 
-            {/* Pestaña 1: Información General */}
-            {modalTab === 'general' && (
-              <form onSubmit={handleCreateSubmit} className="space-y-4 text-xs">
+            {/* Contenedor Scrollable Interno de Pestañas */}
+            <div className="p-6 overflow-y-auto flex-1 max-h-[calc(90vh-140px)]">
+              {/* Pestaña 1: Información General */}
+              {modalTab === 'general' && (
+                <form onSubmit={handleCreateSubmit} className="space-y-4 text-xs">
                 <div className="text-[11px] text-[#545f73]">
                   Campos obligatorios <span className="text-red-500 font-bold">*</span>
                 </div>
@@ -1070,15 +1072,16 @@ const ClientesView: React.FC = () => {
                 </div>
               </div>
             )}
+            </div>
           </div>
         </div>
       )}
 
       {/* Modal Editar / Ver Cliente con Pestaña Contratos & Contactos Reales */}
       {showEditModal && selectedCliente && (
-        <div className="fixed inset-0 bg-[#0b1c30]/50 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-4xl shadow-2xl border border-[#e0e3e5] space-y-5 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center border-b border-[#e0e3e5] pb-3">
+        <div className="fixed inset-0 bg-[#0b1c30]/50 backdrop-blur-xs flex items-center justify-center p-4 md:p-6 z-50 overflow-y-auto">
+          <div className="bg-white rounded-2xl w-full max-w-4xl shadow-2xl border border-[#e0e3e5] flex flex-col max-h-[90vh] my-auto">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-[#e0e3e5] shrink-0">
               <h3 className="font-bold text-lg font-headline text-[#191c1e] flex items-center gap-2">
                 <Edit className="w-5 h-5 text-[#055bb2]" />
                 Cliente: <span className="text-[#055bb2]">{selectedCliente.razonSocial}</span>
@@ -1089,7 +1092,7 @@ const ClientesView: React.FC = () => {
             </div>
 
             {/* Pestañas Modal Editar */}
-            <div className="flex border-b border-[#e0e3e5]">
+            <div className="flex border-b border-[#e0e3e5] px-6 shrink-0 bg-slate-50/50">
               <button
                 type="button"
                 onClick={() => setModalTab('general')}
@@ -1119,7 +1122,9 @@ const ClientesView: React.FC = () => {
               </button>
             </div>
 
-            {modalTab === 'general' && (
+            {/* Contenedor Scrollable Interno de Pestañas */}
+            <div className="p-6 overflow-y-auto flex-1 max-h-[calc(90vh-140px)]">
+              {modalTab === 'general' && (
               <form onSubmit={handleEditSubmit} className="space-y-4 text-xs">
                 <div className="grid grid-cols-3 gap-3">
                   <div className="col-span-2">
@@ -1385,6 +1390,7 @@ const ClientesView: React.FC = () => {
                 )}
               </div>
             )}
+            </div>
           </div>
         </div>
       )}

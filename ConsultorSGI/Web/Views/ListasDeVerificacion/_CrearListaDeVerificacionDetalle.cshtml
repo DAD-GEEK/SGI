@@ -1,0 +1,217 @@
+﻿@{
+    Layout = null;
+}
+
+<input type="hidden" id="auditoriaDetalleID" value="0" />
+
+<div class="modal-dialog " style=" max-width:900px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><em class="fa fa-building text-gray "></em></span>&nbsp; Detalle plan de auditoría</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarDetalleGlobal">
+                @Html.AntiForgeryToken()
+                <div class="modal-body ">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="auditoriaDetalleProceso">Procesos de auditoría<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    @Html.DropDownList("listaProcesos", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "auditoriaDetalleProceso", placeholder = "-- Seleccione una opción", required = "required" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="auditoriaDetalleModalidad">Modalidad<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    @Html.DropDownList("listaModalidades", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "auditoriaDetalleModalidad", placeholder = "-- Seleccione una opción", required = "required" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="auditoriaDetalleAuditado">Auditados<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <textarea class="form-control border-right-0" type="text" id="auditoriaDetalleAuditado" rows="2" placeholder="Ingrese aquí los nombres de las personas a auditar..." autocomplete="off" maxlength="200" required></textarea>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-users-cog"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="auditoriaDetalleAuditor">Auditor<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="auditoriaDetalleAuditor" placeholder="Ingrese aquí el nombre del auditor..." autocomplete="off" maxlength="200" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-tags"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="auditoriaDetalleFecha">Fecha<span class="text-danger">*</span></label>
+                                <div class="input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="auditoriaDetalleFecha" placeholder="Fecha ingreso..." autocomplete="off" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-calendar-check"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="auditoriaDetalleHoraInicial">Hora de inicio<span class="text-danger">*</span></label>
+                                <div class="input-group date with-focus" data-target="#datetimepickerInicial" data-toggle="datetimepicker" id="datetimepickerInicial" data-target-input="nearest">
+                                    <input type="text" id="auditoriaDetalleHoraInicial" class="form-control datetimepicker-input border-right-0" data-target="#datetimepickerInicial" placeholder="Hora inicial..." autocomplete="off" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-clock"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="auditoriaDetalleHoraFinal">Hora de finalización<span class="text-danger">*</span></label>
+                                <div class="input-group date with-focus" data-target="#datetimepickerFinal" data-toggle="datetimepicker" id="datetimepickerFinal" data-target-input="nearest">
+                                    <input type="text" id="auditoriaDetalleHoraFinal" class="form-control datetimepicker-input border-right-0" data-target="#datetimepickerFinal" placeholder="Hora final..." autocomplete="off" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-clock"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer bg-light">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark"><i class="fas fa-undo-alt mr-1"></i>Cancelar</button>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-6">
+                                        <button type="submit" class="btn btn-outline-primary btn-block" id="btnGuardarCentroDeTrabajo"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        auditoriaDetalleCRUD.guardarAuditoriaDetalleAsync();
+
+        $('#auditoriaDetalleFecha').daterangepicker({
+            "singleDatePicker": true,
+            "showDropdowns": true,
+            "minYear": 1901,
+            "maxYear": parseInt(moment().format('YYYY'), 10),
+            "locale": {
+                "format": "YYYY-MM-DD",
+                "separator": " - ",
+                "applyLabel": "Guardar",
+                "cancelLabel": "Cancelar",
+                "fromLabel": "Desde",
+                "toLabel": "Hasta",
+                "customRangeLabel": "Personalizar",
+                "daysOfWeek": [
+                    "Do",
+                    "Lu",
+                    "Ma",
+                    "Mi",
+                    "Ju",
+                    "Vi",
+                    "Sa"
+                ],
+                "monthNames": [
+                    "Enero",
+                    "Febrero",
+                    "Marzo",
+                    "Abril",
+                    "Mayo",
+                    "Junio",
+                    "Julio",
+                    "Agosto",
+                    "Setiembre",
+                    "Octubre",
+                    "Noviembre",
+                    "Diciembre"
+                ],
+            },
+
+            "opens": "center"
+        });
+
+        $('#datetimepickerInicial').datetimepicker({
+            format: 'hh:mm a',
+            placeholder: 'Hora inicial'
+        });
+
+        $('#datetimepickerFinal').datetimepicker({
+            format: 'hh:mm a',
+            placeholder: 'Hora inicial'
+        });
+
+
+    });
+
+
+</script>
+
+
+
+

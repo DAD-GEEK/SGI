@@ -8,7 +8,6 @@ import {
   Settings,
   LogOut,
   Calendar,
-  ShieldCheck,
   ChevronLeft,
   Pin,
   Lock,
@@ -41,7 +40,7 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
       const storedRaw = localStorage.getItem('sgi_user');
       if (storedRaw) {
         const u = JSON.parse(storedRaw);
-        const isAdmin = u.rol === 'ADMIN_TI' || u.role === 'ADMIN_TI' || u.rol === 'ADMIN' || u.role === 'ADMIN';
+        const isAdmin = u.rol === 'ADMIN_TI' || u.role === 'ADMIN_TI' || u.rol === 'ADMIN' || u.role === 'ADMIN' || u.email === 'admon@waloyogroup.com';
         const defaultModulos = isAdmin
           ? ['dashboard', 'clientes', 'agenda', 'consultor', 'usuarios', '*']
           : (u.modulos || ['dashboard', 'clientes', 'agenda', 'consultor']);
@@ -49,7 +48,7 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
         return {
           nombre: u.nombre || u.email?.split('@')[0] || 'Usuario SGI',
           email: u.email || '',
-          rol: u.rol || u.role || 'CONSULTOR',
+          rol: isAdmin ? (u.rol || 'ADMIN_TI') : (u.rol || u.role || 'CONSULTOR'),
           modulos: defaultModulos,
           activo: u.activo ?? true
         };
@@ -243,8 +242,9 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
               }
             };
 
+            let failCount = 0;
             eventSource.onerror = () => {
-              // Cerrar el stream fallido de inmediato para evitar que el navegador reintente sin control
+              // Cerrar el stream fallido de inmediato para evitar que el navegador reintente en loop
               try {
                 if (eventSource) {
                   eventSource.close();
@@ -257,14 +257,17 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
               } catch {}
 
               clearTimers();
+              failCount++;
 
-              // Reconexión con backoff suave solo si la pestaña está activa y montada
+              // Si falla repetidamente (microservicio apagado), pausar los reintentos (espera de 60s)
+              const waitMs = failCount > 2 ? 60000 : 15000;
+
               if (isComponentMounted && document.visibilityState === 'visible') {
                 reconnectTimer = window.setTimeout(() => {
                   if (isComponentMounted) {
                     void syncUserProfile();
                   }
-                }, 10000); // 10s de espera espaciada
+                }, waitMs);
               }
             };
           } catch {
@@ -272,7 +275,7 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
             if (isComponentMounted) {
               reconnectTimer = window.setTimeout(() => {
                 if (isComponentMounted) void syncUserProfile();
-              }, 15000);
+              }, 30000);
             }
           }
         }
@@ -369,7 +372,7 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
 
   
   const canAccessModule = (modulo: string): boolean => {
-    if (userProfile.rol === 'ADMIN_TI' || userProfile.rol === 'ADMIN') return true;
+    if (userProfile.rol === 'ADMIN_TI' || userProfile.rol === 'ADMIN' || userProfile.email === 'admon@waloyogroup.com') return true;
     return userProfile.modulos.includes(modulo);
   };
 
@@ -482,13 +485,13 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
           {canAccessModule('agenda') && (
             <Link
               to="/agenda"
-              title="Agenda de Citas"
+              title="Módulo Agenda"
               className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                 isActive('/agenda') ? 'bg-[#055bb2] text-white shadow-sm' : 'text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white'
               }`}
             >
               <Calendar className="w-4 h-4 shrink-0" />
-              {isExpanded && <span>Agenda SGI & Citas</span>}
+              {isExpanded && <span>Módulo Agenda</span>}
             </Link>
           )}
 
@@ -517,17 +520,6 @@ export const CrmSidebar: React.FC<CrmSidebarProps> = ({ activeTab }) => {
               {isExpanded && <span>Asesores & Seguridad</span>}
             </Link>
           )}
-
-          <a
-            href="https://app.gestionintegralsgi.com.co"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Plataforma SG-SST Externa"
-            className={`flex items-center ${!isExpanded ? 'justify-center' : 'gap-3'} px-3.5 py-2.5 rounded-xl text-xs font-semibold text-[#d8e3fb]/80 hover:bg-white/10 hover:text-white transition-all`}
-          >
-            <ShieldCheck className="w-4 h-4 shrink-0 text-sky-400" />
-            {isExpanded && <span>Plataforma SGI Ext.</span>}
-          </a>
 
           <Link
             to="/perfil"

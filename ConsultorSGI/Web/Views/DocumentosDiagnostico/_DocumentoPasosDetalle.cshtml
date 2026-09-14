@@ -1,0 +1,238 @@
+﻿@model List<Models.DTO.DocumentosDiagnosticoDetalle_PlanesDeAccionDTO>
+
+
+@foreach (var item in Model.OrderBy(x => x.IntOrden))
+{
+    var textoCheckboxAplica = "SI aplica";
+    var textoCheckboxCumple = "SI cumple";
+    var claseDivCumple = string.Empty;
+    var claseDivDesarrollo = string.Empty;
+    var claseDivDesarrolloSICumple = string.Empty;
+    var claseDivDesarrolloNOCumple = string.Empty;
+    var validacionAtributolloSICumple = string.Empty;
+    var validacionAtributolloNOCumple = string.Empty;
+    string fecha = string.Empty;
+
+    if (item.DatFecha != null)
+    {
+        fecha = item.DatFecha.Value.ToString("yyyy-MM-dd");
+    }
+
+    if (!item.BitAplica)
+    {
+        textoCheckboxAplica = "NO aplica";
+        claseDivCumple = "d-none";
+        claseDivDesarrollo = "d-none";
+    }
+
+    if (item.BitSeEvidencia is null)
+    {
+        item.BitSeEvidencia = false;
+    }
+
+    if (!(bool)item.BitSeEvidencia)
+    {
+        textoCheckboxCumple = "NO cumple";
+        claseDivCumple = $"text-danger {claseDivCumple}";
+        claseDivDesarrolloSICumple = "d-none";
+        if (item.BitAplica)
+        {
+            validacionAtributolloNOCumple = "data-parsley-required";
+        }
+    }
+    else
+    {
+        claseDivDesarrolloNOCumple = "d-none";
+        if (item.BitAplica)
+        {
+            validacionAtributolloSICumple = "data-parsley-required";
+        }
+    }
+
+    <input hidden id="pasoDetalleID_@item.StrCalificacionID" value="@item.StrCalificacionID" />
+
+    <form id="form_@item.StrCalificacionID" data-pasonumero="@item.StrNumeroPaso" data-id="@item.StrCalificacionID" data-fasedescripcion="@item.StrFaseDescripcion">
+
+        @Html.AntiForgeryToken()
+
+        <div class="card-body card-sombra text-sm border mb-3">
+
+            <div class="row">
+
+                @if (string.IsNullOrEmpty(item.StrSoporteDescripcion))
+                {
+                    <div class="col-md-12" style="margin:auto!important;">
+
+                        <h6 class="font-weight-bold">
+                            Criterio
+
+                            @if (!item.BitBloquear)
+                            {
+                                if (item.BitCalificado)
+                                {
+                                    <span class="badge badge-success" id="lblEstadoCriterio_@item.StrCalificacionID">OK</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger" id="lblEstadoCriterio_@item.StrCalificacionID">PENDIENTE</span>
+                                }
+                            }
+
+
+                        </h6>
+
+                        @item.StrCriterioDescripcion
+
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-5" style="margin:auto!important;">
+
+                        <h6 class="font-weight-bold">
+                            Criterio
+
+                            @if (!item.BitBloquear)
+                            {
+                                if (item.BitCalificado)
+                                {
+                                    <span class="badge badge-success" id="lblEstadoCriterio_@item.StrCalificacionID">OK</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger" id="lblEstadoCriterio_@item.StrCalificacionID">PENDIENTE</span>
+                                }
+                            }
+
+                        </h6>
+                        @item.StrCriterioDescripcion
+
+                    </div>
+
+                    <div class="col-md-2" style="margin:auto!important;">
+
+                        <div style="display:flex!important; justify-content:center!important;align-items:center!important">
+                            <i class="fas fa-arrow-circle-right text-primary fa-3x"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-5" style="margin:auto!important;">
+
+                        <h6 class="font-weight-bold">Soporte</h6>
+                        @item.StrSoporteDescripcion
+                    </div>
+                }
+
+            </div>
+
+            @if (!item.BitBloquear)
+            {
+                <div class="icheck-primary d-block ">
+                    <input type="checkbox" class="checkboxAplica_@item.StrPasoID bloquear" id="pasoDetalleAplica_@item.StrCalificacionID" data-id="@item.StrCalificacionID" data-pasoid="@item.StrPasoID" checked="@item.BitAplica" onclick="DocumentosDiagnosticoDetalle_PlanesDeAccionCRUD.seleccionarCheckboxAplicar(this)">
+                    <label for="pasoDetalleAplica_@item.StrCalificacionID" id="lblPasoDetalleAplica_@item.StrCalificacionID">
+                        @textoCheckboxAplica
+                    </label>
+                </div>
+
+                <div class="@claseDivCumple" id="divCumple_@item.StrCalificacionID">
+
+                    <div class="icheck-primary d-block">
+                        <input type="checkbox" class="checkboxCumple_@item.StrPasoID bloquear" id="pasoDetalleCumple_@item.StrCalificacionID" data-id="@item.StrCalificacionID" data-pasoid="@item.StrPasoID" checked="@item.BitSeEvidencia" onclick="DocumentosDiagnosticoDetalle_PlanesDeAccionCRUD.seleccionarCheckboxCumple(this)">
+
+                        <label for="pasoDetalleCumple_@item.StrCalificacionID" id="lblPasoDetalleCumple_@item.StrCalificacionID">
+                            @textoCheckboxCumple
+                        </label>
+                    </div>
+
+
+                </div>
+
+                <div id="divDesarrollo_@item.StrCalificacionID" class="@claseDivDesarrollo">
+
+                    <div class="row">
+
+                        <div class="col-md-12 @claseDivDesarrolloSICumple divDesarrolloSICumple_@item.StrCalificacionID">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="pasoDetalleComoEvidencia_@item.StrCalificacionID">Como se evidencia<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <textarea class="form-control text-sm border-right-0 divDesarrolloSICumple_@item.StrCalificacionID bloquear" placeholder="Ingrese aquí como se evidencia..." id="pasoDetalleComoEvidencia_@item.StrCalificacionID" rows="3" @validacionAtributolloSICumple>@item.StrComoSeEvidencia</textarea>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-cogs"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12 @claseDivDesarrolloNOCumple divDesarrolloNOCumple_@item.StrCalificacionID">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="pasoDetallePlanDeAccion_@item.StrCalificacionID">Plan de acción<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <textarea class="form-control text-sm border-right-0 divDesarrolloNOCumple_@item.StrCalificacionID bloquear" placeholder="Ingrese aquí plan de acción para el criterio..." id="pasoDetallePlanDeAccion_@item.StrCalificacionID" rows="3" @validacionAtributolloNOCumple>@item.StrPlanDeAccion</textarea>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-cogs"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 @claseDivDesarrolloNOCumple divDesarrolloNOCumple_@item.StrCalificacionID">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="pasoDetalleResponsable_@item.StrCalificacionID">Responsable<span class="text-danger">*</span></label>
+                                <div class="input-group with-focus">
+                                    <input class="form-control border-right-0 divDesarrolloNOCumple_@item.StrCalificacionID bloquear" type="text" id="pasoDetalleResponsable_@item.StrCalificacionID" value="@item.StrResponsable" placeholder="Ingrese aquí el responsable..." autocomplete="off" @validacionAtributolloNOCumple />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-user"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 @claseDivDesarrolloNOCumple divDesarrolloNOCumple_@item.StrCalificacionID">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="pasoDetalleFecha_@item.StrCalificacionID">Fecha<span class="text-danger">*</span></label>
+                                <div class="input-group with-focus">
+                                    <input class="form-control border-right-0 divDesarrolloNOCumple_@item.StrCalificacionID fechaIndividual bloquear" type="text" id="pasoDetalleFecha_@item.StrCalificacionID" value="@fecha" placeholder="Ingrese aquí la fecha de la auditoría..." autocomplete="off" @validacionAtributolloNOCumple />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-calendar-check"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-outline-primary btn-block bloquear" id="@item.StrCalificacionID" data-pasoid="@item.StrPasoID" data-formularioid="form_@item.StrCalificacionID"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </form>
+
+}
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    });
+
+</script>

@@ -1,0 +1,37 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutRegister.cshtml";
+}
+<div class="fondoRegistro"></div>
+<div class="register-box">
+    <div class="card card-outline card-primary">
+        @Html.Partial("_Card_Titulo_Login")
+        <div class="card-body pt-1">
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger block-center m-2" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+            else
+            {
+
+                <p class="login-box-msg">Gracias por confirmar su correo electrónico.</p>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="@Url.Action("Login", "Seguridad")" class="btn btn-block btn-outline-primary">
+                            <i class="fas fa-sign-in-alt mr-1"></i>
+                            Ir a consultorSGI
+                        </a>
+                    </div>
+                </div>
+
+            }
+
+        </div>
+    </div>
+</div>
+
+
+

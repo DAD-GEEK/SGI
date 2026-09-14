@@ -1,0 +1,140 @@
+﻿@model List<Models.TercerosUsuarios>
+
+@{
+    string Estado = string.Empty;
+
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    @Html.AntiForgeryToken()
+
+    @*<div class="row">
+            <div class="col-md-3">
+                <div class="clearfix">
+                    <button type="button" class="btn btn-primary" id="btnAbrirModalUsuario">
+                        <i class="fas fa-user-plus mr-2"></i> Agregar usuario
+                    </button>
+                </div>
+            </div>
+        </div>
+        <br />*@
+
+    <table id="tblUsuarios" class="table dt-responsive table-sm center-block pt-2" style="width:100%">
+        <thead class="text-center ">
+            <tr>
+                <th class="d-none">TerceroID </th>
+                <th class="text-left">Email</th>
+                <th class="text-left">Nombre</th>
+                <th>Estado</th>
+                @*<th>Acciones</th>*@
+            </tr>
+        </thead>
+
+        <tbody id="detalleTblUsuarios">
+            @foreach (var item in Model)
+            {
+                Estado = (item.OpcEstado == true ? "ACTIVO" : "INACTIVO");
+
+                <tr class="item">
+                    <td class="d-none">@item.IntTerceroID</td>
+
+                    <td>@item.StrUsuarioEmail</td>
+
+                    <td>@item.StrUsuarioNombre</td>
+
+                    @if (item.OpcEstado == true)
+                    {
+                        <td class="text-center"><span class="badge badge-success">@Estado</span></td>
+                    }
+                    else
+                    {
+                        <td class="text-center"><span class="badge badge-danger">@Estado</span></td>
+
+                    }
+
+                    <!--<td class=" text-center">
+                    <button type="button" type="button" title="Editar usuario" data-toggle="tooltip" data-placement="left" class="btn btn-dark glyphicon glyphicon-edit btnEditarUsuario"  data-registroid="@item.IntRegistroID" data-tipoevento="editar"><i class="fa fa-edit fa-fw"></i></button>-->
+                    @*<button type="button" type="button" title="Eliminar usuario" data-toggle="tooltip" data-placement="left" class="btn btn-danger glyphicon glyphicon-trash" data-registroid="@item.IntRegistroID" data-tipoevento="eliminar"><i class="fa fa-trash fa-fw"></i></button>*@
+                    <!--<button type="button" title="Enviar datos de usuario" data-toggle="tooltip" data-placement="left" class="btn btn-primary glyphicon glyphicon-envelope" data-registroid="@item.IntRegistroID" data-tipoevento="enviarDatos"><i class="fa fa-envelope fa-fw"></i></button>
+                    </td>-->
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        elementosComunesTercerosUsuarios.index();
+
+        var tblUsuarios = $('#tblUsuarios').DataTable({
+            "order": [[0, "asc"]],
+            "searching": false,
+            "ordering": false,
+            //"paging": false,
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblUsuarios tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+
+            if (tipoEvento == 'editar') return usuariosCRUD.getUsuarioByEditarAsync(registroID);
+
+            if (tipoEvento == 'eliminar') return usuariosCRUD.deleteUsuarioAsync(registroID);
+
+            if (tipoEvento == 'enviarDatos') return alert("Enviando datos de usuario..");
+
+        });
+
+
+    });
+
+
+</script>
+
+

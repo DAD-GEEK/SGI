@@ -1,0 +1,122 @@
+﻿.@model Models.DTO.SistemasDeGestionDTO
+
+@{
+    Layout = null;
+    string claseDivNiveles = string.Empty;
+
+    if (Model.StrCodigoID.ToLower() != Across.Enumeraciones.enumSistemasDeGestion.PESV.ToString().ToLower())
+    {
+        claseDivNiveles = "d-none";
+    }
+
+}
+
+<input type="hidden" id="registroID" value="@Model.IntSistemaDeGestion_TerceroID" />
+
+<div class="modal-dialog " style=" max-width:600px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Editar sistemas de gestión" }, { "icono", "fa fa-cogs" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarGlobalModal">
+
+                @Html.AntiForgeryToken()
+                <div class="modal-body pt-1" style="overflow-y:auto!important; max-height: 70vh !important;">
+                    <div class="container-fluid">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="terceroSistemaDeGestionID">Sistema de gestión<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        @Html.DropDownList("listaSistemasDeGestion", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "terceroSistemaDeGestionID", placeholder = "-- Seleccione una opción", required = "required" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 @claseDivNiveles" id="divTerceroNiveles">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="terceroNivelID">Nivel<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        @Html.DropDownList("listaNiveles", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "terceroNivelID", placeholder = "-- Seleccione una opción" })
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-12">
+
+                                <table id="tblSistemasDeGestionNormas" class="table dt-responsive table-sm center-block table-bordered" style="width:100%">
+                                    <thead class="text-center text-white fondoColorSGI">
+                                        <tr>
+                                            <th class="text-center">Aplica</th>
+                                            <th class="text-left">Normas y resoluciones</th>
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @foreach (var item in Model.Normas)
+                                        {
+                                            <tr>
+                                                <td class="text-center">
+
+                                                    <div class="clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="checkbox" class="aplicarNorma" id="@item.IntNormaID" data-registroid="@item.IntTerceros_SistemaDeGestionID" checked="@item.BitAplica" onclick="terceros_SistemasDeGestionCRUD.aplicarNormaAsync(this);">
+                                                            <label for="@item.IntNormaID"> </label>
+                                                        </div>
+
+                                                    </div>
+
+                                                </td>
+
+                                                <td class="text-left">@item.StrDescripcion</td>
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Modal_Footer")
+
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        terceros_SistemasDeGestionCRUD.index();
+        terceros_SistemasDeGestionCRUD.guardarAsync();
+
+    });
+
+</script>
+
+
+

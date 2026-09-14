@@ -1,0 +1,128 @@
+﻿@model Models.DTO.DocumentosDiagnosticoDTO
+
+<div class="modal-dialog " style=" max-width:1000px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Elementos sin asignar al documento" }, { "icono", "fas fa-cogs" }, { "claseTexto", "d-none" } })
+
+        <div class="modal-body pt-1" style="overflow-y:auto!important; max-height: 70vh !important;">
+            <div class="container-fluid">
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                        <div class="card">
+
+                            <div class="card-header">
+                                <div class="card-title font-weight-bold"><i class="fas fa-shoe-prints mr-1 text-primary"></i> Pasos pendientes</div>
+                            </div>
+
+                            <div class="card-body">
+
+                                @foreach (var item in Model.PasosGenericosPendientesDeAsignar)
+                                {
+                                    <div class="form-group clearfix text-sm">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" class="pasosPendientes" id="@item.StrPasoID">
+                                            <label for="@item.StrPasoID">
+                                                Paso N° @item.IntNumero - @item.StrRequisito
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="card">
+
+                            <div class="card-header">
+
+                                <div class="card-title font-weight-bold"><i class="fas fa-star mr-1 text-primary"></i> Criterios pendientes</div>
+
+                            </div>
+
+                            <div class="card-body">
+
+
+                                @foreach (var item in Model.CriteriosGenericosPendientesDeAsignar)
+                                {
+                                    <div class="form-group clearfix text-sm">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" class="criteriosPendientes" id="@item.StrCriterioID">
+                                            <label for="@item.StrCriterioID">
+                                                @item.StrDescripcion
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer bg-light">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+
+                    </div>
+
+                    <div class="col-md-10">
+                        <div class="row">
+
+
+
+                            <div class="col-xs-12 col-md-4">
+
+                            </div>
+
+                            <div class="col-xs-12 col-md-4">
+                                <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark" data-toggle="tooltip" data-placement="top" title="Cerrar ventana"><i class="fas fa-undo-alt mr-1"></i>Cerrar</button>
+                            </div>
+
+                            <div class="col-xs-12 col-md-4">
+                                <button type="button" class="btn btn-outline-primary btn-block" id="btnAgregarElementos" data-toggle="tooltip" data-placement="top" title="Guardar y cerrar la ventana"><i class="fas fa-sync-alt mr-1"></i>Agregar elementos</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#btnAgregarElementos").click(function () {
+            documentosDiagnosticoCRUD.agregarElementosPendientes();
+        });
+
+    });
+
+
+</script>     

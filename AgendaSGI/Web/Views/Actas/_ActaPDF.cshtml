@@ -1,0 +1,388 @@
+﻿@model Models.Actas
+@using System.Globalization;
+@using System.Text.RegularExpressions;
+
+
+@{
+    Layout = null;
+
+    var clase = string.Empty;
+    var fechaProximaVisita = string.Empty;
+    var fechaVisita = string.Empty;
+
+    fechaVisita = Model.Agenda.DatFechaInicial.Value.ToString("dddd d MMMM", CultureInfo.CreateSpecificCulture("es-Mx"));
+
+
+    if (ViewBag.NextVisita.GetType() == Type.GetType("System.String"))
+    {
+        fechaProximaVisita = ViewBag.NextVisita;
+        clase = "text-danger font-italic";
+    }
+    else
+    {
+        clase = "text-muted";
+        fechaProximaVisita = ViewBag.NextVisita.ToString("dddd d MMMM h:mm tt", CultureInfo.CreateSpecificCulture("es-Mx"));
+    }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    <link href="@Styles.Url("~/dist/css/adminlte.css")" rel="stylesheet" type="text/css" id="bscss" />
+    <link href="@Styles.Url("~/Plugins/fontawesome-free/css/all.min.css")" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        .titulo {
+            display: inline-block;
+            position: relative;
+        }
+
+            .titulo::after {
+                content: '';
+                position: absolute;
+                width: 80px;
+                height: 2px;
+                background-color: #3e78c8;
+                top: 1.3em;
+                left: 0px;
+            }
+
+            .titulo::before {
+                content: '';
+                position: absolute;
+                width: 15px;
+                height: 2px;
+                background-color: #3e78c8;
+                top: 1.3em;
+                left: 84px;
+            }
+
+        #imagen {
+            /* the image you want to 'watermark' */
+            height: 300px; /* or whatever, equal to the image you want 'watermarked' */
+            width: 100%; /* as above */
+            background-repeat: repeat;
+            position: absolute;
+            opacity: 0.1;
+            top: 400px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <!--Encabezado-->
+        <table style="width:100%;">
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td style="width:30%;" class="text-center">
+                                <img src="~/Content/images/logo.png" style="height:130px; opacity:0.9" class="img-circle" alt="Logo SGI" />
+                            </td>
+                            <td style="width:40%;">
+                                <div class="text-left">
+                                    <div class="text-muted pt-3">
+                                        <h4 class="font-weight-bold">GESTIÓN INTEGRAL SGI S.A.S</h4>
+                                        <h6>Nit. 811.028.188-4</h6>
+                                        <h6>asesorias@getionintegralsgi.com.co</h6>
+                                        <h6>Tel: @Model.Agenda.Usuarios.StrCelular</h6>
+                                    </div>
+
+                                </div>
+                            </td>
+                            <td style="width:30%; padding-left:60px;" class="text-center">
+                                <div class="text-center d-block">
+                                    <div class="pt-3">
+                                        <h4 class="text-muted font-weight-bold ">Acta de visita N°</h4>
+                                        <h2 class="font-weight-bold text-primary ">@Model.IntConsecutivo</h2>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+        </table>
+        <hr class="bg-primary pl-4 pr-4" />
+
+        <!--Asunto-->
+        <table style="width:100%;">
+            <tr>
+                <td>
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="width:50%;">
+                                <div class=" invoice-col text-muted">
+                                    <address>
+                                        <strong class="h5 font-weight-bold">@Model.Agenda.Clientes.StrNombre</strong><br>
+                                        @Model.Agenda.Clientes.StrDireccion<br>
+                                        @Model.Agenda.Clientes.Ciudades.StrDescripcion<br>
+                                        @Model.Agenda.Clientes.StrTelefono<br>
+                                        @Model.Agenda.Clientes.StrEmail
+                                    </address>
+                                </div>
+                            </td>
+                            <td style="width:10%; "></td>
+                            <td style="width:40%; ">
+                                <div class="invoice-col text-muted text-left ">
+                                    <address>
+                                        <p class="pb-0 mb-0"><strong>Tipo visita:&nbsp;  </strong>@Model.Agenda.TipoEventos.StrDescripcion</p>
+                                        <p class="pb-0 mb-0"><strong>Fecha visita:&nbsp;  </strong>@fechaVisita</p>
+                                        <p class="pb-0 mb-0"><strong>Hora inicial:&nbsp;  </strong>@Model.Agenda.DatFechaInicial.Value.ToString("h:mm tt")</p>
+                                        <p class="pb-0 mb-0"><strong>Hora final:&nbsp;  </strong>@Model.Agenda.DatFechaFinal.Value.ToString("h:mm tt")</p>
+                                        <p class="pb-0 mb-0 "><strong>Próxima visita:&nbsp; </strong><span class="@clase">@fechaProximaVisita</span></p>
+                                    </address>
+                                </div>
+                            </td>
+
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <hr class="bg-primary" />
+
+        <!--Marca de agua-->
+        <div id="imagen">
+            <img src="~/Content/images/logo.png" style="width:100%" alt="logo SGI" />
+        </div>
+
+        <!--Asistentes-->
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class=" text-muted">
+                    <h5 class="font-weight-bold titulo">ASISTENTES</h5>
+                </div>
+
+                <div class=" text-muted">
+                    <table style="width:100%;">
+                        <tr>
+                            <td>
+                                <table style="width:100%;">
+                                    @foreach (var item in Model.AsistentesActa)
+                                    {
+                                        <tr>
+                                            <td style="width:40%;">
+                                                <p class="description"><i class="fa fa-circle mr-2 text-primary" style="font-size:7px;"></i>@item.StrNombre</p>
+                                            </td>
+                                            <td style="width:30%;">
+                                                <p class="description">@item.StrProceso</p>
+                                            </td>
+                                            <td>
+                                                @if (item.OpcAsiste == true)
+                                                {
+                                                    <p class="badge badge-primary">ASISTE</p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="badge badge-danger">NO ASISTE</p>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <!--Compromisos-->
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="text-muted">
+                    <h5 class="font-weight-bold titulo">COMPROMISOS PENDIENTES</h5>
+                </div>
+
+                <div class="text-muted">
+                    <table style="width:100%;" class="listaDesarrollo">
+                        <tr>
+                            <td>
+                                <table style="width:100%;">
+                                    @foreach (var item in ViewBag.Compromisos)
+                                    {
+                                        var desarrollo = item.StrDescripcion.Split('\n');
+                                        <tr class="post clearfix ">
+                                            <td>
+                                                <span class="description">Responsable: </span>
+                                                <span class="username h5">
+                                                    <a href="#">@item.StrResponsable</a>
+                                                </span>
+
+                                                <table style="width:100%;">
+                                                    <tr>
+                                                        <td style="width:70%;">
+                                                            @foreach (var des in desarrollo)
+                                                            {
+                                                                <p class="description iActividadDescripcion">@des</p>
+                                                            }
+                                                        </td>
+                                                        <td style="width:20%;">
+                                                            <p class="description">@item.DatFecha.ToString("MMMM dd, yyyy")</p>
+                                                        </td>
+                                                        <td style="width:10%;">
+                                                            @if (item.OpcEjecuta == true)
+                                                            {
+                                                                <p class="badge badge-primary">REALIZADO</p>
+                                                            }
+                                                            else
+                                                            {
+                                                                <p class="badge badge-danger">PENDIENTE</p>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                            </td>
+
+
+
+
+                                        </tr>
+                                    }
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <!--Temas-->
+        <div class="row">
+            <div class="col-lg-12 ">
+
+                <div class="text-muted">
+                    <h5 class="font-weight-bold titulo">ORDEN DEL DÍA</h5>
+                </div>
+
+                <div class=" text-muted">
+                    @foreach (var item in Model.TemasActa)
+                    {
+                        var desarrollo = item.StrDesarrollo.Split('\n');
+                        <div class="post clearfix listaTemas">
+                            <h4>@item.StrDescripcion</h4>
+                            <div class="post">
+                                <div class="">
+                                    <span class="description">Responsable: </span>
+                                    <span class="username h5">
+                                        <a href="#">@item.StrResponsable</a>
+                                    </span>
+
+                                </div>
+                                @foreach (var des in desarrollo)
+                                {
+                                    <p class="pb-0 mb-0 iTemasDesarrollo"> @des</p>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <!--Actividades-->
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="text-muted">
+                    <h5 class="font-weight-bold titulo">ACTIVIDADES</h5>
+                </div>
+
+                <div class="text-muted">
+                    <table style="width:100%;" class="listaDesarrollo">
+                        <tr>
+                            <td>
+                                <table style="width:100%;">
+                                    @foreach (var item in Model.ActividadesActa)
+                                    {
+                                        var desarrollo = item.StrDescripcion.Split('\n');
+                                        <tr class="post clearfix ">
+                                            <td>
+                                                <span class="description">Responsable: </span>
+                                                <span class="username h5">
+                                                    <a href="#">@item.StrResponsable</a>
+                                                </span>
+
+                                                <table style="width:100%;">
+                                                    <tr>
+                                                        <td style="width:70%;">
+                                                            @foreach (var des in desarrollo)
+                                                            {
+                                                                <p class="description iActividadDescripcion">@des</p>
+                                                            }
+                                                        </td>
+                                                        <td style="width:20%;">
+                                                            <p class="description">@item.DatFecha.Value.ToString("MMMM dd, yyyy")</p>
+                                                        </td>
+                                                        <td style="width:10%;">
+                                                            @if (item.OpcEjecuta == true)
+                                                            {
+                                                                <p class="badge badge-primary">EJECUTADO</p>
+                                                            }
+                                                            else
+                                                            {
+                                                                <p class="badge badge-danger">PENDIENTE</p>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+                                            </td>
+
+
+
+
+                                        </tr>
+                                    }
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <br />
+        <br />
+        <br />
+        <br />
+
+        <!--Firma-->
+
+        <div class="text-muted">
+            <em class="text-primary h4">@Model.Agenda.Usuarios.StrNombre</em>
+            <br />
+            asesorias@gestionintegralsgi.com.co
+            <br />
+            (+57) @Model.Agenda.Usuarios.StrCelular
+            <h5>¡Su asesor, su aliado!</h5>
+        </div>
+
+
+    </div>
+
+    <script src="@Scripts.Url("~/dist/js/adminlte.js")"></script>
+
+
+</body>
+</html>
+
+
+
+
+

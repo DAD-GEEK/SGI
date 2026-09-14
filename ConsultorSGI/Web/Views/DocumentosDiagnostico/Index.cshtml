@@ -1,0 +1,50 @@
+﻿
+<input type="hidden" id="sistemaDeGestion" value="@ViewBag.sistemaDeGestion" />
+
+<div class="content-header pt-0 mt-0 pb-1">
+    <div class="container-fluid pt-0 mt-0">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-dark font-weight-bold">Documento diagnóstico para @ViewBag.sistemaDeGestion</h1>
+                <small>Módulo para administrar y diligenciar los documentos diagnósticos de la compañía.</small>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index","DocumentosDiagnostico")">Sistemas de gestión</a></li>
+                    <li class="breadcrumb-item active">Documento diagnóstico</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="divDocumentosDiagnostico">
+
+        </div>
+    </div>
+</div>
+
+
+
+@section BodyArea {
+    <div class="modal fade fade bd-example-modal-sm" id="modal" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor">
+
+        </div>
+    </div>
+
+}
+
+
+
+@section Scripts {
+
+    <script src="~/Vendor/bs-stepper/dist/js/bs-stepper.min.js"></script>
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            documentosDiagnosticoCRUD.getAllPorSistemaDeGestion();
+        });
+
+    </script>
+}

@@ -1,0 +1,171 @@
+﻿@{
+    string mes = string.Empty;
+
+}
+
+<div class="content-header pt-0 mt-0">
+    <div class="container-fluid pt-0 mt-0">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-dark font-weight-bold">Informes</h1>
+                <small>Módulo para la generación de informes</small>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">SGIapp</a></li>
+                    <li class="breadcrumb-item active">Informes</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="content ">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-lg-12">
+                <!--Informe anual de horas por asesor -- Barras-->
+                <div class="card card-primary card-outline">
+                    <div class="card-header border-0">
+                        <div class="row">
+                            <div class="col-lg-10 col-md-12">
+                                <h3 class="card-title">Informe anual de horas en campo por cada asesor</h3>
+                            </div>
+                            <div class="col-lg-1 col-md-12 pr-0 pr-lg-1 pl-0">
+                                <input class="form-control text-center pr-0 pl-0 " type="number" id="barraByAno" value="@DateTime.Now.Year" style="width:100%!important" />
+
+                            </div>
+
+                            <div class="col-lg-1 col-md-12 pr-0 pl-0">
+                                <button type="button" class="btn btn-primary btn-block pr-0 pl-0" onclick="indexInforme.getBarrasHorasByAnoByAsesor()">Consultar</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="divGetBarrasHorasByAnoByAsesor">
+                    </div>
+                </div>
+
+                <!--Horas contratadas VS horas ejecutadas --Lista-->
+                <div class="card card-primary card-outline">
+                    <div class="card-header border-0">
+                        <div class="row">
+                            <div class="col-lg-10 col-md-12">
+                                <h3 class="card-title">Horas contratadas VS horas ejecutadas por mes</h3>
+                            </div>
+                            <div class="col-lg-1 col-md-12 pr-0 pr-lg-1 pl-0">
+                                <input class="form-control text-center pr-0 pl-0 horas " type="number" id="listaByAno" value="@DateTime.Now.Year" style="width:100%!important" onkeyup="indexInforme.getHorasContratoVSHorasMensuales();" onchange="indexInforme.getHorasContratoVSHorasMensuales();" />
+                            </div>
+
+                            <div class="col-lg-1 col-md-12 pr-0 pr-lg-1 pl-0">
+                                <select class="form-control" id="listaByMes" onchange="indexInforme.getHorasContratoVSHorasMensuales();">
+                                    @for (int i = 1; i <= 12; i++)
+                                    {
+                                        switch (i)
+                                        {
+                                            case 1:
+                                                <option value="@i">Enero</option>
+                                                break;
+                                            case 2:
+                                                <option value="@i">Febrero</option>
+                                                break;
+                                            case 3:
+                                                <option value="@i">Marzo</option>
+                                                break;
+                                            case 4:
+                                                <option value="@i">Abril</option>
+                                                break;
+                                            case 5:
+                                                <option value="@i">Mayo</option>
+                                                break;
+                                            case 6:
+                                                <option value="@i">Junio</option>
+                                                break;
+                                            case 7:
+                                                <option value="@i">Julio</option>
+                                                break;
+                                            case 8:
+                                                <option value="@i">Agosto</option>
+                                                break;
+                                            case 9:
+                                                <option value="@i">Septiembre</option>
+                                                break;
+                                            case 10:
+                                                <option value="@i">Octubre</option>
+                                                break;
+                                            case 11:
+                                                <option value="@i">Noviembre</option>
+                                                break;
+                                            case 12:
+                                                <option value="@i">Diciembre</option>
+                                                break;
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 horas " id="busquedaByCliente" type="text" placeholder="Busqueda por cliente..." onkeyup="indexInforme.buscarHorasContratoVSHorasMensuales();" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-search"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="divGetListaContratosMes"></div>
+                </div>
+
+            </div>
+            <!-- /.col-md-6 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+<!-- /.content -->
+
+
+@section BodyArea {
+    <div class=" modal fade fade bd-example-modal-sm" id="modal" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor">
+
+        </div>
+    </div>
+}
+
+<script src="@Scripts.Url("~/Scripts/modulos/Informes/index.js")"></script>
+<script src="@Scripts.Url("~/Scripts/modulos/Clientes/CRUDClientes.js")"></script>
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var fechaActual = new Date();
+            var mesActual = fechaActual.getMonth() + 1;
+            $("#listaByMes option[value='" + mesActual + "']").attr("selected", true);
+
+            indexInforme.getBarrasHorasByAnoByAsesor();
+            indexInforme.getHorasContratoVSHorasMensuales();
+
+
+
+        });
+
+    </script>
+}

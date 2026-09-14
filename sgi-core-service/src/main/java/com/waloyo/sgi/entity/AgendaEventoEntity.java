@@ -23,8 +23,14 @@ public class AgendaEventoEntity {
     private ClienteEntity cliente;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "asesor_id", nullable = false)
+    @JoinColumn(name = "asesor_id", nullable = true)
     private UsuarioEntity asesor;
+
+    @Column(name = "asesor_historico_nombre", length = 255)
+    private String asesorHistoricoNombre;
+
+    @Column(name = "asesor_historico_email", length = 150)
+    private String asesorHistoricoEmail;
 
     @Column(nullable = false, length = 255)
     private String titulo;

@@ -1,0 +1,46 @@
+﻿
+@{
+    Layout = null;
+}
+
+<input hidden type="checkbox" id="esVistaListaDeVerificacion" checked="@ViewBag.esVistaListaDeVerificacion" />
+
+<div class="modal-dialog " style=" max-width: 1000px !important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Listas de verificacion" }, { "icono", "fa fa-cogs" }, { "claseTexto", "d-none" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <div class="modal-body pt-3" style="overflow-y: auto!important; max-height: 80vh !important;">
+                <div class="container-fluid">
+                    <div id="divPlantillaDetalle"></div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var procesoID = $("#procesoID").val();
+        plantillaListasDeVerificacionDetalleCRUD.getAllPlantillasListasDeVerificacionDetalleAsync(procesoID);
+
+    });
+
+
+</script>
+
+
+

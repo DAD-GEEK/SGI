@@ -1,0 +1,199 @@
+﻿@model Models.DTO.ListasDeVerificacionDTO
+
+@{
+    Layout = null;
+    DateTime? fechaAudita = Model.DatFechaEnQueAudita;
+    string fechaAuditaString = string.Empty;
+    string horaAuditaString = string.Empty;
+
+    if (fechaAudita != null)
+    {
+        fechaAuditaString = fechaAudita.Value.ToString("yyyy-MM-dd");
+        horaAuditaString = Across.Common.ObtenerHoraDeFecha(fechaAudita.Value);
+    }
+}
+
+<input type="hidden" id="listaDeVerificacionID" value="@Model.IntListaVerificacionID" />
+<input type="hidden" id="auditoriaDetalleID" value="@Model.IntAuditoriaDetalleID" />
+
+<div class="modal-dialog " style=" max-width:1000px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", $"Lista de verificación: {Model.StrTitulo}" }, { "icono", "fas fa-check-circle" }, { "claseTexto", "d-none" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarAuditarItem">
+
+                <div class="modal-body pt-3" style="overflow-y:auto!important; max-height:70vh!important;">
+
+                    <div class="row container-fluid">
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="auditoriaDetalleFechaAudita">Fecha auditoría<span class="text-danger">*</span></label>
+                                <div class="input-group with-focus">
+                                    <input class="form-control border-right-0 fechaIndividual" type="text" id="auditoriaDetalleFechaAudita" value="@fechaAuditaString" placeholder="Fecha de auditoría..." autocomplete="off" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-calendar-check"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="auditoriaDetalleFechaAuditaHora">Hora<span class="text-danger">*</span></label>
+                                <div class="input-group date with-focus" id="datetimepickerInicial">
+                                    <input type="text" class="form-control border-right-0" placeholder="Hora inicial..." value="@horaAuditaString" id="auditoriaDetalleFechaAuditaHora" autocomplete="off" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-clock"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Numerales" }, { "claseTexto", "d-none" }, })
+
+                    <div class="card-body pt-2 text-sm">
+
+                        @Html.Partial("_NumeralesPorNorma", Model.NormasDTO.ToList())
+
+                    </div>
+
+                    @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Requisitos" }, { "claseTexto", "d-none" }, })
+
+                    @{
+                        var listaInterpretaciones = new List<string>();
+                    }
+
+                    <div class="card-body pt-2">
+
+                        <small class="font-italic font-weight-bold text-danger">
+                            Solo los requisitos seleccionados a continuación se mostrarán en el informe final de auditoría.
+                        </small>
+
+                        @foreach (var item in Model.NormasDTO)
+                        {
+                            foreach (var numeral in item.Numerales)
+                            {
+                                if (!string.IsNullOrEmpty(numeral.StrInterpretacion))
+                                {
+                                    listaInterpretaciones.Add(numeral.StrInterpretacion);
+
+                                    if (listaInterpretaciones.Where(x => x == numeral.StrInterpretacion).Count() == 1)
+                                    {
+                                        bool estaSeleccionado = Model.ListasDeVerificacion_Requisitos.Count() == 0 ? true : false;
+
+                                        if (!estaSeleccionado)
+                                        {
+                                            estaSeleccionado = Model.ListasDeVerificacion_Requisitos.Any(x => x.IntNumeralID == numeral.IntNumeralID);
+                                        }
+
+                                        <div class="form-group clearfix">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="checkbox" class="auditarRequisitos" id="@numeral.IntNumeralID" checked="@estaSeleccionado">
+                                                <label for="@numeral.IntNumeralID">
+                                                    <span class="text-primary font-weight-bold mr-1">@numeral.Normas.StrCodigo - @numeral.StrCodigo</span>
+                                                </label>
+                                                <p class="text-sm mt-0 mb-0 pt-0 pb-0"> @numeral.StrInterpretacion</p>
+                                            </div>
+
+                                        </div>
+                                        <hr class="m-0 p-1" />
+                                    }
+
+                                }
+                            }
+                        }
+                    </div>
+
+                    @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Hallazgos" }, { "claseTexto", "d-none" }, })
+
+                    <div class="card-body">
+
+                        @if (ViewBag.isVistaInforme)
+                        {
+                            <textarea class="form-control border-0 text-sm" id="auditarItemHallazgo" rows="8" placeholder="Ingrese aquí los hallazgos encontrados...">@Model.StrHallazgoEnInforme</textarea>
+                        }
+                        else
+                        {
+                            <textarea class="form-control border-0 text-sm" id="auditarItemHallazgo" rows="8" placeholder="Ingrese aquí los hallazgos encontrados...">@Model.StrHallazgo</textarea>
+                        }
+
+                    </div>
+
+                    @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Clasificación" }, { "claseTexto", "d-none" }, })
+
+                    <div class="card-body pt-3">
+
+                        <div class="text-left">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="icheck-primary d-inline-block ">
+                                        <input type="radio" id="listaNoConformidad" name="clasificacion" checked="@Model.BitNoConformidad">
+                                        <label for="listaNoConformidad">
+                                            NO Conformidad
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="icheck-primary d-inline-block ">
+                                        <input type="radio" id="listaConformidad" name="clasificacion" checked="@Model.BitConformidad">
+                                        <label for="listaConformidad">
+                                            Conformidad
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="icheck-primary d-inline-block">
+                                        <input type="radio" id="listaObservacion" name="clasificacion" checked="@Model.BitObservacion">
+                                        <label for="listaObservacion">
+                                            Observacion
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+                @Html.Partial("_Modal_Footer")
+
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var isVistaInforme = $("#isVistaInforme").is(":checked");
+
+        listasDeVerificacionCRUD.guardarAuditoriaPorItemAsync(isVistaInforme);
+    });
+
+
+</script>
+
+
+

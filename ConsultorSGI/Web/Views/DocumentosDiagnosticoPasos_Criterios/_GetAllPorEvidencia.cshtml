@@ -1,0 +1,60 @@
+﻿@model List<Models.DTO.DocumentosDiagnosticoPasos_CriteriosDTO>
+
+@{
+    string Estado = string.Empty;
+}
+
+@if (ViewBag.Error != null)
+{
+    @Html.Partial("_AlertaNovedades", ViewData["error"] = ViewBag.Error)
+}
+else
+{
+    @Html.AntiForgeryToken()
+    <table id="tblCriteriosPorEvidencia" class="table table-sm center-block text-sm" style="width:100%">
+        <thead class="text-center">
+            <tr>
+                <th style="display:none!important">Id</th>
+                <th class="text-center"></th>
+                <th class="text-center">Lista de criterios para asociar con el soporte actual</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.OrderBy(x => x.IntOrden))
+            {
+
+                <tr>
+                    <td style="display:none!important">@item.StrCriterioID</td>
+
+                    <td style="width:10%!important" class="text-center">
+
+                        <div class="icheck-primary d-inline">
+                            <input type="checkbox" id="@item.StrCriterioID" class="iSeleccionarCriterio" checked="@item.BitSeleccionado">
+                            <label for="@item.StrCriterioID">
+                            </label>
+                        </div>
+
+                    </td>
+
+                    <td>@item.StrDescripcion</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+    });
+
+
+</script>
+
+

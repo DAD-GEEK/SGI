@@ -1,0 +1,396 @@
+﻿@model Models.DTO.AusentismoIndicadoresDTO
+
+<input type="hidden" id="indicadorID_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.StrId" />
+<input type="hidden" id="indicadorPrincipalID_@Model.StrCodigo" value="@Model.StrId" />
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center m-2" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    <div class="row">
+
+        <div class="col-md-6">
+            <div class="card pt-1">
+                <div class="card-header">
+                    <span class="float-left font-weight-bold h4"><i class="fas fa-calendar-check text-primary mr-1"></i> AÑO</span>
+                    <span class="float-right h4">@Model.IntAnio</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card pt-1">
+                <div class="card-header">
+                    <span class="float-left font-weight-bold h4 text-uppercase">
+                        <i class="fas fa-chart-bar mr-1 text-primary"></i>
+                        @Model.StrNombreIndicador
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <p>
+                <i class="fas fa-tag text-primary mr-2"></i> <b>Fórmula del indicador:</b> @Model.StrFormula <br />
+                <i class="fas fa-tag text-primary mr-2"></i> <b>Fuente de información:</b> @Model.StrFuente <br />
+            </p>
+        </div>
+
+        <div class="col-md-6">
+            <p>
+                <i class="fas fa-tag text-primary mr-2"></i> <b>Objetivo del indicador:</b> @Model.StrObjetivo <br />
+            </p>
+        </div>
+
+    </div>
+
+    <hr class="mt-0 mb-1" />
+
+    <form id="form_@Model.StrCodigo">
+
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="indicadorProceso_@Model.StrCodigo">Proceso<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0" type="text" id="indicadorProceso_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.StrProceso" placeholder="Proceso asociado al indicador" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-procedures"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="indicadorFrecuencia_@Model.StrCodigo">Frecuencia<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+
+                        <select class="select2-blue form-control" id="indicadorFrecuencia_@Model.StrCodigo">
+                            <option value="mensual">Mensual</option>
+                            <option value="anual">Anual</option>
+                        </select>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="indicadorTipoGrafico_@Model.StrCodigo">Tipo de gráfico<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+
+                        <select class="select2-blue form-control" id="indicadorTipoGrafico_@Model.StrCodigo">
+                            <option value="line">Lineal</option>
+                            <option value="bar">Barra</option>
+                        </select>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="indicadorResponsable_@Model.StrCodigo">Responsable<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0" type="text" id="indicadorResponsable_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.StrResponsable" placeholder="Responsable del cálculo" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="indicadorCargo_@Model.StrCodigo">Cargos que deben conocer el resultado<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0" type="text" id="indicadorCargo_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.StrCargos" placeholder="Responsable del indicador" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-users-cog"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row" id="divMetaMensual_@Model.StrCodigo">
+
+            <div class="col-md-12">
+
+                <div class="card pt-1">
+                    <div class="card-header">
+                        <span class="font-weight-bold h4 text-uppercase"><i class="fas fa-chart-line text-primary mr-1"></i> Metas mensuales</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_1_@Model.StrCodigo">Enero<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_1_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_1" placeholder="Meta para el mes de enero" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_2_@Model.StrCodigo">Febrero<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_2_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_2" placeholder="Meta para el mes de febrero" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_3_@Model.StrCodigo">Marzo<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_3_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_3" placeholder="Meta para el mes de marzo" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_4_@Model.StrCodigo">Abril<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_4_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_4" placeholder="Meta para el mes de abril" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_5_@Model.StrCodigo">Mayo<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_5_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_5" placeholder="Meta para el mes de febrero" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_6_@Model.StrCodigo">Junio<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_6_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_6" placeholder="Meta para el mes de junio" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_7_@Model.StrCodigo">Julio<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_7_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_7" placeholder="Meta para el mes de julio" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_8_@Model.StrCodigo">Agosto<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_8_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_8" placeholder="Meta para el mes de agosto" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_9_@Model.StrCodigo">Septiembre<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_9_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_9" placeholder="Meta para el mes de septiembre" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_10_@Model.StrCodigo">Octubre<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_10_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_10" placeholder="Meta para el mes de octubre" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_11_@Model.StrCodigo">Noviembre<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_11_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_11" placeholder="Meta para el mes de noviembre" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_12_@Model.StrCodigo">Diciembre<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_12_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_12" placeholder="Meta para el mes de diciembre" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row" id="divMetaAnual_@Model.StrCodigo">
+
+            <div class="col-md-12">
+
+                <div class="card pt-1">
+                    <div class="card-header">
+                        <span class="font-weight-bold h4 text-uppercase"><i class="fas fa-chart-line text-primary mr-1"></i> Meta anual</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label font-weight-bold" for="meta_anual_@Model.StrCodigo">Valor<span class="text-danger">*</span></label>
+                    <div class="input-group with-focus">
+                        <input class="form-control border-right-0 numerico" type="text" id="meta_anual_@Model.StrCodigo" value="@Model.InformacionPorEmpresaDTO.IntMeta_1" placeholder="Meta para el mes de diciembre" autocomplete="off" required />
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-calendar-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-block btn-primary"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+            </div>
+
+        </div>
+
+    </form>
+
+    <hr />
+
+    <div id="div_@Model.StrCodigo"></div>
+
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var frecuenciaIndicador = '@Model.InformacionPorEmpresaDTO.StrFrecuencia';
+        ValidarFrecuenciaDeIndicador(frecuenciaIndicador);
+
+        var frecuenciaIndicador = '@Model.InformacionPorEmpresaDTO.StrFrecuencia';
+        var tipoGrafico = '@Model.InformacionPorEmpresaDTO.StrTipoGrafico';
+
+        $("#indicadorFrecuencia_@Model.StrCodigo option[value='" + frecuenciaIndicador + "'").attr("selected", true);
+        $("#indicadorTipoGrafico_@Model.StrCodigo option[value='" + tipoGrafico + "'").attr("selected", true);
+
+         $("#indicadorFrecuencia_@Model.StrCodigo").change(function () {
+            var frecuencia = $(this).val();
+             ValidarFrecuenciaDeIndicador(frecuencia);
+        });
+
+        function ValidarFrecuenciaDeIndicador(frecuencia) {
+            if (frecuencia == '@Across.Enumeraciones.enumFrecuenciaMedicion.anual.ToString()') {
+            $("#divMetaAnual_" + '@Model.StrCodigo').removeClass('d-none');
+            $("#divMetaMensual_" + '@Model.StrCodigo').addClass('d-none');
+        } else {
+            $("#divMetaAnual_" + '@Model.StrCodigo').addClass('d-none');
+            $("#divMetaMensual_" + '@Model.StrCodigo').removeClass('d-none');
+            }
+        }
+
+        var ausentismoCodigoIndicador = '@Model.StrCodigo';
+        var canvasID = '@Model.StrCanvasID';
+
+        ausentismoIndicadores.abrirVistaGraficosPorIndicador(ausentismoCodigoIndicador, canvasID);
+        ausentismoIndicadores.guardarInformacionDeIndicadorPorEmpresa(ausentismoCodigoIndicador, canvasID);
+
+    });
+
+
+</script>

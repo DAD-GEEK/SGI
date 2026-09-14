@@ -1,0 +1,138 @@
+﻿@model Models.DTO.TercerosDTO
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center m-2" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    <input type="hidden" id="documentoTerceroID" value="@Model.IntTerceroID" />
+
+    @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", $"{Model.StrIdentificacion}-{Model.IntDV} {Model.StrNombre}" }, { "claseTexto", "d-none" } })
+
+    <div class="card-body">
+
+        <form id="formGuardarGlobal">
+
+            <div class="row">
+
+                <div class="col-12">
+
+                    <div class="callout callout-info">
+                        <h6 class="font-weight-bold"><i class="fas fa-user-cog mr-1 text-primary"></i>Información general</h6>
+
+                        <div class="row">
+
+                            <div class="col-md-2 text-center">
+
+                                <img src="@Model.StrUrlImagen" alt="Logo empresa" class="img" style="max-height:100px!important;max-width:100%!important" />
+
+                            </div>
+
+                            <div class="col-md-5">
+
+                                <p>
+                                    <b>Actividad económica: </b>@Model.StrActividadEconomica <br />
+                                    <b>Nivel aplicable: </b>@Model.StrNivelDescripcion <br />
+                                    <b>Riesgo: </b>@Model.StrNivelDeRiesgoDescripcion <br />
+
+                                </p>
+
+                            </div>
+
+                            <div class="col-md-5">
+
+                                <p>
+                                    <b>Email: </b>@Model.StrEmail <br />
+                                    <b>Teléfono: </b>@Model.StrTelefono <br />
+                                    <b>Dirección: </b>@Model.StrDireccion <br />
+                                    <b>Ciudad: </b>@Model.StrCiudadCodigo - @Model.StrCiudadNombre <b>(@Model.StrDepartamento)</b> <br />
+
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-control-label font-weight-bold" for="terceroNumeroDeEmpleados">Número de empleados<span class="text-danger">*</span></label>
+                        <div class=" input-group with-focus">
+                            <input class="form-control border-right-0 bloquear" type="text" id="terceroNumeroDeEmpleados" value="@Model.IntNumeroEmpleados" placeholder="Número de empleados en la empresa..." autocomplete="off" maxlength="200" required />
+                            <div class="input-group-append">
+                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                    <i class="fas fa-users"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-control-label font-weight-bold" for="terceroEmpleadosContratistas">Número de contratistas empleados<span class="text-danger">*</span></label>
+                        <div class=" input-group with-focus">
+                            <input class="form-control border-right-0 bloquear" type="text" id="terceroEmpleadosContratistas" value="@Model.IntContratistasConductores" placeholder="Número de contratistas empleados..." autocomplete="off" maxlength="200" required />
+                            <div class="input-group-append">
+                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                    <i class="fas fa-users"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-control-label font-weight-bold" for="terceroNumeroDeVehiculos">Número de vehículos<span class="text-danger">*</span></label>
+                        <div class=" input-group with-focus">
+                            <input class="form-control border-right-0 bloquear" type="text" id="terceroNumeroDeVehiculos" value="@Model.IntNumeroDeVehiculos" placeholder="Número total de vehículos en la empresa..." autocomplete="off" maxlength="200" required />
+                            <div class="input-group-append">
+                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                    <i class="fas fa-car"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    @Html.Partial("_Card_Footer")
+
+}
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        documentosDiagnosticoCRUD.index();
+
+        tercerosCRUD.guardarInformacionTerceroDocumentoDiagnostico();
+
+        $("#btnAtras").click(function () {
+            documentosDiagnosticoCRUD.getAllPorSistemaDeGestion();
+        });
+
+    });
+
+
+</script>
+
+
+

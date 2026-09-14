@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="fc0c2ec38ba84270a2ff0bcc1d4f8f06" Name="Diagram1" ZoomLevel="59">
+        <EntityTypeShape EntityType="datosNetModel.Actas" Width="1.5" PointX="10.5" PointY="8.75" />
+        <EntityTypeShape EntityType="datosNetModel.ActividadesActa" Width="1.5" PointX="12.75" PointY="5.875" />
+        <EntityTypeShape EntityType="datosNetModel.Agenda" Width="1.5" PointX="8.25" PointY="7.625" />
+        <EntityTypeShape EntityType="datosNetModel.AsistentesActa" Width="1.5" PointX="12.75" PointY="9" />
+        <EntityTypeShape EntityType="datosNetModel.Ciudades" Width="1.5" PointX="0.75" PointY="5.75" />
+        <EntityTypeShape EntityType="datosNetModel.Clientes" Width="1.5" PointX="0.75" PointY="16" />
+        <EntityTypeShape EntityType="datosNetModel.Configuracion" Width="1.5" PointX="3.75" PointY="0.75" />
+        <EntityTypeShape EntityType="datosNetModel.Contactos" Width="1.5" PointX="3" PointY="20.625" />
+        <EntityTypeShape EntityType="datosNetModel.Contratos" Width="1.5" PointX="3" PointY="16.25" />
+        <EntityTypeShape EntityType="datosNetModel.Contratos_SistemasDeGestion" Width="1.5" PointX="5.25" PointY="17" />
+        <EntityTypeShape EntityType="datosNetModel.Contratos_Usuarios" Width="1.5" PointX="5.25" PointY="6" />
+        <EntityTypeShape EntityType="datosNetModel.Departamentos" Width="1.5" PointX="1.5" PointY="3" />
+        <EntityTypeShape EntityType="datosNetModel.LogsEx" Width="1.5" PointX="5.25" PointY="20.5" />
+        <EntityTypeShape EntityType="datosNetModel.Modulos" Width="1.5" PointX="3.75" PointY="12.875" />
+        <EntityTypeShape EntityType="datosNetModel.Procesos" Width="1.5" PointX="5.75" PointY="0.75" />
+        <EntityTypeShape EntityType="datosNetModel.Roles" Width="1.5" PointX="0.75" PointY="9" />
+        <EntityTypeShape EntityType="datosNetModel.Roles_Modulos" Width="1.5" PointX="6" PointY="9" />
+        <EntityTypeShape EntityType="datosNetModel.SistemasDeGestion" Width="1.5" PointX="3" PointY="25" />
+        <EntityTypeShape EntityType="datosNetModel.TemasActa" Width="1.5" PointX="12.75" PointY="11.875" />
+        <EntityTypeShape EntityType="datosNetModel.TipoEventos" Width="1.5" PointX="6" PointY="11.75" />
+        <EntityTypeShape EntityType="datosNetModel.Usuarios" Width="1.5" PointX="3" PointY="7.75" />
+        <AssociationConnector Association="datosNetModel.FK_Actas_Agenda" />
+        <AssociationConnector Association="datosNetModel.FK_Actividades_Actas" />
+        <AssociationConnector Association="datosNetModel.FK_AsistentesActa_Actas" />
+        <AssociationConnector Association="datosNetModel.FK_Temas_Actas" />
+        <AssociationConnector Association="datosNetModel.FK_Agenda_Clientes" />
+        <AssociationConnector Association="datosNetModel.FK_Agenda_TipoEventos" />
+        <AssociationConnector Association="datosNetModel.FK_Agenda_usuarios" />
+        <AssociationConnector Association="datosNetModel.FK_Ciudades_Departamentos" />
+        <AssociationConnector Association="datosNetModel.FK_Clientes_Ciudades" />
+        <AssociationConnector Association="datosNetModel.FK_Usuarios_Ciudades" />
+        <AssociationConnector Association="datosNetModel.FK_Contactos_Clientes" />
+        <AssociationConnector Association="datosNetModel.FK_Contratos_Clientes" />
+        <AssociationConnector Association="datosNetModel.FK_Contratos_SistemasDeGestion_Contratos" />
+        <AssociationConnector Association="datosNetModel.FK_Contratos_Usuarios_Contratos" />
+        <AssociationConnector Association="datosNetModel.FK_Contratos_SistemasDeGestion_Sistemas" />
+        <AssociationConnector Association="datosNetModel.FK_Contratos_Usuarios_Usuarios" />
+        <AssociationConnector Association="datosNetModel.FK_Logs_Usuarios" />
+        <AssociationConnector Association="datosNetModel.FK_Roles_Modulos_Modulos" />
+        <AssociationConnector Association="datosNetModel.FK_Roles_Modulos_Roles" />
+        <AssociationConnector Association="datosNetModel.FK_Usuarios_Roles" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

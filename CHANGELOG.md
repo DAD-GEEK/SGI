@@ -4,6 +4,92 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.4.9] - 2026-09-14
+
+### 📦 Consolidación Arquitectónica: Integración de Aplicaciones Legadas (.NET MVC) en SGI
+- **Unificación de Código Fuente en Repositorio SGI (`AgendaSGI/` y `ConsultorSGI/`)**:
+  - Integradas las aplicaciones legadas ASP.NET MVC (.NET Framework 4.8) como módulos de código fuente directo dentro del repositorio SGI, eliminando dependencias de repositorios externos y referencias fragmentadas.
+  - Purga estricta de binarios (`bin/`, `obj/`), paquetes NuGet (`packages/`), módulos de cliente (`node_modules/`, `Vendor/`), archivos comprimidos (`*.rar`, `*.zip`) y metadatos de entorno (`.vs/`, `*.user`, `*.suo`), garantizando un repositorio liviano y exclusivamente con código fuente versionable.
+  - Actualizado `.gitignore` con exclusiones defensivas para la suite Visual Studio / MSBuild.
+
+## [1.4.8] - 2026-09-13
+
+### 🔐 SSO Automático Transparente en Iframes, Auto-Sincronización de Contraseñas y Centro de Notificaciones
+- **Auto-Sincronización de Contraseñas en Segundo Plano (`UsuarioController.java`, `Login.tsx`, `ChangePassword.tsx`)**:
+  - Implementado endpoint `POST /api/usuarios/auto-sincronizar-password` en `sgi-core-service` que sincroniza atómica y reactivamente la clave en MSSQL Agenda (3DES) y Consultor (ASP.NET Identity PBKDF2).
+  - En `Login.tsx` y `ChangePassword.tsx`, al autenticar con éxito en el CRM, se despacha la sincronización en segundo plano garantizando que las credenciales de los aplicativos legados coincidan 100% con la del CRM sin bloquear la UI.
+- **Centro de Notificaciones Interactivo en Header (`Dashboard.tsx`)**:
+  - El botón de campana del Header (`/html/body/div/div/div/header/div[2]/button[1]/svg`) ahora cuenta con un Popover desplegable animado con badge contador de notificaciones no leídas.
+  - Generación condicional de notificación corporativa únicamente cuando el sistema detecta que la clave estaba desactualizada. Incorporado botón interactivo con icono `X` en cada tarjeta para descartar/eliminar notificaciones individuales, botón para marcar todas como leídas y persistencia local.
+- **SSO Transparente y Blindaje de Iframes (`AgendaView.tsx`, `ConsultorView.tsx`, `AuthController.cs`, `SeguridadController.cs`)**:
+  - Implementado SSO directo pasando el email del usuario en sesión (`/Auth/SSO` y `/Seguridad/SSO`) permitiendo navegar sin re-autenticación.
+  - En caso de acceso manual con clave desactualizada, las pantallas de login legadas informan amigablemente: *"Contraseña incorrecta. Si modificó su clave recientemente en el CRM, contacte al Administrador para sincronizar o ingrese su clave anterior."* permitiendo al usuario continuar con su clave legacy mientras se actualiza.
+
+## [1.4.7] - 2026-09-13
+
+### 🐛 Corrección Crítica de Generación de Asesores no Deseados (`ASESOR_SENIOR`) & Estandarización de Filtros Bento
+- **Eliminación de Creación Inadvertida de Usuarios en ETL Reactivo (`UnifiedTransformService.java`)**:
+  - Desactivado el procesamiento automático no supervisado de registros provenientes de tablas legadas (`gestioni_datosNet.Usuarios` y `gestioni_consultorNet.AspNetUsers`) que creaba 14 asesores ficticios con rol `ASESOR_SENIOR` en cada ciclo de sincronización.
+  - La creación y aprovisionamiento de usuarios queda restringida de forma exclusiva a la gobernanza explícita del módulo administrativo (`POST /api/usuarios/registrar`) y scripts de base de datos controlados.
+  - Actualizadas las pruebas unitarias en `UnifiedTransformServiceTest.java` verificando que ningún `UsuarioEntity` se persista automáticamente al sincronizar tablas de usuarios legados.
+- **Estandarización de Barra de Filtros Bento en Vistas de Datos (`UsuariosView.tsx` - Asesores y Seguridad)**:
+  - Implementada la barra de filtros avanzados estilo Bento idéntica a `ClientesView`:
+    - Campo de búsqueda reactiva por Cédula (CC), nombre de asesor o correo corporativo (`md:col-span-2`).
+    - Selector dinámico de Estado (`Todos los Estados`, `Solo Activos`, `Solo Inactivos`) con conteo de registros en tiempo real.
+    - Selector de Registros por Vista configurable (5, 10, 20, 50, 100 registros por página).
+  - Paginación dinámica enlazada al tamaño de página seleccionado con indicador de rango y total de asesores.
+- **Mitigación y Blindaje de Conexiones Reactivas SSE contra `Broken pipe` (`UsuarioStatusPublisher.java` & `application.yml`)**:
+  - Incorporada gestión de ciclo de vida con `.doOnCancel()` y `.doOnError()` en `UsuarioStatusPublisher` para purgar de forma inmediata los sinks de memoria cuando un navegador cierra la conexión o recarga la pestaña.
+  - Configurado filtrado de nivel de logging en `application.yml` para suprimir trazas ruidosas de desconexión normal de clientes en Tomcat (`org.apache.catalina.connector.CoyoteAdapter`, `Http11NioProtocol`), manteniendo los logs limpios y enfocados en errores reales de producción.
+- **Sincronización Bidireccional de Credenciales y Accesos hacia Bases de Datos Legadas (`MssqlUserSyncService.java` & `SgiLegacyCryptoService.java`)**:
+  - Implementado `SgiLegacyCryptoService` replicando con precisión matemática los algoritmos de autenticación legados:
+    - **AgendaSGI**: Cifrado simétrico TripleDES (3DES ECB PKCS5) con llave derivada de MD5 de la contraseña.
+    - **ConsultorSGI**: Generación y verificación de hash PBKDF2-HMAC-SHA1 (1000 iteraciones con Salt aleatorio de 128 bits) compatible al 100% con Microsoft.AspNet.Identity.PasswordHasher v2 (Base64 de 68 caracteres).
+  - Implementado `MssqlUserSyncService` con ejecución asíncrona reactiva (`Schedulers.boundedElastic`) para sincronizar contraseñas (`syncPassword`), activación/desactivación (`syncUserStatus`) y aprovisionamiento basado en permisos de módulos (`syncModulePermissions`) hacia `gestioni_datosNet.dbo.Usuarios` y `gestioni_consultorNet.dbo.AspNetUsers`.
+  - Actualizado `ChangePassword.tsx` para enviar la contraseña en el cuerpo seguro de `POST /usuarios/confirmar-clave`, actualizándola simultáneamente en Supabase Auth y en ambas bases de datos MSSQL.
+- **Preservación Histórica de Eventos y Actas de Asesores Eliminados (`UsuarioController.java` & `AgendaEventoEntity.java`)**:
+  - Eliminada la instrucción destructiva `agendaEventoRepository.deleteAll(eventos)` al dar de baja un usuario.
+  - Los eventos históricos ahora desvinculan la referencia foránea (`asesor_id = null`) y preservan los campos inmutables de auditoría `asesor_historico_nombre` y `asesor_historico_email`, garantizando integridad referencial y trazabilidad para reportes de auditoría y normas SST.
+- **Asistente de Autenticación Rápida en Vistas Embebidas (`AgendaView.tsx` & `ConsultorView.tsx`)**:
+  - Incorporada cápsula interactiva en la cabecera de las vistas de Agenda y Consultor que refleja la identidad del asesor logueado con botón de copiado en un clic (`¡Copiado!`), facilitando el acceso inmediato sin fricción ni desfasaje de contraseñas.
+- **Gestión Voluntaria de Contraseña desde Perfil y Preferencias (`Profile.tsx`)**:
+  - Implementada tarjeta interactiva de "Seguridad & Contraseña" en la vista de perfil de usuario (`/perfil`), permitiendo a asesores y administradores actualizar voluntariamente su credencial de acceso.
+  - Validación defensiva de contraseñas alineada con estándares OWASP (mínimo 8 caracteres, mayúsculas, minúsculas, números y caracteres especiales).
+  - Orquestación automática de la sincronización: actualiza de inmediato el hash en Supabase Auth y despacha a `POST /api/usuarios/confirmar-clave` para actualizar de forma atómica y reactiva las bases de datos MSSQL de Agenda (`gestioni_datosNet.dbo.Usuarios`) y Consultor (`gestioni_consultorNet.dbo.AspNetUsers`).
+
+---
+
+## [1.4.6] - 2026-09-13
+
+### 🔒 Blindaje de Rutas Protegidas & Prevención de Fugas de Sesión con Clave Temporal (`ProtectedRoute.tsx`, `Login.tsx`, `ChangePassword.tsx`)
+- **Blindaje de Rutas y Aislamiento de Claves Temporales (`ProtectedRoute.tsx`)**:
+  - Implementado control estricto de sesión: si un usuario cuenta con clave temporal pendiente (`mustChangePassword: true`) y navega a cualquier ruta interna (`/dashboard`, `/clientes`, `/agenda`, `/consultor`, etc.), es interceptado y redirigido forzosamente a `/cambiar-password`.
+  - Si un usuario con clave definitiva confirmada intenta acceder a `/cambiar-password`, es redirigido automáticamente a `/dashboard`.
+- **Mitigación de "Pantalla en Blanco / Coco Limpio" ante Navegación "Atrás" del Navegador (`ChangePassword.tsx`)**:
+  - Incorporada trampa de historial con escucha reactiva del evento `popstate`: si un usuario que ingresó con clave temporal presiona el botón "Atrás" del navegador antes de completar su clave definitiva, el sistema ejecuta de inmediato `performCompleteLogout()` y lo redirige a `/login` con `replace: true`, impidiendo que aterrice en una sesión incompleta o con componentes vacíos.
+  - Añadido botón explícito de "Cancelar y volver al inicio de sesión" para dar salida segura al usuario.
+- **Persistencia y Validación de Estado en Login (`Login.tsx`)**:
+  - Al iniciar sesión con clave temporal, se registra la sesión temporal en `sgi_user` con el flag `mustChangePassword: true`.
+- **Optimización de Viewport, Modales y Eliminación de Scroll Doble Innecesario (`UsuariosView.tsx`, `ClientesView.tsx`, `Dashboard.tsx`)**:
+  - Eliminado el desbordamiento vertical de la ventana completa configurando `h-screen overflow-hidden` en el contenedor maestro y confinando el scroll vertical exclusivamente al área de trabajo `<main>`.
+  - Reestructurados todos los modales y formularios flotantes (Crear/Editar Asesor, Agregar/Editar Cliente): ampliados horizontalmente (`max-w-2xl` y `max-w-4xl`), con cabeceras y barras de pestañas fijas (`shrink-0`), contenedores internos scrollables con límites de altura responsivos (`max-h-[calc(90vh-140px)]`) y barras de botones de acción fijadas en la parte inferior sobre fondos sólidos, eliminando la saturación vertical y los scrolls cortados.
+
+---
+
+## [1.4.5] - 2026-09-13
+
+### 🎨 Optimización de Navegación Lateral en CRM (`crm/src/components/CrmSidebar.tsx`, `AgendaView.tsx`, `ConsultorView.tsx`)
+- **Renombrado de Módulo de Agenda**:
+  - Cambiada la etiqueta de navegación a `Módulo Agenda` para consistencia con la nomenclatura del sistema.
+- **Limpieza de Accesos Redundantes**:
+  - Eliminado el enlace externo a plataforma (`Plataforma SGI Ext.`) y purgado el import en desuso `ShieldCheck`.
+- **Simplificación e Integración Directa de Vistas Embebidas (`AgendaView.tsx` y `ConsultorView.tsx`)**:
+  - Removidos el botón alternador de vistas y el banner de advertencia (`Nota de Navegación`), dejando el `<iframe>` a pantalla completa cargando de forma fluida y directa.
+- **Blindaje contra Cancelaciones Continuas en SSE (`stream-estado`)**:
+  - Implementado backoff progresivo (15s a 60s) en el manejador `onerror` de `EventSource` para evitar saturación de peticiones canceladas en el inspector de red cuando el microservicio local no se encuentra encendido.
+
+---
+
 ## [1.4.4] - 2026-09-12
 
 ### 🚀 Desacoplamiento Arquitectónico de Integración Continua (CI Propio en SGI)
@@ -11,6 +97,10 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
   - Implementado pipeline de Integración Continua nativo dentro del repositorio de SGI ejecutado ante cada `pull_request` y `push` hacia `master` y `main`.
   - Detección precisa de componentes modificados vía `dorny/paths-filter`: `landing` (`src/**`), `crm` (`crm/**`) y `core` (`sgi-core-service/**`).
   - Validación automatizada con pruebas unitarias (`mvn clean test`), linters y compilación de frontends Vite (`npm run build`).
+- **Corrección de Conflicto CORS en Controlador de Sincronización (`SyncController.java`)**:
+  - Removida la anotación incompatible `@CrossOrigin(origins = "*")` que colisionaba con `allowCredentials(true)` configurado en `CorsConfig.java`, restaurando el funcionamiento del endpoint `/api/sync/trigger`.
+- **Limpieza de Runtime en CI**:
+  - Removido el forzado innecesario de Node 24 para silenciar warnings de deprecación en GitHub Actions.
 
 ---
 

@@ -1,0 +1,352 @@
+﻿@model Models.DTO.DocumentosDiagnosticoDTO
+
+<input type="hidden" id="documentoDiganosticoID" value="@Model.StrDocumentoID" />
+<input type="checkbox" hidden id="documentoDiganosticoFinalizado" checked="@Model.BitFinalizado" />
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center m-2" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="card card-primary card-outline">
+
+                <div class="card-header">
+                    <ul class="nav nav-pills">
+
+                        <li class="nav-item"><a class="nav-link active" href="#informacionEmpresa" data-toggle="tab">Información empresa</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#documento" data-toggle="tab">Diagnóstico</a></li>
+                        <li class="nav-item"><a class="nav-link" id="tabConsolidado" href="#consolidado" data-toggle="tab">Consolidado</a></li>
+                    </ul>
+                </div>
+
+                <div class="tab-content">
+
+                    <div class="tab-pane active" id="informacionEmpresa">
+
+                        <div id="divInformacionEmpresa">
+
+                            @Html.Partial("_InformacionEmpresa", Model.InformacionEmpresa)
+
+                            @if (!Model.BitFinalizado)
+                            {
+                                @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Documento diagnóstico" }, { "claseTexto", "d-none" }, { "icono", "fas fa-tasks" } })
+
+                                <div class="card-body">
+
+                                    @Html.AntiForgeryToken()
+                                    <div class="col-md-12">
+                                        Haga click <button type="button" class="btn btn-primary" id="documentoFinalizar">aquí</button> para finalizar el documento diagnóstico.
+                                    </div>
+
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane" id="documento">
+
+                        @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", $"Diligenciamiento del documento diagnóstico" }, { "claseTexto", "d-none" } })
+
+                        @if (Model.CriteriosGenericosPendientesDeAsignar.Count() != 0 || Model.PasosGenericosPendientesDeAsignar.Count != 0)
+                        {
+                            <div class="pt-3 pb-0 pr-4 pl-4">
+                                <div class="callout callout-danger">
+                                    <h5 class="font-weight-bold"><i class="fas fa-info-circle mr-1 text-danger"></i>¡Elementos sin asignar!</h5>
+                                    Hay elementos pendientes por asignar al documento diagnóstico, haga click <button type="button" class="btn btn-primary" id="btnAsignarElementos">aquí</button> para revisarlos.
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="stepperPasos" class="bs-stepper">
+                                    <div class="bs-stepper-header">
+
+                                        @{
+                                            var contadorDeFases = 1;
+                                        }
+
+                                        @foreach (var fase in Model.FasesDocumento.OrderBy(x => x.StrDescripcionPrimaria))
+                                        {
+                                            var elementoID = $"#id_{contadorDeFases}";
+
+                                            <div class="step" data-target="@elementoID">
+                                                <button type="button" class="btn step-trigger">
+                                                    <span class="bs-stepper-circle">@contadorDeFases</span>
+                                                    <span class="bs-stepper-label">@fase.StrDescripcionPrimaria</span>
+                                                </button>
+                                            </div>
+                                            <div class="line"></div>
+
+                                            contadorDeFases++;
+
+                                        }
+
+                                    </div>
+
+                                    <div class="bs-stepper-content">
+
+                                        @{
+                                            contadorDeFases = 1;
+                                            var totalFases = Model.FasesDocumento.Count();
+                                        }
+
+                                        @foreach (var fase in Model.FasesDocumento.OrderBy(x => x.StrDescripcionPrimaria))
+                                        {
+                                            var elementoID = $"id_{contadorDeFases}";
+
+                                            <div id="@elementoID" class="content">
+
+                                                @foreach (var paso in Model.PasosDocumento.Where(x => x.StrFaseID == fase.StrFaseID).OrderBy(x => x.IntNumero))
+                                                {
+                                                    <div class="card card-sombra collapsed-card documentoPasos_@paso.StrPasoID">
+
+                                                        <div class="card-header" data-card-widget="collapse">
+                                                            <h3 class="card-title font-weight-bold"> Paso N° @paso.IntNumero - @paso.StrRequisito</h3>
+
+                                                            <button type="button" class="btn btn-tool">
+                                                                <i class="fas fa-plus"></i>
+                                                            </button>
+
+                                                            @if (!paso.BitAplica)
+                                                            {
+                                                                <span class="badge badge-primary">NO APLICA</span>
+                                                            }
+
+                                                        </div>
+
+                                                        <div class="card-body criteriosPorPaso">
+
+                                                            @if (paso.BitAplica)
+                                                            {
+                                                                <div class="row">
+
+                                                                    <div class="col-md-3">
+
+                                                                        <div class="info-box mb-3">
+                                                                            <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-clipboard-check"></i></span>
+
+                                                                            <div class="info-box-content">
+                                                                                <span class="info-box-text font-weight-bold"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Total criterios aplicables</font></font></span>
+                                                                                <span class="info-box-number">
+                                                                                    <font style="vertical-align: inherit;">
+                                                                                        <h6 style="vertical-align: inherit;" id="pasoCantidadSiAplica_@paso.StrPasoID">@paso.IntCantidadSIAplica</h6>
+                                                                                    </font>
+                                                                                </span>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+
+                                                                        <div class="info-box mb-3">
+                                                                            <span class="info-box-icon bg-success elevation-1"><i class="fas fa-thumbs-up"></i></span>
+
+                                                                            <div class="info-box-content">
+
+                                                                                <span class="info-box-text font-weight-bold">
+                                                                                    <font style="vertical-align: inherit;">
+
+                                                                                        <font style="vertical-align: inherit;">Total SI cumple</font>
+
+                                                                                    </font>
+                                                                                </span>
+
+                                                                                <span class="info-box-number">
+                                                                                    <font style="vertical-align: inherit;">
+                                                                                        <h6 style="vertical-align: inherit;" id="pasoCantidadSiCumple_@paso.StrPasoID">@paso.IntCantidadSICumple</h6>
+                                                                                    </font>
+                                                                                </span>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                    <div class="col-md-3">
+
+                                                                        <div class="info-box mb-3">
+                                                                            <span class="info-box-icon bg-danger elevation-1">
+                                                                                <i class="fas fa-thumbs-down"></i>
+                                                                            </span>
+
+                                                                            <div class="info-box-content">
+                                                                                <span class="info-box-text font-weight-bold">
+                                                                                    <font style="vertical-align: inherit;">
+                                                                                        <font style="vertical-align: inherit;">Total NO cumple</font>
+                                                                                    </font>
+                                                                                </span>
+                                                                                <span class="info-box-number">
+                                                                                    <font style="vertical-align: inherit;">
+                                                                                        <h6 style="vertical-align: inherit;" id="pasoCantidadNOCumple_@paso.StrPasoID">@paso.IntCantidadNOCumple</h6>
+                                                                                    </font>
+                                                                                </span>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="col-md-3">
+
+                                                                        <div class="info-box mb-3">
+                                                                            <span class="info-box-icon bg-primary elevation-1">
+                                                                                <i class="fas fa-poll"></i>
+                                                                            </span>
+
+                                                                            <div class="info-box-content">
+                                                                                <span class="info-box-text font-weight-bold">
+                                                                                    <font style="vertical-align: inherit;">
+                                                                                        <font style="vertical-align: inherit;">Resultado</font>
+                                                                                    </font>
+                                                                                </span>
+                                                                                <span class="info-box-number">
+                                                                                    <font style="vertical-align: inherit;">
+                                                                                        <h6 style="vertical-align: inherit;" id="pasoResultado_@paso.StrPasoID">@Across.Common.FormatoPorcentajeEnNumeroEntero(paso.DecResultado)</h6>
+                                                                                    </font>
+                                                                                </span>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            }
+
+
+                                                            @Html.Partial("_DocumentoPasosDetalle", paso.DocumentosDiagnosticoDetalle_PlanesDeAccionDTO.ToList())
+
+                                                        </div>
+                                                    </div>
+                                                }
+
+
+                                                @if (contadorDeFases == 1)
+                                                {
+                                                    if (totalFases != 1)
+                                                    {
+                                                        <div class="row">
+
+                                                            <div class="col-6">
+
+                                                            </div>
+
+                                                            <div class="col-6">
+                                                                <button class="btn btn-primary btn-block" onclick="stepperPasos.next()" data-faseid="@fase.StrFaseID">Ir a la fase @Convert.ToInt16(contadorDeFases + 1)<i class="fas fa-arrow-right ml-1"></i></button>
+                                                            </div>
+                                                        </div>
+                                                    }
+
+                                                }
+                                                else if (contadorDeFases == totalFases)
+                                                {
+                                                    <div class="row">
+
+                                                        <div class="col-6">
+                                                            <button class="btn btn-primary btn-block" onclick="stepperPasos.previous()"><i class="fas fa-arrow-left mr-1"></i> Ir a la fase @Convert.ToInt16(contadorDeFases - 1)</button>
+                                                        </div>
+
+                                                        <div class="col-6">
+
+                                                        </div>
+
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="row">
+
+                                                        <div class="col-6">
+                                                            <button class="btn btn-primary btn-block" onclick="stepperPasos.previous()"><i class="fas fa-arrow-left mr-1"></i> Ir a la fase @Convert.ToInt16(contadorDeFases - 1)</button>
+                                                        </div>
+
+                                                        <div class="col-6">
+                                                            <button class="btn btn-primary btn-block" onclick="stepperPasos.next()" data-faseid="@fase.StrFaseID">Ir a la fase @Convert.ToInt16(contadorDeFases + 1)<i class="fas fa-arrow-right ml-1"></i></button>
+                                                        </div>
+
+                                                    </div>
+                                                }
+
+                                            </div>
+
+                                            contadorDeFases++;
+
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="tab-pane" id="consolidado">
+
+                        @Html.Partial("_Consolidado", Model)
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal fade fade bd-example-modal-sm" id="modal2" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor2">
+
+            @Html.Partial("_AgregarElementos", Model)
+
+        </div>
+    </div>
+
+
+}
+
+<script type="text/javascript">
+
+    var stepperPasosNode = document.querySelector('#stepperPasos')
+    var stepperPasos = new Stepper(document.querySelector('#stepperPasos'))
+
+    stepperPasosNode.addEventListener('show.bs-stepper', function (event) {
+        documentosDiagnosticoCRUD.configuracionStepperPasos(event);
+    });
+
+    $(document).ready(function () {
+
+        documentosDiagnosticoCRUD.index();
+        $("#btnAsignarElementos").click(function () {
+            $('#modal2').modal('show');
+        });
+
+        DocumentosDiagnosticoDetalle_PlanesDeAccionCRUD.guardarRegistro();
+        documentosDiagnosticoCRUD.finalizarDocumento();
+
+        $("#tabConsolidado").click(function () {
+            documentosDiagnosticoCRUD.obtenerConsolidadoDeResultadosGlobales();
+        });
+
+    });
+
+</script>
+
+
+

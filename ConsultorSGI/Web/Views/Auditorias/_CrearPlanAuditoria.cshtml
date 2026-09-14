@@ -1,0 +1,248 @@
+﻿<input type="hidden" id="auditoriaID" value="0" />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarAuditoria" method="post" action="#">
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline">
+
+                <div class="card-header p-2">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item"><a class="nav-link active" href="#plan" data-toggle="tab">Plan de auditoría</a></li>
+                        <li class="nav-item"><button class="nav-link border-0" type="submit" href="#" data-aplicar="true">Programación</button></li>
+                        <li class="nav-item"><button class="nav-link border-0" type="submit" href="#" data-aplicar="true">Procesos</button></li>
+
+                    </ul>
+                </div>
+
+                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Información general")
+
+                <div class="tab-content">
+
+                    <div class="active tab-pane" id="plan">
+
+                        <div class="card-body pt-0">
+                            <span class="text-muted d-none font-italic m-0 p-0" id="auditoriaDuracion"></span>
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaTercero">Tercero<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+
+                                            <select class="obtenerTercerosClientes form-control filtro" style="width: 100%;" id="auditoriaTercero" required="required"></select>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaFecha">Fecha de auditoría<span class="text-danger">*</span></label>
+                                        <div class="input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="auditoriaFecha" placeholder="Ingrese aquí la fecha de la auditoría..." autocomplete="off" required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <i class="fas fa-calendar-check"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaNormas">Criterios de auditoría<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            @Html.DropDownList("listaNormas", null, null, htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "auditoriaNormas", placeholder = "-- Seleccione una opción", required = "required", Multiple = "Multiple" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaObjetivo">Objetivo<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            <textarea class="form-control border-right-0" placeholder="Ingrese aquí el objetivo de la auditoría..." id="auditoriaObjetivo" rows="3" data-parsley-length="[5,500]" data-parsley-required></textarea>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-cogs"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaAlcance">Alcance<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            <textarea class="form-control border-right-0" placeholder="Ingrese aquí el alcance de la auditoría..." id="auditoriaAlcance" rows="3" data-parsley-length="[5,500]" data-parsley-required></textarea>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-check"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaAuditorPrincipal">Auditor principal<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+
+                                            @Html.DropDownList("listaUsuarios", null, "-- Seleccione una opción --", htmlAttributes: new
+                                       {
+                                           @class = "select2bs4 form-control",
+                                           data_placeholder = "-- Seleccione una opción --",
+                                           required = "required",
+                                           style = "width: 100%;",
+                                           id = "auditoriaAuditorPrincipal",
+
+                                       })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaIntegranteCopasst">Integrante de COPASST<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="auditoriaIntegranteCopasst" placeholder="Ingrese aquí el nombre del integrante del COPASST..." autocomplete="off" maxlength="200" required />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-user-plus"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaVersion">Versión documento</label>
+                                        <div class=" input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="auditoriaVersion" placeholder="Ingrese aquí la versión del documento..." autocomplete="off" maxlength="20" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-clipboard-check"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaFechaVersion">Fecha de versión</label>
+                                        <div class="input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="auditoriaFechaVersion" placeholder="Ingrese aquí la fecha de la versión..." autocomplete="off" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <i class="fas fa-calendar-check"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="auditoriaCodigo">Código documento</label>
+                                        <div class=" input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" id="auditoriaCodigo" placeholder="Ingrese aquí la identificación del documento ..." autocomplete="off" maxlength="20" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fas fa-check"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="col-md-12">
+
+                                        <div class="callout callout-warning">
+                                            <h5 class="font-weight-bold"><i class="fas fa-info-circle mr-1 text-warning"></i>¡Alerta!</h5>
+                                            Para realizar la programación diligenciando la auditoría haga click <button class="btn btn-primary btnGuardarRegistro" data-aplicar="true"><i class="fas fa-file-upload mr-1"></i>AQUÍ</button>
+
+                                        </div>
+
+                                    </div>*@
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+                @*@Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Detalle auditoría" }, { "claseTexto", "d-none" } })
+
+                    <div class="card-body pt-2">
+
+                        <button type="button" class="btn btn-outline-dark btnGuardarRegistro" name="True" data-toggle="modal" id="btnCrearDePlanDeAuditoriaDetalle"><i class="fas fa-plus"></i>&nbsp;&nbsp;Agregar procesos &nbsp;&nbsp;</button>
+
+                        <div id="getAuditoriaDetalle"></div>
+                    </div>*@
+
+                <div class="card-footer bg-light">
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <div class="col-xs-12 col-md-6"></div>
+
+                            <div class="col-xs-12 col-md-3">
+                                <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark" id="btnAtras" data-toggle="tooltip" data-placement="top" title="Volver a la vista anterior" onclick="auditoriasCRUD.getAllAuditoriasAsync();"><i class="fas fa-undo-alt mr-1"></i>Regresar</button>
+                            </div>
+
+                            <div class="col-xs-12 col-md-3">
+                                <button type="submit" class="btn btn-outline-primary btn-block bloquear" data-toggle="tooltip" data-placement="top" title="Guardar y regresar a la vista anterior"><i class="fas fa-cloud-upload-alt mr-1"></i>Guardar</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        auditoriasCRUD.index();
+        auditoriasCRUD.guardarAuditoriaAsync();
+        auditoriaDetalleCRUD.getAllDetallePlanAuditoriasAsync(0);
+
+        //var listaTercero = $("#auditoriaTercero");
+        //listaTercero.change(function () {
+        //    auditoriasCRUD.obtenerComplementosPorTercero($(this).val(), 0);
+        //});
+
+    });
+
+
+</script>
+
+
+

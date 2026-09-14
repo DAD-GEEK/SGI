@@ -1,0 +1,116 @@
+﻿<input type="hidden" id="pasosID" value="" />
+<input type="hidden" id="sistemaDeGestionID" value="@ViewBag.sistemaDeGestionID" />
+
+<div class=" container-fluid">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center m-2" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <form id="formGuardarGlobal" method="post" action="#">
+
+            @Html.AntiForgeryToken()
+            <div class="card card-primary card-outline">
+
+                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = "Agregar nuevo paso")
+
+                <div class="card-body pt-0 pb-0">
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="pasosNumero">Número de paso<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0 numerico" type="text" id="pasosNumero" placeholder="Ingrese aquí el número de paso..." autocomplete="off" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-tags"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="pasosNiveles">Niveles<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    @Html.DropDownList("listaNiveles", null, null, htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "pasosNivelesID", placeholder = "-- Seleccione una opción", required = "required", Multiple = "Multiple" })
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="pasosFase">Fase<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    @Html.DropDownList("listaFases", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "pasosFaseID", placeholder = "-- Seleccione una opción", required = "required" })
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="pasosRequisito">Requisito<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0" type="text" id="pasosRequisito" placeholder="Ingrese aquí el requisito..." autocomplete="off" maxlength="200" required />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <em class="fas fa-tags"></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-header fondoOscuroSGI" style="border-top-left-radius:0px!important; border-top-right-radius:0px!important">
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+
+                            <button type="button" class="btn btn-outline-light btn-block btnGuardarRegistro" data-aplicar="true" data-abrircriterios="true"><i class="fas fa-plus mr-1"></i>Agregar criterios</button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                @Html.Partial("_Card_Footer")
+
+            </div>
+        </form>
+
+    }
+
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        documentosDiagnosticoPasosCRUD.crearRegistro();
+
+        $("#btnAtras").click(function () {
+            window.location.reload();
+        });
+
+    });
+
+
+</script>
+
+
+

@@ -1,0 +1,135 @@
+﻿@model List<Models.DTO.AuditoriasDetalleDTO>
+
+<input type="hidden" id="terceroID" value="@ViewBag.terceroID" />
+<input type="hidden" id="terceroNombre" value="@ViewBag.nombreTercero" />
+
+@{
+    string Estado = string.Empty;
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    <div class="card card-primary card-outline">
+
+        @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", $"Procesos - {ViewBag.nombreTercero}" }, { "claseTexto", "d-none" } })
+
+        <div class="card-body pt-0">
+
+            @Html.AntiForgeryToken()
+            <table id="tblAuditorias" class="table dt-responsive table-condensed table-sm center-block mt-2 text-sm" style="width:100%">
+                <thead class="text-center text-white fondo fondoColorSGI" style="border-radius:10px">
+                    <tr>
+                        <th style="display:none">Id</th>
+                        <th class="text-left">Numerales</th>
+                        <th class="text-left">Proceso</th>
+                        <th class="text-center">Auditados</th>
+                        <th class="text-center">Auditor</th>
+                        <th>Fecha</th>
+                        <th>Hora inicial</th>
+                        <th>Hora final</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.OrderBy(x => x.DatFechaInicial))
+                    {
+                        <tr>
+                            <td style="display:none">@item.IntAuditoriaID</td>
+
+                            <td class="text-left">
+
+                                @Html.Partial("_NumeralesPorNorma", item.NormasDTO.ToList())
+
+                            </td>
+
+                            <td class="text-left font-weight-bold h6">@item.StrProcesoDescripcion</td>
+
+                            <td class="text-center">@item.StrAuditado</td>
+
+                            <td class="text-center">@item.StrAuditor</td>
+
+
+                            <td class="text-center">@item.DatFechaInicial.ToString("yyyy-MM-dd")</td>
+                            <td class="text-center">@item.DatFechaInicial.ToString("hh:mm tt")</td>
+                            <td class="text-center">@item.DatFechaFinal.ToString("hh:mm tt")</td>
+
+                            <td class=" text-center">
+                                <button type="button" title="Abrir listas de verificación del proceso de @item.StrProcesoDescripcion.ToLower()" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm  glyphicon glyphicon-edit" data-registroid="@item.IntAuditoriaDetalleID" data-tipoevento="listaDeVerificacion" data-procesoid="@item.IntProcesoID"><i class="fa fa-cogs mr-1 fa-fw"></i>Auditar proceso</button>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-3">
+
+                </div>
+                <div class="col-md-3">
+
+                </div>
+
+                <div class="col-md-3">
+                </div>
+
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-outline-dark btn-block" onclick="auditoriasCRUD.getAllAuditoriasAsync();"><i class="fas fa-undo-alt mr-1"></i>Atras</button>
+                </div>
+
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+}
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var auditoriaID = $("#auditoriaID").val();
+        var btnAgregarAperturaCierre = $("#btnAgregarAperturaCierre");
+
+        if (auditoriaID != '0') {
+            btnAgregarAperturaCierre.removeClass('d-none');
+            btnAgregarAperturaCierre.click(function () {
+                auditoriaDetalleACCRUD.crearDetalleAperturaCierre();
+            });
+        }
+
+        $("#moduloNombre").html('Listas de verificación');
+        $("#moduloDetalle").html('Módulo para generar las listas de verificación de cada proceso.');
+
+        $('#tblAuditorias tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+
+            if (tipoEvento == 'listaDeVerificacion')
+                return listasDeVerificacionCRUD.obtenerListaDeVerificacionEncabezadoAsync(registroID);
+
+        });
+
+    });
+
+
+</script>
+
+
+

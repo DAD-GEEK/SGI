@@ -1,0 +1,112 @@
+﻿@model List<Models.DTO.DocumentosDiagnosticoPasos_DocumentoEvidenciaDTO>
+
+@{
+    string Estado = string.Empty;
+
+}
+
+
+@if (ViewBag.Error != null)
+{
+    @Html.Partial("_AlertaNovedades", ViewData["error"] = ViewBag.Error)
+}
+else
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+
+        <div class="col-md-6 text-center">
+            <h4 class="font-weight-bold">CRITERIOS</h4>
+        </div>
+
+        <div class="col-md-1 text-center"></div>
+
+        <div class="col-md-4 text-center">
+            <h4 class="font-weight-bold">SOPORTES</h4>
+        </div>
+
+    </div>
+
+    <div id="">
+
+        @foreach (var item in Model.OrderBy(x => x.IntOrden))
+        {
+            <div class="card-body card-sombra text-sm border mb-3">
+
+                <div class="row">
+
+                    <div class="col-md-6 criteriosSortable" style="margin:auto!important;">
+
+                        @if (item.DocumentosDiagnosticoPasos_CriteriosDTO.Count() != 0)
+                        {
+                            foreach (var criterio in item.DocumentosDiagnosticoPasos_CriteriosDTO.OrderBy(x => x.IntOrden))
+                            {
+                                <div class="border-bottom listaCriterios" data-criterioid="@criterio.StrCriterioID">
+                                    <a href="#">
+                                        <i class="fas fa-edit mr-1 text-primary" onclick="documentosDiagnosticoPasos_CriteriosCRUD.getByEditar('@criterio.StrCriterioID')"></i>
+                                        <i class="fas fa-times mr-1 text-danger" onclick="documentosDiagnosticoPasos_CriteriosCRUD.delete('@criterio.StrCriterioID')"></i>
+                                    </a> @criterio.StrDescripcion
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <span class="badge badge-danger">SOPORTE SIN CRITERIOS ASOCIADOS</span>
+                        }
+
+                    </div>
+
+                    <div class="col-md-1" style="margin:auto!important;">
+
+                        @if (string.IsNullOrEmpty(item.StrDescripcion))
+                        {
+                            <div class="text-center center-block align-content-center">
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="display:flex!important; justify-content:center!important;align-items:center!important">
+                                <i class="fas fa-arrow-circle-right text-primary fa-3x"></i>
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="col-md-5" style="margin:auto!important;">
+
+                        @if (string.IsNullOrEmpty(item.StrDescripcion))
+                        {
+                            <div class="text-center center-block align-content-center">
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="#">
+                                <i class="fas fa-edit mr-1 text-primary" onclick="documentosDiagnosticoPasos_DocumentoEvidenciaCRUD.getByEditar('@item.StrEvidenciaID')"></i>
+                                <i class="fas fa-times mr-1 text-danger" onclick="documentosDiagnosticoPasos_DocumentoEvidenciaCRUD.delete('@item.StrEvidenciaID')"></i>
+                            </a> @item.StrDescripcion
+                        }
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    </div>
+
+}
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        documentosDiagnosticoPasos_CriteriosCRUD.cambiarOrdenamientoSortable();
+    });
+
+
+</script>
+
+

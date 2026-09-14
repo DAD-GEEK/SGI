@@ -1,0 +1,52 @@
+﻿@using DataAccess.Servicios;
+
+@{
+    var modulos = ServicioModulos.ObtenerInformacionDeModuloActual("Terceros");
+}
+
+<div class="content-header pt-0 mt-0 pb-1">
+    <div class="container-fluid pt-0 mt-0">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-dark font-weight-bold">@modulos.ModuloDetalle.StrModuloDetalle</h1>
+                <small>@modulos.ModuloDetalle.StrDescripcion</small>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="@Url.Action(@modulos.ModuloDetalle.StrAccion,@modulos.ModuloDetalle.StrControlador)">@modulos.ModuloPrincial.StrModulo</a></li>
+                    <li class="breadcrumb-item active">@modulos.ModuloDetalle.StrModuloDetalle</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="divVistaParcialTerceros">
+
+</div>
+
+@section BodyArea {
+    <div class=" modal fade fade bd-example-modal-sm" id="modal" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor">
+
+        </div>
+    </div>
+
+
+    <div class=" modal fade fade bd-example-modal-sm" id="modal2" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor2">
+
+        </div>
+    </div>
+}
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            tercerosCRUD.getAllTerceros();
+        });
+
+    </script>
+}

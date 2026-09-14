@@ -1,0 +1,139 @@
+﻿@model List<Models.DocumentosDiagnostico>
+
+@{
+    string Estado = string.Empty;
+}
+
+@if (ViewBag.Error != null)
+{
+    @Html.Partial("_AlertaNovedades", ViewData["error"] = ViewBag.Error)
+}
+else
+{
+    <div class="card">
+
+        <div class="card-header fondoOscuroSGI">
+
+            <div class="row">
+
+                <div class="col-md-3">
+
+                    <button type="button" class="btn btn-outline-light btn-block" id="btnCrearDocumento"><i class="fas fa-clipboard-check"></i>&nbsp;&nbsp;Generar documento</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+
+            @Html.AntiForgeryToken()
+
+            <table id="tblDocumentosDiagnostico" class="table table-bordered dt-responsive table-sm center-block" style="width:100%">
+                <thead class="text-center text-white fondoColorSGI">
+                    <tr>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td class="text-center font-weight-bold h5">@item.DatFechaElaboracion.ToString("yyyy-MM-dd")</td>
+
+                            <td class="text-center">
+
+                                @if (item.BitFinalizado)
+                                {
+                                    <span class="badge badge-success">FINALIZADO</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-danger">PENDIENTE</span>
+                                }
+
+                            </td>
+
+                            <td class=" text-center">
+
+                                <a href="@Url.Action("DescargarPDFAsync","DocumentosDiagnostico", new {documentoID = item.StrDocumentoID})" target="_blank" class="btn btn-outline-danger btn-sm glyphicon glyphicon-edit" title="Exportar el documento diagnóstico a PDF" data-toggle="tooltip" data-placement="top"><i class="fa fa-cloud-download-alt mr-1 fa-fw"></i>Exportar a PDF</a>
+
+                                <button type="button" title="Diligenciar documento" data-toggle="tooltip" data-placement="left" class="btn btn-outline-primary btn-sm  glyphicon glyphicon-edit" data-registroid="@item.StrDocumentoID" data-tipoevento="diligenciar"><i class="fa fa-tasks fa-fw"></i></button>
+
+                                <button type="button" title="Eliminar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm  glyphicon glyphicon-trash" data-registroid="@item.StrDocumentoID" data-tipoevento="eliminar"><i class="fa fa-trash fa-fw"></i></button>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        documentosDiagnosticoCRUD.abrirVistaCrear();
+
+        var tblDocumentosDiagnostico = $('#tblDocumentosDiagnostico').DataTable({
+
+            "order": [[0, "desc"]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblDocumentosDiagnostico tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+
+            if (tipoEvento == 'diligenciar')
+                return documentosDiagnosticoCRUD.abrirVistaParaDiligenciarDocumento(registroID);
+
+            if (tipoEvento == 'eliminar')
+                return documentosDiagnosticoCRUD.delete(registroID);
+
+
+        });
+
+    });
+
+
+</script>
+
+

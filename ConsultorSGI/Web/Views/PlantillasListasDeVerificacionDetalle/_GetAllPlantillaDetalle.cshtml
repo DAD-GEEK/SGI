@@ -1,0 +1,161 @@
+﻿@model List<Models.DTO.PlantillasListasDeVerificacionDetalleDTO>
+
+@{
+    string clase_clasificacion = string.Empty;
+    string auditado = string.Empty;
+    bool esVistaListaDeVerificacion = ViewBag.esVistaListaDeVerificacion;
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    @Html.AntiForgeryToken()
+    <table id="tblPlantillaDetalle" class="table dt-responsive table-condensed table-sm center-block mt-2 text-sm" style="width:100%">
+        <thead class="text-center text-white fondoOscuroSGI" style="border-radius:10px">
+            <tr>
+                <th style="display:none">Id</th>
+                <th style="display:none">Orden</th>
+                <th class="text-center">Numerales</th>
+                <th class="text-left">Titulo</th>
+                <th class="text-center">Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody id="sortable">
+            @foreach (var item in Model)
+            {
+                <tr class="registro" data-orden="@item.IntOrden" data-plantillaid="@item.IntPlantillaDetalleID" data-plantilladescripcion="@item.StrTitulo">
+
+                    <td style="display:none"> @item.IntPlantillaDetalleID</td>
+                    <td style="display:none"> @item.IntOrden</td>
+
+                    <td class="text-left">
+                        @Html.Partial("_NumeralesPorNorma", item.NormasDTO.ToList())
+                    </td>
+
+                    <td class="text-left">@item.StrTitulo</td>
+
+                    @if (item.BitEstado == true)
+                    {
+                        <td class="text-center"><span class="badge badge-success">ACTIVO</span></td>
+                    }
+                    else
+                    {
+                        <td class="text-center"><span class="badge badge-danger">INACTIVO</span></td>
+                    }
+
+                    @if (esVistaListaDeVerificacion)
+                    {
+                        <td class=" text-center">
+                            <button type="button" title="Editar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-primary btn-sm  glyphicon glyphicon-edit" data-registroid="@item.IntPlantillaDetalleID" data-tipoevento="copiarplantilla"><i class="fas fa-cloud-download-alt fa-fw mr-1"></i>Agregar</button>
+
+                        </td>
+                    }
+                    else
+                    {
+                        <td class=" text-center">
+                            <button type="button" title="Editar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm  glyphicon glyphicon-edit" data-registroid="@item.IntPlantillaDetalleID" data-tipoevento="editar"><i class="fa fa-edit fa-fw"></i></button>
+                            <button type="button" title="Eliminar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm  glyphicon glyphicon-edit" data-registroid="@item.IntPlantillaDetalleID" data-tipoevento="eliminar"><i class="fa fa-trash-alt fa-fw"></i></button>
+                        </td>
+                    }
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#sortable").sortable({
+
+            opacity: 0.5,
+            delay: 150,
+            update: function (event, ui) {
+
+                var listaOrdenamiento = [];
+                $('#tblPlantillaDetalle > tbody > tr').each(function (i, elemento) {
+
+                    var nuevoOrden = i + 1;
+
+                    var item = {
+                        IntPlantillaDetalleID: $(elemento).data("plantillaid"),
+                        StrTitulo: $(elemento).data("plantilladescripcion"),
+                        IntOrden: nuevoOrden
+                    };
+
+                    listaOrdenamiento[i] = item;
+                });
+
+                plantillaListasDeVerificacionDetalleCRUD.cambiarOrdenamientoPlantillasAsync(listaOrdenamiento);
+                console.log(listaOrdenamiento);
+
+            },
+
+        });
+
+        var tblPlantillaDetalle = $('#tblPlantillaDetalle').DataTable({
+
+            "order": [[1, "asc"]],
+            "columnDefs": [
+                {
+                    "targets": [0,1],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblPlantillaDetalle tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+            var esVistaGlobal = '@ViewBag.esVistaGlobal' === 'False' ? false : true;
+
+            if (tipoEvento == 'editar')
+                return plantillaListasDeVerificacionDetalleCRUD.obtenerPlantillaListaDeVerificacionDetalleParaEditar(registroID, esVistaGlobal);
+
+            if (tipoEvento == 'eliminar')
+                return plantillaListasDeVerificacionDetalleCRUD.deletePlantillaListaDeVerificacionDetalleAsync(registroID);
+
+            if (tipoEvento == 'copiarplantilla')
+                return listasDeVerificacionCRUD.copiarPlantillaEnListaDeVerificacionDeProcesoActualAsync(registroID);
+        });
+    });
+
+
+</script>

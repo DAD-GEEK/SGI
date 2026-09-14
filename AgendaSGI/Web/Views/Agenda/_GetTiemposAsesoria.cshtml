@@ -1,0 +1,141 @@
+﻿@model List<Models.DTO.TiemposAsesoriasDTO>
+
+@{
+    string detalleInicio = string.Empty;
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center m-1" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    @Html.AntiForgeryToken()
+    <table id="tblTiemposAsesoria" class="table table-bordered dt-responsive text-sm" style="width:100%">
+        <thead class="text-center text-white fondoColorSGI">
+            <tr>
+                @if (ViewBag.usuarioID == 0 && ViewBag.clienteID == 0)
+                {
+                    <th>Cliente</th>
+                    <th>Asesor</th>
+                }
+                else if (ViewBag.clienteID == 0)
+                {
+                    <th>Cliente</th>
+                }
+                else
+                {
+                    <th>Asesor</th>
+                }
+                <th>Hora de visita</th>
+                <th>Hora de inicio</th>
+                <th>Diferencia</th>
+
+            </tr>
+        </thead>
+
+        <tbody id="detalleProcesos">
+            @foreach (var item in Model.OrderBy(x => x.FechaInicialDeVisita))
+            {
+                detalleInicio = (item.MarcoLlegada == true ? "" : "NO SE REGISTRÓ INICIO");
+
+                <tr>
+
+                    @if (ViewBag.usuarioID == 0 && ViewBag.clienteID == 0)
+                    {
+                        <td>@item.NombreCliente.ToUpper()</td>
+                        <td>@item.NombreUsuario.ToUpper()</td>
+                    }
+                    else if (ViewBag.clienteID == 0)
+                    {
+                        <td>@item.NombreCliente.ToUpper()</td>
+                    }
+                    else
+                    {
+                        <td>@item.NombreUsuario.ToUpper()</td>
+                    }
+
+
+                    <td class="text-center">@item.FechaInicialDeVisita.ToString("yyyy-MM-dd hh:mm tt")</td>
+
+                    @if (item.MarcoLlegada)
+                    {
+                        <td class="text-center">@item.FechaDeLlegada.ToString("yyyy-MM-dd hh:mm tt")</td>
+                    }
+                    else
+                    {
+                        <td class="text-center"><span class="badge badge-danger">@detalleInicio</span></td>
+                    }
+
+
+                    @if (item.MarcoLlegada)
+                    {
+                        if (item.Diferencia >= 0)
+                        {
+                            <td class="text-center"><span class="badge badge-success">@Convert.ToInt16(item.Diferencia) MINUTOS</span> </td>
+                        }
+                        else if (item.Diferencia < 0 && item.Diferencia >= -5)
+                        {
+                            <td class="text-center"><span class="badge badge-warning">@Convert.ToInt16(item.Diferencia) MINUTOS</span> </td>
+                        }
+                        else
+                        {
+                            <td class="text-center"><span class="badge badge-danger">@Convert.ToInt16(item.Diferencia) MINUTOS</span> </td>
+                        }
+                    }
+                    else
+                    {
+                        <td class="text-center"></td>
+                    }
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('#tblTiemposAsesoria').DataTable({
+
+            "order": [[2, "asc"]],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+    });
+
+
+</script>
+
+

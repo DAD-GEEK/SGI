@@ -1,0 +1,161 @@
+﻿@using Models.DTO;
+@model Models.Procesos
+
+<input type="hidden" id="procesoID" value="@Model.IntProcesoID" />
+<input type="hidden" id="procesoNombre" value="@Model.StrDescripcion" />
+<input class="d-none" type="checkbox" id="esVistaGlobal" />
+
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:1000px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        <div class="card-header p-2">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a class="nav-link active" href="#proceso" data-toggle="tab" id="labelProceso">Proceso</a></li>
+                <li class="nav-item"><a class="nav-link" href="#listasVerificacion" data-toggle="tab" id="labelListasVerificacion">Listas de verificación</a></li>
+
+            </ul>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarGlobalPR">
+                @Html.Partial("_Card_Titulo", ViewData["Titulo"] = $"Proceso: {Model.StrCodigo} - {Model.StrDescripcion}")
+
+                <div class="modal-body pt-1" style="max-height: 70vh !important; overflow-y: auto!important;">
+                    <div class="container-fluid">
+
+                        <div class="tab-content">
+
+                            <div class="active tab-pane" id="proceso">
+
+                                <div class="row">
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label font-weight-bold" for="procesoCodigo">Código<span class="text-danger">*</span></label>
+                                            <div class=" input-group with-focus">
+                                                <input class="form-control border-right-0" type="text" id="procesoCodigo" value="@Model.StrCodigo" placeholder="Ingrese aquí el código..." autocomplete="off" maxlength="5" data-parsley-type="alphanum" required />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                        <em class="fas fa-cogs"></em>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label font-weight-bold" for="terceroMacroProceso">MacroProceso<span class="text-danger">*</span></label>
+                                            <div class=" input-group with-focus">
+                                                @Html.DropDownList("listaMacroProcesos", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "terceroMacroProceso", placeholder = "-- Seleccione una opción", data_parsley_required = "required" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 col-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label font-weight-bold" for="procesoDescripcion">Descripción<span class="text-danger">*</span></label>
+                                            <div class=" input-group with-focus">
+                                                <input class="form-control border-right-0" type="text" id="procesoDescripcion" value="@Model.StrDescripcion" placeholder="Ingrese aquí la descripción..." autocomplete="off" maxlength="200" required />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                        <em class="fas fa-tags"></em>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group  ">
+                                            <div class="form-group clearfix">
+                                                <div class="icheck-primary d-inline">
+                                                    <input type="checkbox" id="procesoActivo" checked="@Model.BitActivo">
+                                                    <label for="procesoActivo">
+                                                        ¿Activo?
+                                                    </label>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                            <div id="listasVerificacion" class="tab-pane">
+
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-outline-dark btn-block" name="True" data-toggle="modal" id="btnAgregarItem"><i class="fas fa-list-alt"></i>&nbsp;&nbsp;Agregar item&nbsp;&nbsp;</button>
+
+                                        
+                                    </div>
+
+                                    <div class="col-md-12 mt-3">
+
+                                        <div id="divPlantillaDetalle">
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Modal_Footer", ViewData["claseGuardarPersonalizada"] = $"btnGuardarProceso")
+
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var procesoID = $("#procesoID").val();
+        var procesoNombre = $("#procesoNombre").val();
+        var btnAgregarItem = $("#btnAgregarItem");
+        var pestanaListaVerificacion = $("#labelListasVerificacion");
+        var pestanaProceso = $("#labelProceso");
+        var esVistaGlobal = false;
+
+
+        procesosCRUD.guardarProcesoAsync(esVistaGlobal);
+        plantillaListasDeVerificacionDetalleCRUD.getAllPlantillasListasDeVerificacionDetalleAsync(procesoID, esVistaGlobal);
+
+        btnAgregarItem.click(function () {
+            plantillaListasDeVerificacionDetalleCRUD.crearPlantillaListaDeVerificacionDetalle(procesoID, procesoNombre, esVistaGlobal);
+        });
+
+
+    });
+
+
+</script>
+
+

@@ -1,0 +1,186 @@
+﻿@model List<Models.DTO.AuditoriasDetalleDTO>
+
+@{
+    string Estado = string.Empty;
+    string claseEstadoProceso = string.Empty;
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+
+    @Html.AntiForgeryToken()
+    <table id="tblDetalleAuditoria" class="table dt-responsive table-condensed table-sm center-block mt-2 text-sm" style="width:100%">
+        <thead class="text-center text-white fondoColorSGI" style="border-radius:10px">
+            <tr>
+                <th style="display:none">Id</th>
+                <th class="text-left">Numerales</th>
+                <th class="text-left">Proceso</th>
+                <th>Fecha</th>
+                <th>Hora inicial</th>
+                <th>Hora final</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.OrderBy(x => x.DatFechaInicial))
+            {
+                string colorFondo = string.Empty;
+
+                if (item.EsApertura_Cierre)
+                {
+                    colorFondo = $"{Across.ParametrosGenerales.Color_ResaldadoSuave}";
+                }
+
+                <tr style="background-color:@colorFondo">
+                    <td style="display:none">@item.IntAuditoriaID</td>
+
+                    @if (item.EsApertura_Cierre == false)
+                    {
+                        <td class="text-left">
+
+                            @Html.Partial("_NumeralesPorNorma", item.NormasDTO.ToList())
+
+                        </td>
+
+                        <td class="text-left font-weight-bold">
+                            <a href="#" style="color:black" title="Editar programación" data-toggle="tooltip" data-placement="left" onclick="auditoriaDetalleCRUD.getPlanAuditoriaDetalleByEditarAsync('@item.IntAuditoriaDetalleID');">@item.StrProcesoDescripcion</a>
+
+
+                            &nbsp;&nbsp;<a href="#" title="Editar programación" data-toggle="tooltip" data-placement="left" onclick="auditoriaDetalleCRUD.getPlanAuditoriaDetalleByEditarAsync('@item.IntAuditoriaDetalleID');"><i class="fas fa-edit text-primary fa-fw"></i></a>
+
+                            &nbsp;&nbsp;<a href="#" title="Eliminar programación" data-toggle="tooltip" data-placement="left" onclick="auditoriaDetalleCRUD.deleteAuditoriaDetalleAsync('@item.IntAuditoriaDetalleID');"><i class="fas fa-trash-alt text-danger"></i></a>
+
+
+
+                            @if (item.StrEstadoAuditoriaProceso == Across.Enumeraciones.enumEstadosAuditoriaProcesos.Pendiente.ToString())
+                            {
+                                claseEstadoProceso = "badge-danger";
+                            }
+                            else if (item.StrEstadoAuditoriaProceso == Across.Enumeraciones.enumEstadosAuditoriaProcesos.En_Proceso.ToString())
+                            {
+                                claseEstadoProceso = "badge-warning";
+                            }
+                            else
+                            {
+                                claseEstadoProceso = "badge-success";
+                            }
+
+                            &nbsp;&nbsp;<span class="badge @claseEstadoProceso">@item.StrEstadoAuditoriaProceso.Replace('_', ' ')</span>
+                        </td>
+
+                    }
+                    else
+                    {
+                        <td class="text-center font-weight-bold"></td>
+                        <td class="text-left font-weight-bold">
+
+                            <a href="#" title="Editar programación" class="h5" data-toggle="tooltip" data-placement="left" onclick="auditoriaDetalleACCRUD.getDetalleACByEditarAsync('@item.IntAuditoriaDetalleID');">
+                                <span class="badge badge-primary badge-pill">
+                                    <i class="fas fa-clipboard-check mr-1"></i> @item.StrDetalle
+                                </span>
+                            </a>
+
+                            &nbsp;&nbsp;<a href="#" title="Eliminar programación" data-toggle="tooltip" data-placement="left" onclick="auditoriaDetalleACCRUD.deleteDetalleAperturaCierreAsync('@item.IntAuditoriaDetalleID');"><i class="fas fa-trash-alt text-danger fa-fw"></i></a>
+                        </td>
+
+                    }
+
+                    <td class="text-center">@item.DatFechaInicial.ToString("yyyy-MM-dd")</td>
+                    <td class="text-center">@Across.Common.ObtenerHoraDeFecha(item.DatFechaInicial)</td>
+                    <td class="text-center">@Across.Common.ObtenerHoraDeFecha(item.DatFechaFinal)</td>
+
+                    <td class=" text-center">
+
+                        @if (!item.EsApertura_Cierre)
+                        {
+                            <button type="button" title="Auditar el proceso @item.StrProcesoDescripcion.ToLower() - Ver listas de verificación" data-toggle="tooltip" data-placement="left" class="btn btn-outline-primary btn-sm btn-block glyphicon glyphicon-edit" onclick="listasDeVerificacionCRUD.obtenerListaDeVerificacionEncabezadoAsync(@item.IntAuditoriaDetalleID);"><i class="fa fa-award fa-fw"></i>Auditar</button>
+                        }
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        auditoriaDetalleACCRUD.crearDetalleAperturaCierre();
+
+        var tblDetalleAuditoria = $('#tblDetalleAuditoria').DataTable({
+            "ordering": false,
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[20, 50, 100], [20, 50, 100]]
+        });
+
+
+        $('#tblDetalleAuditoria tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+            var esApertura_Cierre = $(this).data("esapertura_cierre");
+
+            //if (tipoEvento == 'editar' && esApertura_Cierre === 'False')
+            //    return
+
+            //if (tipoEvento == 'editar' && esApertura_Cierre === 'True')
+            //    return
+
+            //if (tipoEvento == 'eliminar' && esApertura_Cierre === 'False')
+            //    return
+
+            //if (tipoEvento == 'eliminar' && esApertura_Cierre === 'True')
+            //    return
+
+        });
+
+    });
+
+
+</script>
+
+
+

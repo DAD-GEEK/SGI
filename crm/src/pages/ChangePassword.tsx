@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldCheck, Lock, ArrowRight, CheckCircle2, AlertCircle, Eye, EyeOff, Check, X } from 'lucide-react';
+import { ShieldCheck, Lock, ArrowRight, CheckCircle2, AlertCircle, Eye, EyeOff, Check, X, LogOut } from 'lucide-react';
 import { supabase } from '../config/supabaseClient';
 import { API_BASE_URL } from '../config/apiConfig';
+import { performCompleteLogout } from '../utils/authUtils';
 
 export const ChangePassword: React.FC = () => {
   const navigate = useNavigate();
@@ -13,6 +14,32 @@ export const ChangePassword: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const isSuccessRef = useRef(false);
+
+  // Escudo contra el botón Atrás del navegador (popstate)
+  // Si el usuario presiona "Atrás" sin haber cambiado la clave, se purga la sesión y se le devuelve al Login
+  useEffect(() => {
+    // Insertar un estado dummy en el historial para detectar inmediatamente el retroceso
+    window.history.pushState({ isTrappedOnPasswordChange: true }, '');
+
+    const handlePopState = () => {
+      if (!isSuccessRef.current) {
+        void performCompleteLogout().then(() => {
+          navigate('/login', { replace: true });
+        });
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+
+  const handleCancelSession = async () => {
+    await performCompleteLogout();
+    navigate('/login', { replace: true });
+  };
 
   // Evaluador de Fortaleza de Contraseña OWASP
   const hasMinLength = newPassword.length >= 8;
@@ -70,18 +97,37 @@ export const ChangePassword: React.FC = () => {
         console.warn('Supabase Auth session update fallback:', authErr);
       }
 
-      // 2. Notificar obligatoriamente al backend Spring Boot PostgreSQL que la clave fue confirmada
+      // 2. Notificar obligatoriamente al backend Spring Boot PostgreSQL que la clave fue confirmada y sincronizarla en MSSQL
       if (activeEmail) {
         await fetch(`${API_BASE_URL}/usuarios/confirmar-clave`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: activeEmail })
+          body: JSON.stringify({
+            email: activeEmail,
+            password: newPassword
+          })
         });
       }
 
-      // 3. Actualizar estado local y redirigir
+      // 3. Actualizar estado local y registrar notificación
+      isSuccessRef.current = true;
       storedUser.mustChangePassword = false;
       localStorage.setItem('sgi_user', JSON.stringify(storedUser));
+
+      try {
+        const storedNotifs = JSON.parse(localStorage.getItem('sgi_notifications') || '[]');
+        const syncNotif = {
+          id: `pwd-sync-${Date.now()}`,
+          title: 'Contraseñas actualizadas en aplicativos',
+          description: 'Tus credenciales de acceso para Agenda SGI y Consultor SGI han sido sincronizadas con tu nueva clave corporativa.',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          date: 'Hoy',
+          read: false,
+          type: 'sync'
+        };
+        const remainingNotifs = storedNotifs.filter((n: any) => !n.id.startsWith('pwd-sync-'));
+        localStorage.setItem('sgi_notifications', JSON.stringify([syncNotif, ...remainingNotifs]));
+      } catch {}
 
       setSuccess(true);
       setTimeout(() => {
@@ -238,6 +284,18 @@ export const ChangePassword: React.FC = () => {
               </>
             )}
           </button>
+
+          <div className="pt-2 text-center">
+            <button
+              type="button"
+              onClick={handleCancelSession}
+              disabled={loading || success}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#545f73] hover:text-red-600 transition-colors cursor-pointer py-1"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Cancelar y volver al inicio de sesión</span>
+            </button>
+          </div>
         </form>
       </div>
     </div>

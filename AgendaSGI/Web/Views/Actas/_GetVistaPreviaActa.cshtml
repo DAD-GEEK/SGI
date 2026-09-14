@@ -1,0 +1,492 @@
+﻿@model Models.Actas
+@using System.Globalization;
+@using System.Text.RegularExpressions;
+
+
+
+@{
+    Layout = null;
+
+    var clase = string.Empty;
+    var fechaProximaVisita = string.Empty;
+    var fechaVisita = string.Empty;
+
+    fechaVisita = Model.Agenda.DatFechaInicial.Value.ToString("dddd d MMMM", CultureInfo.CreateSpecificCulture("es-Mx"));
+
+
+    if (ViewBag.NextVisita.GetType() == Type.GetType("System.String"))
+    {
+        fechaProximaVisita = ViewBag.NextVisita;
+        clase = "text-danger font-italic";
+    }
+    else
+    {
+        clase = "text-muted";
+        fechaProximaVisita = ViewBag.NextVisita.ToString("dddd d MMMM h:mm tt", CultureInfo.CreateSpecificCulture("es-Mx"));
+    }
+}
+
+
+
+<style type="text/css">
+
+    #imagen {
+        /* the image you want to 'watermark' */
+        height: 300px; /* or whatever, equal to the image you want 'watermarked' */
+        width: 100%; /* as above */
+        background-repeat: no-repeat;
+        position: absolute;
+        opacity: 0.1;
+        top: 450px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+<div class="modal-dialog" style=" max-width:1000px!important">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><em class="fas fa-clipboard-check text-gray "></em></span>&nbsp; Vista previa acta de visita</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick="agendaCRUD.limpiarInputsCalendario();">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body overflow-auto" style=" max-height:73vh!important;">
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+            else
+            {
+                <div class="container-fluid">
+                    <div class="card">
+                        <!--Encabezado-->
+                        <div class="row">
+                            <div class="col-lg-8">
+
+                                <div class="d-inline" style="height:200px;">
+                                    <div class="row">
+
+                                        <div class="col-lg-6">
+                                            <div class="text-center pt-3">
+                                                <img src="~/Content/images/logo.png" style="height:130px;" class="img-circle" alt="Logo SGI" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 ">
+                                            <div class="text-left">
+                                                <div class="text-muted pt-3">
+                                                    <h4 class="font-weight-bold">GESTIÓN INTEGRAL SGI S.A.S</h4>
+                                                    <h6>Nit. 811.028.188-4</h6>
+                                                    <h6>asesorias@getionintegralsgi.com.co</h6>
+                                                    <h6>Tel: @Model.Agenda.Usuarios.StrCelular</h6>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="text-center d-block">
+                                    <div class="pt-5">
+                                        <h4 class="text-muted font-weight-bold">Acta de visita N°</h4>
+
+
+                                        <h2 class="font-weight-bold text-primary ">@Model.IntConsecutivo</h2>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="bg-primary" />
+
+                        <!--Asunto-->
+                        <div class="row">
+                            <div class="col-lg-12" style="padding-left:26px;">
+                                <div class="row invoice-info">
+                                    <div class="col-sm-6 invoice-col text-muted">
+                                        <address>
+                                            <strong class="h5 font-weight-bold">@Model.Agenda.Clientes.StrNombre</strong><br>
+                                            @Model.Agenda.Clientes.StrDireccion<br>
+                                            @Model.Agenda.Clientes.Ciudades.StrDescripcion<br>
+                                            @Model.Agenda.Clientes.StrTelefono<br>
+                                            @Model.Agenda.Clientes.StrEmail
+                                        </address>
+                                    </div>
+                                    <!-- /.col -->
+
+                                    <div class="col-sm-2 invoice-col text-muted text-left ">
+                                    </div>
+
+                                    <div class="col-sm-4 invoice-col text-muted text-left ">
+                                        <address>
+
+                                            <p class="pb-0 mb-0"><strong>Tipo visita:&nbsp;  </strong>@Model.Agenda.TipoEventos.StrDescripcion</p>
+                                            <p class="pb-0 mb-0"><strong>Fecha visita:&nbsp;  </strong>@fechaVisita</p>
+                                            <p class="pb-0 mb-0"><strong>Hora inicial:&nbsp;  </strong>@Model.Agenda.DatFechaInicial.Value.ToString("h:mm tt")</p>
+                                            <p class="pb-0 mb-0"><strong>Hora final:&nbsp;  </strong>@Model.Agenda.DatFechaFinal.Value.ToString("h:mm tt")</p>
+                                            <p class="pb-0 mb-0 "><strong>Próxima visita:&nbsp; </strong><span class="@clase">@fechaProximaVisita</span></p>
+
+                                        </address>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!--Marca de agua-->
+                        <div id="imagen">
+                            <img src="~/Content/images/logo.png" style="width:100%" alt="Alternate Text" />
+                        </div>
+
+                        <!--Asistentes-->
+
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <div class="card-header">
+                                    <h5 class="font-weight-bold">ASISTENTES</h5>
+                                </div>
+
+                                <div class="card-body text-muted">
+                                    <div class="row">
+                                        <div class="col-12">
+
+
+                                            @foreach (var item in Model.AsistentesActa)
+                                            {
+                                                <div class=" clearfix">
+                                                    <div class="post">
+                                                        <div class="row">
+                                                            <div class="col-lg-4">
+                                                                <p class="description"><i class="fa fa-circle mr-2 text-primary" style="font-size:7px;"></i>@item.StrNombre</p>
+                                                            </div>
+
+                                                            <div class="col-lg-2">
+                                                                <p class="description">
+
+                                                                    @try
+                                                                    {
+                                                                        @Regex.Unescape(@item.StrProceso)
+                                                                    }
+                                                                    catch (Exception)
+                                                                    {
+                                                                        @item.StrProceso
+                                                                    }
+
+                                                                </p>
+
+                                                            </div>
+
+                                                            <div class="col-lg-2">
+
+                                                                @if (item.OpcAsiste == true)
+                                                                {
+                                                                    <p class="badge badge-primary">ASISTE</p>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <p class="badge badge-danger">NO ASISTE</p>
+                                                                }
+
+                                                            </div>
+
+                                                            <div class="col-lg-6"></div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <!--Compromisos anteriore-->
+
+                        <div class="card-header">
+                            <h5 class="font-weight-bold">COMPROMISOS</h5>
+                        </div>
+
+                        <div class="card-body text-muted">
+                            <table style="width:100%!important;" id="tblCompromisosSeleccionados">
+
+                                <tbody>
+
+                                    @foreach (var item in ViewBag.Compromisos)
+                                    {
+                                        var desarrollo = item.StrDescripcion.Split('\n');
+
+                                        <tr style="border-bottom:groove;">
+
+                                            <td style="width:5%!important">
+                                                <div class="form-group clearfix">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="checkbox" class="iSeleccionarCompromiso" id="compromiso_@item.IntActividadID" data-id="@item.IntActividadID" checked>
+                                                        <label for="compromiso_@item.IntActividadID"></label>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td>
+
+                                                <span class="description">Responsable: </span>
+                                                <span class="username h5">
+                                                    <a href="#">@item.StrResponsable</a>
+                                                </span>
+
+                                                @foreach (var des in desarrollo)
+                                                {
+                                                    <p class="pb-0 mb-0 description iActividadDescripcion">
+                                                        @des
+                                                    </p>
+
+                                                }
+
+                                            </td>
+
+                                            <td>
+
+                                                <p class="description">@item.DatFecha.ToString("MMMM dd, yyyy")</p>
+                                            </td>
+
+                                            <td>
+
+                                                @if (item.OpcEjecuta == true)
+                                                {
+                                                    <p class="badge badge-primary">REALIZADO</p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="badge badge-danger">PENDIENTE</p>
+                                                }
+                                            </td>
+                                        </tr>
+
+                                    }
+
+
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+                        <!--Cuerpo-->
+
+                        <div class="card-header">
+                            <h5 class="font-weight-bold">ORDEN DEL DÍA</h5>
+                        </div>
+
+                        <div class="card-body text-muted">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-12">
+
+                                            @foreach (var item in Model.TemasActa)
+                                            {
+                                                var desarrollo = item.StrDesarrollo.Split('\n');
+                                                <div class="post clearfix listaTemas">
+                                                    <h4>@item.StrDescripcion</h4>
+                                                    <div class="post">
+                                                        <div class="">
+                                                            <span class="description">Responsable: </span>
+                                                            <span class="username h5">
+                                                                <a href="#">@item.StrResponsable</a>
+                                                            </span>
+
+                                                        </div>
+                                                        @foreach (var des in desarrollo)
+                                                        {
+                                                            <p class="pb-0 mb-0 iTemasDesarrollo"> @des</p>
+                                                        }
+
+
+
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!--Actividades-->
+                        <div class="card-header">
+                            <h5 class="font-weight-bold">ACTIVIDADES</h5>
+                        </div>
+
+                        <div class="card-body text-muted">
+
+                            <table style="width:100%!important;" id="tblActividadesSeleccionadas">
+
+                                <tbody>
+
+                                    @foreach (var item in Model.ActividadesActa)
+                                    {
+                                        var desarrollo = item.StrDescripcion.Split('\n');
+
+                                        <tr style="border-bottom:groove;">
+
+                                            <td style="width:5%!important">
+                                                <div class="form-group clearfix">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="checkbox" class="iSeleccionarActividad" id="actividad_@item.IntActividadID" data-id="@item.IntActividadID" checked>
+                                                        <label for="actividad_@item.IntActividadID"></label>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td>
+
+                                                <span class="description">Responsable: </span>
+                                                <span class="username h5">
+                                                    <a href="#">@item.StrResponsable</a>
+                                                </span>
+
+                                                @foreach (var des in desarrollo)
+                                                {
+                                                    <p class="pb-0 mb-0 description iActividadDescripcion">
+                                                        @des
+                                                    </p>
+
+                                                }
+
+                                            </td>
+
+                                            <td>
+
+                                                <p class="description">@item.DatFecha.Value.ToString("MMMM dd, yyyy")</p>
+                                            </td>
+
+                                            <td>
+
+                                                @if (item.OpcEjecuta == true)
+                                                {
+                                                    <p class="badge badge-primary">REALIZADO</p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="badge badge-danger">PENDIENTE</p>
+                                                }
+                                            </td>
+                                        </tr>
+
+                                    }
+
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <!--Firma-->
+                        <div class="row">
+                            <div class="col-lg-12 pt-5 ">
+
+                                <div class="card-body text-muted">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <em class="text-primary h4">@Model.Agenda.Usuarios.StrNombre</em>
+                                            <br />
+                                            asesorias@gestionintegralsgi.com.co
+                                            <br />
+                                            (+57) @Model.Agenda.Usuarios.StrCelular
+                                            <h5>¡Su asesor, su aliado!</h5>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        <div class="modal-footer bg-light">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 mr">
+
+
+
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-4">
+                                <button type="button" data-dismiss="modal" class="btn btn-block btn-dark">Cancelar</button>
+
+                            </div>
+
+                            <div class="col-xs-12 col-md-4">
+                                <a class="btn btn-primary btn-block " id="btnDescargarPDF" target="_blank" href="#"><i class="fas fa-file-pdf mr-2"></i>Ver PDF</a>
+
+                            </div>
+
+                            <div class="col-xs-12 col-md-4">
+                                <button type="button" class="btn btn-primary btn-block " id="btnEnviarMail"><i class="fas fa-mail-bulk mr-2"></i>Enviar</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var btnEnviar = $("#btnEnviarMail");
+        var btnDescargarPDF = $("#btnDescargarPDF");
+
+        btnEnviar.click(function () {
+
+            actaCRUD.EnviarActaByEmailAsync(@Model.IntAgendaID);
+            agendaCRUD.limpiarInputsCalendario();
+
+        });
+
+        btnDescargarPDF.click(function () {
+            actaCRUD.descargarActaPDF('@Model.IntActaID');
+        });
+
+    })
+
+</script>
+
+
+
+

@@ -1,0 +1,71 @@
+﻿@model Models.DocumentosDiagnosticoPasos_Criterios
+
+@{
+    Layout = null;
+}
+
+<input type="hidden" id="criterioID" value="@Model.StrCriterioID" />
+
+<div class="modal-dialog " style=" max-width:800px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarCriterio">
+
+                @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Editar criterio" }, { "icono", "fas fa-cogs" } })
+
+                <div class="modal-body pt-1" style="overflow-y:auto!important; max-height: 70vh !important;">
+                    <div class="container-fluid">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="criterioDescripcion">Criterio<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <textarea class="form-control text-sm" id="criterioDescripcion" rows="5" placeholder="Escriba aquí las criterios..." data-parsley-required>@Model.StrDescripcion</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div id="divEvidenciasPorPaso"></div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Modal_Footer", ViewData["claseGuardarPersonalizada"] = $"btnGuardarCriterio")
+
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        documentosDiagnosticoPasos_CriteriosCRUD.guardar();
+        documentosDiagnosticoPasos_DocumentoEvidenciaCRUD.getAllEvidenciasPorPaso();
+    });
+
+
+</script>
+
+
+
+

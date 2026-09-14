@@ -1,0 +1,225 @@
+﻿@using CoreBusiness;
+@model List<Models.Auditorias>
+
+@{
+    string Estado = string.Empty;
+}
+
+<div class=" container-fluid">
+
+    <div class=" col-md-12">
+        <div class="card">
+
+            <div class="card-header fondoOscuroSGI">
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-outline-light btn-block" data-toggle="modal" id="btnCrearDePlanDeAuditoria"><i class="fas fa-plus"></i>&nbsp;&nbsp;Crear plan de auditoría &nbsp;&nbsp;</button>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="card-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger block-center" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
+                else
+                {
+                    @Html.AntiForgeryToken()
+                    <table id="tblAuditorias" class="table table-bordered dt-responsive table-sm center-block text-sm" style="width:100%">
+                        <thead class="text-center text-white fondoColorSGI">
+                            <tr>
+                                <th class="text-center">Identificación</th>
+                                <th>Nombre</th>
+                                <th>Consecutivo</th>
+                                <th class="text-center">Fecha inicial</th>
+                                <th class="text-center">Fecha final</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var btnCrearDePlanDeAuditoria = $("#btnCrearDePlanDeAuditoria");
+
+        btnCrearDePlanDeAuditoria.click(function () {
+            auditoriasCRUD.crearPlanAuditoria();
+        });
+
+        var tblAuditorias = $('#tblAuditorias').DataTable({
+
+            "order": [[3, "desc"]],
+            "serverSide": true,
+            "processing": true,
+            "filter": true,
+            "responsivePriority": 1,
+            "ajax": {
+                "global": false,
+                "url": rootHost + "Auditorias/GetPaginacionAuditorias",
+                "type": "POST",
+                "dataType": "JSON",
+                "data": function (d) {
+                    return $.extend({}, d, {
+
+                    });
+                },
+            },
+
+            "columns": [
+                { "data": "StrClienteIdentificacion", "name": "StrClienteNombre", "autoWidth": true, "searchable": true, "className": "text-center" },
+                {
+                    "data": "StrClienteNombre", "name": "StrClienteNombre", "autoWidth": true, "searchable": true, "className": "iClienteNombre",
+                    render: function (data, type, obj) {
+
+                        var elementoImagen = `<img class="img-responsive img-circle img-thumbnail" style="width:40px; height:40px;" src="${obj.StrClienteLogo}" alt="Logo" />&nbsp; ${data}`
+
+                        return elementoImagen;
+
+                    },
+                },
+                {
+                    "data": "IntConsecutivo", "name": "IntConsecutivo", "autoWidth": true, "searchable": true, "className": "text-center",
+                    render: function (data) {
+                        return `<h5 class="text-danger h5 font-weight-bold">${data}</h5>`
+                    },
+                },
+                {
+                    "data": "DatFechaInicial", "name": "DatFechaInicial", "autoWidth": true, "searchable": true, "className": "text-center",
+                    render: function (data, type) {
+                        var fecha = "";
+
+                        if (data.length != 0)
+                            fecha = moment(data).utc().format("YYYY-MM-DD");
+
+                        return fecha;
+                    },
+                },
+                {
+                    "data": "DatFechaFinal", "name": "DatFechaFinal", "autoWidth": true, "searchable": true, "className": "text-center",
+                    render: function (data, type) {
+                        var fecha = "";
+
+                        if (data.length != 0)
+                            fecha = moment(data).utc().format("YYYY-MM-DD");
+
+                        return fecha;
+                    },
+                },
+                {
+                    "data": "BitEstado", "name": "BitEstado", "autoWidth": true, "searchable": true, "className": "text-center",
+                    render: function (esFinalizado) {
+                        var estado = "";
+
+                        if (esFinalizado)
+                            estado = "<span class='badge badge-success text-uppercase'>REALIZADA</span>";
+                        else
+                            estado = "<span class='badge badge-danger text-uppercase'>PENDIENTE</span>";
+
+                        return estado;
+                    },
+                },
+                {
+                    data: 'IntAuditoriaID',
+                    className: "text-center",
+                    render: function (row, type, data) {
+
+                        var acciones = ` <div class="btn-group">
+                                            <button type="button" class="btn btn-outline-dark"><i class="fas fa-info-circle mr-2 text-primary fa-1x"></i>Opciones</button>
+                                            <button type="button" class="btn btn-outline-dark dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <div class="dropdown-menu" role="menu">
+
+                                                <a class="dropdown-item" href="#" title="Editar plan de auditoría" data-registroid="${row}" data-tipoevento="editar" data-toggle="tooltip" data-placement="left"><i class="fas fa-edit mr-1 text-primary"></i> Plan de auditoría</a>
+
+                                                <a class="dropdown-item" href="#" title="Generar informe" data-registroid="${row}" data-tipoevento="informes" data-toggle="tooltip" data-placement="left"><i class="fa fa-chart-bar mr-2 text-primary"></i>Informe auditoría</a>
+
+                                                <div class="dropdown-divider"></div>
+
+                                                <a class="dropdown-item" href="#" title="Eliminar plan de auditoría" data-registroid="${row}" data-tipoevento="eliminar" data-toggle="tooltip" data-placement="left"><i class="fa fa-trash mr-2 text-danger"></i>Eliminar auditoría</a>
+
+                                                </div>
+                                            </div>`;
+
+                        return acciones;
+                    },
+
+                }
+
+            ],
+
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+            "scrollX": false,
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblAuditorias tbody').on('click', 'a', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+
+            if (tipoEvento == 'editar')
+                return auditoriasCRUD.getAuditoriaByEditarAsync(registroID);
+
+            if (tipoEvento == 'eliminar')
+                return auditoriasCRUD.deleteAuditoriaAsync(registroID);
+
+            if (tipoEvento == 'listaVerificacion')
+                return listasDeVerificacionCRUD.obtenerAuditoriaDetalleAsync(registroID);
+
+            if (tipoEvento == 'informes')
+                return auditoriasCRUD.obtenerInformesDeAuditoria(registroID);
+
+        });
+
+        $("#moduloNombre").html('Control auditorías');
+        $("#moduloDetalle").html('Módulo para realizar la programación de las auditorías.');
+
+    });
+
+
+</script>
+
+

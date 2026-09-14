@@ -1,0 +1,454 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{50AEEF56-04C6-44A6-A5A8-6638CF485704}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Models</RootNamespace>
+    <AssemblyName>Models</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.3\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.3\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Areas.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetRoles.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetTerceroRoles.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUserClaims.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUserLogins.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AspNetUsers.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Auditorias.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AuditoriasDetalle.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AuditoriasDetalleAC.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Auditorias_Normas.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Auditorias_Procesos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Ausentismo.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AusentismoIndicadores.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AusentismoIndicadores_InformacionPorEmpresa.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AusentismoProrrogas.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AusentismoTiempos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AusentismoVariables.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Cargos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CentrosDeTrabajo.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Ciudades.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ConfiguracionPorTercero.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DBModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DBModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Departamentos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Diagnosticos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentosDiagnostico.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentosDiagnosticoDetalle.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentosDiagnosticoDetalle_PlanesDeAccion.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentosDiagnosticoPasos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentosDiagnosticoPasos_Criterios.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentosDiagnosticoPasos_DocumentoEvidencia.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentosDiagnosticoPasos_Niveles.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DTO\AspNetUsersDTO.cs" />
+    <Compile Include="DTO\AuditoriaNoConformidadesDTO.cs" />
+    <Compile Include="DTO\AuditoriasDetalleDTO.cs" />
+    <Compile Include="DTO\AuditoriasDTO.cs" />
+    <Compile Include="DTO\AusentismoAgrupadoPorProcesoDTO.cs" />
+    <Compile Include="DTO\AusentismoAgrupadoPorAreaDTO.cs" />
+    <Compile Include="DTO\AusentismoAgrupadoPorEmpleadoDTO.cs" />
+    <Compile Include="DTO\AusentismoAgrupadoMensualmentePorAnioDTO.cs" />
+    <Compile Include="DTO\AusentismoCostosDTO.cs" />
+    <Compile Include="DTO\AusentismoDTO.cs" />
+    <Compile Include="DTO\AusentismoIndicadores_InformacionPorEmpresaDTO.cs" />
+    <Compile Include="DTO\AusentismoIndicadoresDTO.cs" />
+    <Compile Include="DTO\CargarListaDeVerificacionDTO.cs" />
+    <Compile Include="DTO\DatasetsChartDTO.cs" />
+    <Compile Include="DTO\DatatableParamsDTO.cs" />
+    <Compile Include="DTO\DocumentosDiagnosticoDetalle_PlanesDeAccionDTO.cs" />
+    <Compile Include="DTO\DocumentosDiagnosticoDTO.cs" />
+    <Compile Include="DTO\DocumentosDiagnosticoPasosDTO.cs" />
+    <Compile Include="DTO\DocumentosDiagnosticoPasos_CriteriosDTO.cs" />
+    <Compile Include="DTO\DocumentosDiagnosticoPasos_DocumentoEvidenciaDTO.cs" />
+    <Compile Include="DTO\EmpleadosDTO.cs" />
+    <Compile Include="DTO\ExcelErrorDTO.cs" />
+    <Compile Include="DTO\ExportarPDFOptionsDTO.cs" />
+    <Compile Include="DTO\FasesDTO.cs" />
+    <Compile Include="DTO\GraficosChartDTO.cs" />
+    <Compile Include="DTO\IndicadorDeFrecuenciaPorCausaMedica_EG_AC_DTO.cs" />
+    <Compile Include="DTO\IndicadorAusentismoGlobalDTO.cs" />
+    <Compile Include="DTO\IndicadorAusentismoGeneralDTO.cs" />
+    <Compile Include="DTO\InformacionEnVistaDTO.cs" />
+    <Compile Include="DTO\InformeAuditoriaDTO.cs" />
+    <Compile Include="DTO\IPStack.cs" />
+    <Compile Include="DTO\ListasDeVerificacionDTO.cs" />
+    <Compile Include="DTO\ListasDeVerificacion_NumeralesDTO.cs" />
+    <Compile Include="DTO\MenuDinamicoDTO.cs" />
+    <Compile Include="DTO\DatosUsuarioEnSesionDTO.cs" />
+    <Compile Include="DTO\MesesDelAnioDTO.cs" />
+    <Compile Include="DTO\ModulosDTO.cs" />
+    <Compile Include="DTO\NormasDTO.cs" />
+    <Compile Include="DTO\NumeralesDTO.cs" />
+    <Compile Include="DTO\NumeralesGenericosDTO.cs" />
+    <Compile Include="DTO\ParamFilesDTO.cs" />
+    <Compile Include="DTO\PlantillasListasDeVerificacionDetalleDTO.cs" />
+    <Compile Include="DTO\PlantillasListasDeVerificacion_NumeralesDTO.cs" />
+    <Compile Include="DTO\ProcesosDTO.cs" />
+    <Compile Include="DTO\Procesos_NumeralesDTO.cs" />
+    <Compile Include="DTO\ElementosComunes_DetalleDTO.cs" />
+    <Compile Include="DTO\ElementosComunesDTO.cs" />
+    <Compile Include="DTO\SistemasDeGestionDTO.cs" />
+    <Compile Include="DTO\SubMenuDinamicoDTO.cs" />
+    <Compile Include="DTO\TercerosClientesDTO.cs" />
+    <Compile Include="DTO\TercerosDTO.cs" />
+    <Compile Include="DTO\TercerosUsuariosDTO.cs" />
+    <Compile Include="DTO\TipoEventosAusentismoDTO.cs" />
+    <Compile Include="DTO\TreeModulosDTO.cs" />
+    <Compile Include="DTO\UsuariosConectadosDTO.cs" />
+    <Compile Include="ElementosComunes.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ElementosComunes_Detalle.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ElementosComunes_Detalle_Numerales.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ElementosComunes_Normas.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Empleados.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Escolaridades.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EstadosCiviles.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Estratos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fases.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Fondos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="gestioni_consultorNetEntities.cs" />
+    <Compile Include="IdentityModels.cs" />
+    <Compile Include="Interfaces\IEntidadCompartida.cs" />
+    <Compile Include="Interfaces\IEntidadComun.cs" />
+    <Compile Include="Interfaces\IEntidadPorTercero.cs" />
+    <Compile Include="Interfaces\IServicioTercero.cs" />
+    <Compile Include="ListasDeVerificacion.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ListasDeVerificacion_Requisitos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LogsException.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110202121480_Identity.cs" />
+    <Compile Include="Migrations\202110202121480_Identity.designer.cs">
+      <DependentUpon>202110202121480_Identity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110202211400_RolesIdentity.cs" />
+    <Compile Include="Migrations\202110202211400_RolesIdentity.designer.cs">
+      <DependentUpon>202110202211400_RolesIdentity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202111080506514_AspNetRoles.cs" />
+    <Compile Include="Migrations\202111080506514_AspNetRoles.designer.cs">
+      <DependentUpon>202111080506514_AspNetRoles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202112181501258_NombreImagen.cs" />
+    <Compile Include="Migrations\202112181501258_NombreImagen.designer.cs">
+      <DependentUpon>202112181501258_NombreImagen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204302154306_ImagenFirma.cs" />
+    <Compile Include="Migrations\202204302154306_ImagenFirma.designer.cs">
+      <DependentUpon>202204302154306_ImagenFirma.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205052009028_FechaCumpleaños.cs" />
+    <Compile Include="Migrations\202205052009028_FechaCumpleaños.designer.cs">
+      <DependentUpon>202205052009028_FechaCumpleaños.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Modulos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModulosDetalle.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ModulosPorRol.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Niveles.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NivelesDeRiesgo.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Normas.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Numerales.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Parametros.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PartialClass\AusentismoIndicadores_InformacionPorEmpresa.cs" />
+    <Compile Include="PartialClass\DocumentosDiagnostico.cs" />
+    <Compile Include="PartialClass\Auditorias.cs" />
+    <Compile Include="PartialClass\ConfiguracionPorTercero.cs" />
+    <Compile Include="PartialClass\AusentismoVariables.cs" />
+    <Compile Include="PartialClass\AusentismoTiempos.cs" />
+    <Compile Include="PartialClass\Terceros.cs" />
+    <Compile Include="PartialClass\Empleados.cs" />
+    <Compile Include="PartialClass\Ausentismo.cs" />
+    <Compile Include="PartialClass\Terceros_Clientes.cs" />
+    <Compile Include="PlantillasListasDeVerificacionDetalle.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PlantillasListasDeVerificacion_Numerales.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Procesos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServicioUsuarioModel.cs" />
+    <Compile Include="SistemasDeGestion.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Terceros.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TercerosUsuarios.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Terceros_Clientes.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Terceros_Normas.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Terceros_SistemasDeGestion.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Terceros_SistemasDeGestion_Normas.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoEventosAusentismo.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TipoIdentificacion.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TiposContrato.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TiposFondo.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Turnos.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <EntityDeploy Include="DBModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>DBModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="DBModel.edmx.diagram">
+      <DependentUpon>DBModel.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DBModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>DBModel.edmx</DependentUpon>
+      <LastGenOutput>DBModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DBModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>DBModel.edmx</DependentUpon>
+      <LastGenOutput>DBModel.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202110202121480_Identity.resx">
+      <DependentUpon>202110202121480_Identity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110202211400_RolesIdentity.resx">
+      <DependentUpon>202110202211400_RolesIdentity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202111080506514_AspNetRoles.resx">
+      <DependentUpon>202111080506514_AspNetRoles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112181501258_NombreImagen.resx">
+      <DependentUpon>202112181501258_NombreImagen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204302154306_ImagenFirma.resx">
+      <DependentUpon>202204302154306_ImagenFirma.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205052009028_FechaCumpleaños.resx">
+      <DependentUpon>202205052009028_FechaCumpleaños.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+</Project>

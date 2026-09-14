@@ -1,0 +1,75 @@
+﻿@model List<Models.TemasActa>
+@using System.Text.RegularExpressions;
+
+@{
+    Layout = null;
+    string collapse = "collapse";
+    string heading = "heading";
+
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+
+    <ul id="accordionTemas" class="card-outline card-primary p-0 m-0">
+        @foreach (var item in Model)
+        {
+            <li class="card m-0" id="@item.IntTemaID" data-id="@item.IntTemaID">
+                <div class="card-header border-bottom-0 pl-0 pt-1 pb-0 mt-0 mb-0 pb-0 " id="@heading@item.IntTemaID">
+                    <div class="row">
+                        <div class="col-7">
+                            <a href="#" class="btn text-muted h4 mb-0 pb-0" data-toggle="collapse" data-target="#@collapse@item.IntTemaID" aria-expanded="true" aria-controls="@collapse@item.IntTemaID">
+                                <h6 class="text-left text-muted"><span class="font-weight-bold">Tema: </span><span class="iTema">@item.StrDescripcion</span></h6>
+                            </a>
+                        </div>
+                        <div class="col-4 pt-2 ">
+                            <h6 class="text-left text-muted"><span class="font-weight-bold">Responsable: </span><span class="iResponsable">@item.StrResponsable</span></h6>
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="close remove-item" data-id="@item.IntTemaID" onclick="actaCRUD.deleteTemasByIDAsync(@item.IntTemaID)">&times;</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="@collapse@item.IntTemaID" class="collapse hide" aria-labelledby="@heading@item.IntTemaID" data-parent="#accordionTemas">
+                    <hr class="pt-0 mt-0" />
+                    <div class="card-body pt-1 ">
+
+                        <div class="form-group">
+                            <textarea class="form-control iDesarrollo" style="height:100px" placeholder="Ingrese aquí el desarrollo de este tema...">@item.StrDesarrollo</textarea>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+}
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $("#accordionTemas > li").each(function (i, li) {
+
+            var descripcion = $(li).find(".iDesarrollo").html();
+            descripcion = unescape(descripcion);
+            $(li).find(".iDesarrollo").html(descripcion);
+
+            $(li).find(".remove-item").off().click(function (e) {
+                var id = $(this).data("id");
+                $("#" + id).remove();
+            });
+        });
+    });
+
+
+</script>

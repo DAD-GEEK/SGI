@@ -1,0 +1,421 @@
+﻿@model Models.Agenda
+@using System.Globalization;
+
+@{
+    Layout = null;
+
+    //Formatear fechas
+    var clase = string.Empty;
+    var fechaProximaVisita = string.Empty;
+    var fechaInicial = string.Empty;
+    var fechaFinal = string.Empty;
+
+    if (Model.DatFechaInicial.HasValue)
+    {
+        fechaInicial = Model.DatFechaInicial.Value.ToString("dddd d MMMM h:mm tt", CultureInfo.CreateSpecificCulture("es-Mx"));
+    }
+
+    if (Model.DatFechaInicial.HasValue)
+    {
+        fechaFinal = Model.DatFechaFinal.Value.ToString("dddd d MMMM h:mm tt", CultureInfo.CreateSpecificCulture("es-Mx"));
+    }
+
+    if (ViewBag.NextVisita.GetType() == Type.GetType("System.String"))
+    {
+        fechaProximaVisita = ViewBag.NextVisita;
+        clase = "text-danger font-italic";
+    }
+    else
+    {
+        clase = "text-muted";
+        fechaProximaVisita = ViewBag.NextVisita.ToString("dddd d MMMM h:mm tt", CultureInfo.CreateSpecificCulture("es-Mx"));
+    }
+}
+
+<input type="hidden" id="contadorTemas" value="0" />
+<input type="hidden" id="consecutivoActa" value="@ViewBag.Consecutivo" />
+
+<div class="modal-dialog " style=" max-width:1200px!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><em class="fas fa-clipboard-check text-gray "></em></span>&nbsp; Acta de visita N° <span class="font-weight-bold h4 text-danger">@ViewBag.Consecutivo</span></h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+
+            <form method="post" action="#" id="formCrearActaGlobal">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-body overflow-auto" style="height:75vh!important">
+                    <div class="container-fluid">
+
+                        <div class="row">
+                            <div class="col-md-12" style="height:auto">
+
+                                <div class="card card-primary card-outline card-outline-tabs">
+
+                                    <div class="card-header p-0 border-bottom-0">
+                                        <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="general" data-toggle="pill" href="#generalTab" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">General</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="compromisos" data-toggle="pill" href="#compromisosTab" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Compromisos</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="temas" data-toggle="pill" href="#temasTab" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Orden del día</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="actividades" data-toggle="pill" href="#actividadesTab" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Actividades</a>
+                                            </li>
+
+                                        </ul>
+                                    </div>
+
+                                    <div class="card-body pt-1">
+                                        <div class="tab-content" id="custom-tabs-four-tabContent">
+
+                                            @*Datos Generales*@
+                                            <div class="tab-pane fade show active" id="generalTab" role="tabpanel" aria-labelledby="general">
+
+                                                <div class="row">
+                                                    <div class="col-lg-6 pt-1">
+                                                        <fieldset class="border" style="padding-top:0px;padding-left:10px;padding-right:10px;padding-bottom:5px;">
+                                                            <legend class="w-auto text-sm text-bold font-weight-bold pb-0" style="margin-bottom:0px!important;">&nbsp;&nbsp;Información de la visita&nbsp;&nbsp;</legend>
+
+                                                            <div class="post">
+                                                                <div class="d-block ">
+                                                                    <div>
+                                                                        <span class="username text-primary h4 font-weight-bold pt-1 text-uppercase pb-0" style="padding-left:0px;padding-bottom:0px !important">
+                                                                            @Model.Clientes.StrNombre
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="pt-0">
+                                                                        <span class="description font-weight-bold"><em id="identificacionActa">@Model.Clientes.StrIdentificacion</em><em>-@Model.Clientes.IntDV</em></span>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- /.user-block -->
+                                                                <div class="card-body pl-0 ml-0 pb-0">
+                                                                    <strong><i class="fas fa-users-cog mr-1"></i> Tipo de reunión</strong>
+
+                                                                    <p class="text-muted">
+                                                                        @Model.TipoEventos.StrDescripcion
+                                                                    </p>
+
+                                                                    <hr>
+
+                                                                    <strong><i class="fa fa-calendar-alt mr-1"></i> Fecha inicial de la visita</strong>
+
+                                                                    <p class="text-muted">
+                                                                        @fechaInicial
+                                                                    </p>
+
+                                                                    <hr>
+
+                                                                    <strong><i class="fa fa-calendar-alt mr-1"></i> Fecha final de la visita</strong>
+
+                                                                    <p class="text-muted">
+                                                                        @fechaFinal
+                                                                    </p>
+
+                                                                    <hr>
+
+                                                                    <strong><i class="fa fa-calendar-check mr-1"></i> Fecha de la próxima visita</strong>
+
+                                                                    <p class="@clase" id="nextVisita">
+                                                                        @fechaProximaVisita
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </fieldset>
+
+                                                    </div>
+
+                                                    <div class="col-lg-6" style="padding-top:12px;">
+                                                        <div class="card card-outline card-primary ">
+                                                            <div class="card-header  ">
+                                                                <button type="button" class="btn btn-primary" id="btnAgregarAsistentes" data-url="@Url.Action("AgregarAsistentes", "Actas")"><i class="fa fa-user-plus rm-1"></i>&nbsp; Agregar asistentes</button>
+
+                                                            </div>
+
+                                                            <div id="divGetAllAsistentes">
+
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div class="tab-pane fade show" id="compromisosTab" role="tabpanel" aria-labelledby="compromisos">
+
+                                                <div class=" pt-2 mb-1">
+                                                    <div class="d-block ">
+                                                        <div>
+                                                            <span class="username text-primary h5 font-weight-bold pt-1 text-uppercase pb-0" style="padding-left:0px;padding-bottom:0px !important">
+                                                                Compromisos del acta anterior
+                                                            </span>
+                                                        </div>
+                                                        <div class="pt-0">
+                                                            <span class="description font-weight-bold"><em>@ViewBag.VisitaAnterior</em></span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="card card-outline card-primary">
+                                                    <div id="divGetAllCompromisos">
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="tab-pane fade show" id="temasTab" role="tabpanel" aria-labelledby="temas">
+
+                                                <div class="row">
+                                                    <div class="col-md-12 pb-1 pt-0">
+                                                        <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label font-weight-bold" for="actaTema">Tema<span class="text-danger">*</span></label>
+                                                            <div class=" input-group with-focus">
+                                                                <input class="form-control border-right-0 temas" name="actaTema" id="actaTema" type="text" placeholder="Agregar un tema para la reunión..." autocomplete="off" minlength="8" />
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                        <em class="fas fa-clipboard-check"></em>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label font-weight-bold" for="actaResponsable">Responsable<span class="text-danger">*</span></label>
+                                                            <div class=" input-group with-focus">
+                                                                <input class="form-control border-right-0 temas" name="actaResponsable" id="actaResponsable" type="text" placeholder="Agregar un responsable..." autocomplete="off" minlength="8" />
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                        <em class="fa fa-user"></em>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label font-weight-bold" for="btnAgregarTema">&nbsp;</label>
+                                                            <button type="button" class="btn btn-block btn-primary" id="btnAgregarTema" onclick="actaCRUD.generarDetalleTemas();"><i class="fas fa-folder-plus mr-1"></i>&nbsp; Agregar tema</button>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+
+
+
+                                                <div id="divGetAllTemas">
+
+
+                                                </div>
+
+
+
+                                            </div>
+
+                                            <div class="tab-pane fade show" id="actividadesTab" role="tabpanel" aria-labelledby="actividades">
+
+                                                <div class="row">
+                                                    <div class="col-md-12 pb-1 pt-0">
+                                                        <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label font-weight-bold" for="actividadActa">Actividad<span class="text-danger">*</span></label>
+                                                            <div class=" input-group with-focus date">
+                                                                <input class="form-control border-right-0 actividades" type="text" name="actividadActa" id="actividadActa" placeholder="Actividad a desarrollar..." autocomplete="off" />
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                        <em class="fas fa-check-circle"></em>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-5">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label font-weight-bold" for="responsableActividad">Responsable<span class="text-danger">*</span></label>
+                                                            <div class=" input-group with-focus date">
+                                                                <input class="form-control border-right-0 actividades" type="text" name="responsableActividad" id="responsableActividad" pattern="[A-Za-z0-9_-]{1,15}" placeholder="Responsable de la actividad..." autocomplete="off" />
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                        <em class="fa fa-users-cog"></em>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-4">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label font-weight-bold" for="fechaActividad">Fecha<span class="text-danger">*</span></label>
+                                                            <div class=" input-group with-focus">
+                                                                <div class="input-group date timepickerFecha" id="timepickerFechaActividad" data-target-input="nearest" data-target="#timepickerFechaActividad" data-toggle="datetimepicker">
+                                                                    <input type="text" class="form-control datetimepicker-input border-right-0" id="fechaActividad" autocomplete="off" placeholder="Fecha de la actividad..." data-target="#timepickerFechaActividad" />
+                                                                    <div class="input-group-append">
+                                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                            <em class="fas fa-calendar-check"></em>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-lg-3">
+                                                        <div class="form-group">
+                                                            <label class="form-control-label font-weight-bold" for="">&nbsp;</label>
+                                                            <div class=" input-group with-focus">
+                                                                <button class="btn btn-primary btn-block" type="button" onclick="actaCRUD.generarDetalleActividades();"><i class="fas fa-check-circle mr-1"></i>&nbsp; Agregar actividad</button>
+                                                            </div>
+                                                            <span class="text-danger"><small></small> </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="card card-outline card-primary">
+
+                                                    <div id="divGetAllActividades">
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6 mr">
+
+
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-4">
+                                        <button type="button" data-dismiss="modal" class="btn btn-block btn-dark">Cancelar</button>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-4">
+                                        <button type="submit" class="btn btn-primary btn-block ">Guardar</button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        }
+    </div>
+</div>
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<link href="~/Plugins/Parsley/Parsley.css" rel="stylesheet" />
+<script type="text/javascript">
+
+    $(function () {
+
+        $(document).ready(function () {
+
+            actaCRUD.getAllAsistentes(0);
+            actaCRUD.getAllCompromisosActaAnterior('@ViewBag.actaID');
+            actaCRUD.getAllTemas(0);
+            actaCRUD.getAllActividades(0);
+            actaCRUD.crearActaAsync();
+
+            var identificacion = clientesCRUD.formatearNumeros($("#identificacionActa").html(), "punto");
+            $("#identificacionActa").html(identificacion);
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $("#btnAgregarAsistentes").on("click", function () {
+
+                var url = $(this).data("url");
+
+                $.get(url).done(function (data) {
+
+                    $('#contenedor3').empty().html(data);
+                    $('#modal3').modal('show');
+                });
+            });
+
+            $('#timepickerFechaActividad').datetimepicker({
+                format: 'YYYY-MM-DD',
+
+                locale: 'es',
+                icons: {
+                    time: "fa fa-clock",
+                    date: "fa fa-calendar",
+                    up: "fa fa-arrow-up",
+                    down: "fa fa-arrow-down"
+                }
+            });
+
+        });
+    });
+
+</script>
+

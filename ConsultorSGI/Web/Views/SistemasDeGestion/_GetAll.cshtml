@@ -1,0 +1,90 @@
+﻿@model List<Models.SistemasDeGestion>
+
+@{
+    string Estado = string.Empty;
+}
+
+<div class=" container-fluid">
+
+    <div class=" col-md-12">
+        <div class="card">
+
+            <div class="card-header fondoOscuroSGI">
+
+                <div class="row">
+
+                    <div class="col-md-3">
+
+                        <button type="button" class="btn btn-outline-light btn-block" data-toggle="modal" id="btnCrearSistemaDeGestion"><i class="fas fa-plus"></i>&nbsp;&nbsp;Agregar sistema de gestión</button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="content-header">
+                        <div class="container-fluid">
+                            @Html.Partial("_AlertaNovedades", ViewData["error"] = ViewBag.Error)
+                        </div>
+                    </div>
+                }
+                else
+                {
+
+                    <div class="row">
+
+                        @foreach (var item in Model)
+                        {
+                            <div class="col-md-3 col-6">
+
+                                <div class="small-box">
+                                    <div class="inner">
+                                        <h3>@item.StrCodigoID</h3>
+
+                                        <p>@item.StrDescripcion</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="@item.StrIcono text-primary"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer bg-primary" id="btnConfigurarSistema" onclick="sistemasDeGestionCRUD.getByEditar('@item.StrCodigoID')">
+                                        Configuración <i class="fas fa-arrow-circle-right"></i>
+                                    </a>
+                                </div>
+
+
+                            </div>
+
+                        }
+
+
+                    </div>
+
+
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var btnCrearSistemaDeGestion = $("#btnCrearSistemaDeGestion");
+
+        btnCrearSistemaDeGestion.click(function () {
+            sistemasDeGestionCRUD.crear();
+        });
+
+    });
+
+
+</script>
+
+

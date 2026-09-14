@@ -1,0 +1,107 @@
+﻿@model Models.DTO.ExportarPDFOptionsDTO
+
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:600px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", $"{Model.Titulo}" }, { "icono", "fas fa-file-pdf" }, { "claseTexto", "d-none" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <div class="modal-body" style="overflow-y:auto!important; max-height: 70vh !important;">
+
+                <div class="form-group">
+                    <div class="form-group clearfix">
+                        <div class="icheck-primary d-inline">
+                            <input type="checkbox" id="orientacionPDF">
+                            <label for="orientacionPDF">
+                                Exportar horizontalmente
+                            </label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="modal-footer bg-light">
+                <div class="container-fluid">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="row">
+
+
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="button" data-dismiss="modal" class="btn btn-block btn-outline-dark"><i class="fas fa-undo-alt mr-1"></i>Cerrar</button>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+
+                                    @*<a href="@Url.Action("DescargarInformePlanAuditoriaPDFAsync","Auditorias", new { auditoriaID = Model.IntAuditoriaID })" target="_blank" class="btn btn-outline-danger btn-block" title="Exportar plan de auditoría a PDF" data-toggle="tooltip" data-placement="top">&nbsp;&nbsp;&nbsp;<i class="fas fa-file-pdf mr-1"></i> Exportar a PDF&nbsp;&nbsp;&nbsp;</a>*@
+
+                                    <a href="#" target="_blank" class="btn btn-outline-danger btn-block" id="btnExportacionPDF" title="@Model.Titulo" data-toggle="tooltip" data-placement="top">&nbsp;&nbsp;&nbsp;<i class="fas fa-file-pdf mr-1"></i> Exportar a PDF&nbsp;&nbsp;&nbsp;</a>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        }
+
+    </div>
+</div>
+
+
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        function ExportarPDF() {
+            var auditoriaID = $("#auditoriaID").val();
+            var urlPeticion = '@Model.UrlDescarga';
+            var exportarHorizontalmente = $("#orientacionPDF").is(':checked');
+            var tipoOrientacion = '@Across.Enumeraciones.enumOpcionesPDF.Vertical.ToString()';
+
+            if (exportarHorizontalmente)
+                tipoOrientacion = '@Across.Enumeraciones.enumOpcionesPDF.Horizontal.ToString()';
+
+            var urlFinal = `${urlPeticion}?auditoriaID=${auditoriaID}&orientacionPDF=${tipoOrientacion}`
+
+            var btnExportacionPDF = $("#btnExportacionPDF");
+            btnExportacionPDF.attr('href', urlFinal);
+        };
+
+        ExportarPDF();
+
+        $("#orientacionPDF").on('change', function () {
+            ExportarPDF();
+        });
+
+    });
+
+
+
+</script>
+
+
+

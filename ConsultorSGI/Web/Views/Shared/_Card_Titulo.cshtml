@@ -1,0 +1,22 @@
+﻿@{
+    var claseColorTexto = ViewData["claseColorTexto"];
+    var icono = ViewData["icono"];
+
+    if (claseColorTexto == null)
+    {
+        claseColorTexto = "";
+    }
+    
+    if (icono == null)
+    {
+        icono = "fas fa-cogs";
+    }
+
+}
+
+<div class="card-header pt-2 pb-2">
+    <div class=" font-weight-bold text-uppercase @claseColorTexto">
+        <i class="@icono mr-1 text-primary"></i> @ViewData["Titulo"]
+    </div>
+</div>
+<p class="pt-0 pb-0 mt-0 mb-0 text-sm @ViewData["claseTexto"]" style="padding-left:20px;">Los campos con asterisco (<span class="text-danger">*</span>) son obligatorios. </p>

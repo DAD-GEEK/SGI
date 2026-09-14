@@ -1,0 +1,84 @@
+﻿
+<div class="content-header pt-0 mt-0 pb-1">
+    <div class="container-fluid pt-0 mt-0">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-dark font-weight-bold">Información general</h1>
+                <small>Información general de la aplicación y del desarrollador</small>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="@Url.Action("Index","Home")">Home / Información general</a></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-md-6 col-12">
+
+        <div class="card card-outline card-primary">
+
+            @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Información del desarrollador" }, { "claseTexto", "d-none" }, { "claseIcono", "fas fa-user-cog" } })
+
+            <div class="card-body row pt-1 pb-1">
+                <div class="text-left d-flex align-items-center justify-content-center">
+                    <div class="">
+                        <h3 class="font-weight-bold">Juan David González Bedoya</h3>
+                        <div class="float-left">
+                            <p class="">
+                                <strong>Ingeniero de sistemas</strong> <br />
+                                <i class="fas fa-code text-primary mr-1"></i> Desarrollador Web Full Stack .NET <br />
+                                <i class="fab fa-whatsapp text-primary mr-1"></i> +57 314-731-54-21 <br />
+                                <i class="fas fa-envelope text-primary mr-1"></i> jgonzalezmy@gmail.com<br />
+                                <i class="fas fa-envelope text-primary mr-1"></i> juandmy@hotmail.com <br /><br />
+                                <strong>"Si lo puedes imaginar, lo puedes crear..."</strong>
+
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6 col-12">
+
+        <div class="card card-outline card-primary">
+
+            @Html.Partial("_Card_Titulo", new ViewDataDictionary { { "titulo", "Información de la aplicación" }, { "claseTexto", "d-none" }, { "claseIcono", "fab fa-windows" } })
+
+            <div class="card-body row pt-1 pb-1">
+                <div class="text-left d-flex align-items-center justify-content-center">
+                    <div class="">
+                        <h3 class="font-weight-bold">Consultor <span class="text-primary">SGI</span></h3>
+                        <div class="float-right">
+                            <p class="">
+                                <strong>Tecnologías:</strong> <br />
+                                <i class="fab fa-windows text-primary mr-1"></i> ASP.NET MVC Razor <br />
+                                <i class="fas fa-database mr-1 text-primary"></i> SQL Server <br />
+                                <i class="fab fa-bootstrap text-primary"></i> Bootstrap 4 <br />
+                                <strong>Copyright &copy; 2021 - @DateTime.Now.Year <a class="font-italic" href="https://gestionintegralsgi.com.co/" target="_blank">www.gestionintegralsgi.com.co</a>.</strong> Todos los derechos reservados <br />
+                                <span class="font-weight-bold">Última actualización: </span> @Across.Common.GetFechaCompilacion(typeof(MvcApplication).Assembly).ToString("yyyy-MM-dd") <br />
+                                <b>Version</b><span class="text-primary font-weight-bold "> @typeof(Web.MvcApplication).Assembly.GetName().Version</span>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+

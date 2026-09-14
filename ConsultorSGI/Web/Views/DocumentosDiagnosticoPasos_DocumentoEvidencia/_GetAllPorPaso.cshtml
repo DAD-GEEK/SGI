@@ -1,0 +1,61 @@
+﻿@model List<Models.DTO.DocumentosDiagnosticoPasos_DocumentoEvidenciaDTO>
+
+@{
+    string Estado = string.Empty;
+
+}
+
+@if (ViewBag.Error != null)
+{
+    @Html.Partial("_AlertaNovedades", ViewData["error"] = ViewBag.Error)
+}
+else
+{
+    @Html.AntiForgeryToken()
+    <table id="tblEvidenciaPorPaso" class="table table-sm center-block text-sm" style="width:100%">
+        <thead class="text-center">
+            <tr>
+                <th style="display:none!important">Id</th>
+                <th class="text-center"></th>
+                <th class="text-center">Lista de soportes para asociar con el criterio actual</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="display:none!important">@item.StrEvidenciaID</td>
+
+                    <td style="width:10%!important" class="text-center">
+
+                        <div class="icheck-primary d-inline">
+                            <input type="radio" id="@item.StrEvidenciaID" name="radioEvidencia" class="iSeleccionarCriterio" checked="@item.BitSeleccionado">
+                            <label for="@item.StrEvidenciaID">
+                            </label>
+                        </div>
+
+                    </td>
+
+                    <td>@item.StrDescripcion</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+
+    });
+
+
+</script>
+
+

@@ -1,0 +1,156 @@
+﻿@model List<Models.Procesos>
+
+@{
+    string Estado = string.Empty;
+
+}
+
+
+<div class="card-header fondoOscuroSGI" style="border-top-right-radius:0px!important;border-top-left-radius:0px!important;">
+
+    <div class="row">
+        <div class="col-md-3">
+            <button type="button" class="btn btn-outline-light btn-block" data-toggle="modal" id="btnCrearProceso"><i class="fas fa-plus"></i>&nbsp;&nbsp;Crear proceso</button>
+        </div>
+        <div class="col-md-3">
+            <button type="button" class="btn btn-outline-light btn-block" data-toggle="modal" id="btnAgregarProceso"><i class="fas fa-cloud-upload-alt"></i>&nbsp;&nbsp;Cargar proceso genérico</button>
+        </div>
+    </div>
+
+</div>
+
+<div class="card-body">
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        @Html.AntiForgeryToken()
+        <table id="tblProcesos" class="table dt-responsive table-sm center-block pt-2" style="width:100%">
+            <thead class="text-center">
+                <tr>
+                    <th>Id</th>
+                    <th class="text-center">Codigo</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    Estado = (item.BitActivo == true ? "ACTIVO" : "INACTIVO");
+
+                    <tr>
+                        <td>@item.IntProcesoID</td>
+
+                        <td class="text-center font-weight-bold h6">@item.StrCodigo</td>
+
+                        <td>@item.StrDescripcion</td>
+
+                        @if (item.BitActivo == true)
+                        {
+                            <td class="text-center"><span class="badge badge-success">@Estado</span></td>
+                        }
+                        else
+                        {
+                            <td class="text-center"><span class="badge badge-danger">@Estado</span></td>
+                        }
+
+                        <td class=" text-center">
+                            <button type="button" title="Cargar datos de genérico" data-toggle="tooltip" data-placement="left" class="btn btn-outline-primary btn-sm glyphicon glyphicon-edit" data-registroid="@item.IntProcesoID" data-tipoevento="cargardatosgenerico"><i class="fas fa-download fa-fw"></i>Cargar genérico</button>
+                            <button type="button" title="Editar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm glyphicon glyphicon-edit" data-registroid="@item.IntProcesoID" data-tipoevento="editar"><i class="fa fa-edit fa-fw"></i></button>
+                            <button type="button" title="Eliminar registro" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm glyphicon glyphicon-trash" data-registroid="@item.IntProcesoID" data-tipoevento="eliminar"><i class="fa fa-trash fa-fw"></i></button>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var btnCrearProceso = $("#btnCrearProceso");
+        var btnAgregarProceso = $("#btnAgregarProceso");
+        var esVistaGlobal = false;
+
+        btnCrearProceso.click(function () {
+            procesosCRUD.crearProceso(esVistaGlobal);
+        });
+
+        btnAgregarProceso.click(function () {
+            procesosCRUD.vistaSeleccionarProcesosAsync();
+        });
+
+        var tblProcesos = $('#tblProcesos').DataTable({
+            "order": [[0, "asc"]],
+            "searching": false,
+            "ordering": false,
+            //"paging": false,
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        $('#tblProcesos tbody').on('click', 'button', function () {
+
+            var tipoEvento = $(this).data("tipoevento");
+            var registroID = $(this).data("registroid");
+            var esVistaGlobal = false;
+
+            if (tipoEvento == 'editar')
+                return procesosCRUD.getProcesoByEditarAsync(registroID, esVistaGlobal);
+
+            if (tipoEvento == 'cargardatosgenerico')
+                return procesosCRUD.vistaCargarDatosGenericosAsync(registroID);
+
+            if (tipoEvento == 'eliminar')
+                return procesosCRUD.deleteProcesoAsync(registroID, esVistaGlobal);
+
+        });
+
+    });
+
+
+</script>
+
+

@@ -1,0 +1,132 @@
+﻿@model List<Models.DTO.NormasDTO>
+
+@{
+    Layout = null;
+    string Estado = string.Empty;
+
+}
+
+<div class=" container-fluid">
+
+    <div class=" col-md-12">
+        <div class="card">
+
+            <div class="card-header fondoOscuroSGI">
+                <button type="button" class="btn btn-outline-light" data-toggle="modal" id="btnCrearNorma"><i class="fas fa-award"></i>&nbsp;&nbsp;Agregar normas </button>
+            </div>
+
+            <div class="card-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger block-center" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
+                else
+                {
+                    <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
+
+                        @foreach (var norma in Model)
+                        {
+                            <div class="card-header" role="tab" id="@norma.IntNormaID">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <a class="active" data-toggle="collapse" data-parent="#accordionEx" href="#norma_@norma.IntNormaID" aria-expanded="true"
+                                           aria-controls="norma_@norma.IntNormaID">
+                                            <h6 class="mb-0">
+                                                <span class="font-weight-bold">@norma.StrCodigo: </span><span class="text-muted">@norma.StrDescripcion</span><i class="ml-2 fas fa-plus rotate-icon"></i>
+                                            </h6>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2 text-left">
+
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="numeralesCRUD.crearNumeral(@norma.IntNormaID)" data-toggle="tooltip" data-placement="left" title="Agregar numeral">
+                                            <i class="fas fa-folder-plus mr-1"></i>Agregar numeral
+                                        </button>
+
+                                        <button type="button" class="btn btn-outline-dark btn-sm" onclick="normasCRUD.getNormaByEditarAsync(@norma.IntNormaID)" data-toggle="tooltip" data-placement="left" title="Editar norma">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="normasCRUD.deleteNormaAsync(@norma.IntNormaID)" data-toggle="tooltip" data-placement="left" title="Eliminar norma">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div id="norma_@norma.IntNormaID" class="collapse" role="tabpanel" aria-labelledby="@norma.IntNormaID"
+                                 data-parent="#accordionEx">
+
+                                <div class="card-body p-0">
+                                    <table class="table table-sm pl-2">
+                                        <thead>
+                                            <tr>
+                                                <th style="display:none"></th>
+                                                <th style="width:10%">Numeral</th>
+                                                <th style="width:30%">Descripción</th>
+                                                <th style="width:50%">Interpretación</th>
+                                                <th class="text-center" style="width:10%">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-sm">
+
+                                            @foreach (var numeral in norma.NumeralesDTO.OrderBy(x => x.IntCodigoNumerico).ThenBy(x => x.StrCodigo).ThenBy(x => x.IntNivel))
+                                            {
+                                                string colorFondo = "white";
+                                                string clase = string.Empty;
+                                                var arrayNumeral = numeral.StrCodigo.Split('.');
+                                                if (arrayNumeral.Count() == 1)
+                                                {
+                                                    colorFondo = $"{Across.ParametrosGenerales.Color_ResaldadoSuave}";
+                                                    clase = "text-uppercase font-weight-bold h6";
+                                                }
+
+                                                <tr style="background-color:@colorFondo" class="@clase">
+                                                    <td style="display:none">@numeral.IntNumeralID</td>
+                                                    <td class="font-weight-bold h6">@numeral.StrCodigo</td>
+                                                    <td>@numeral.StrDescripcion</td>
+                                                    <td>
+                                                        @numeral.StrInterpretacion
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button type="button" title="Editar numeral" data-toggle="tooltip" data-placement="left" class="btn btn-outline-dark btn-sm glyphicon glyphicon-edit" onclick="numeralesCRUD.getNumeralByEditarAsync(@numeral.IntNumeralID, @norma.IntNormaID)"><i class="fas fa-edit"></i></button>
+                                                        <button type="button" title="Eliminar numeral" data-toggle="tooltip" data-placement="left" class="btn btn-outline-danger btn-sm glyphicon glyphicon-edit" onclick="numeralesCRUD.deleteNumeralAsync(@numeral.IntNumeralID)"><i class="fas fa-trash-alt"></i></button>
+                                                    </td>
+                                                </tr>
+
+                                            }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var btnCrearNorma = $("#btnCrearNorma");
+
+        btnCrearNorma.click(function () {
+            normasCRUD.crearNorma();
+        });
+
+    });
+
+</script>
+
+

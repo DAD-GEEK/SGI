@@ -1,0 +1,137 @@
+﻿@model Models.DTO.DocumentosDiagnosticoDTO
+
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center m-2" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+    <div class="card-header pt-2 pb-2">
+        <div class=" font-weight-bold text-uppercase">
+            <i class="fas fa-chart-area mr-1 text-primary"></i> NIVEL DE CUMPLIMIENTO POR FASES
+        </div>
+    </div>
+
+    <div class="card-body pt-1">
+
+        <div class="row">
+
+            <div class="col-12">
+
+                <ul class="nav flex-column">
+
+                    @foreach (var item in Model.FasesDocumento.OrderBy(x => x.StrDescripcionPrimaria))
+                    {
+                        <li class="nav-item pt-2 d-inline">
+                            @item.StrDescripcionSecundaria
+
+                            @{
+                                var resultado = Convert.ToInt16(item.DecNivelDeCumplimiento * 100);
+                                var resultadoPorcentaje = $"{resultado}%";
+                                var claseBarra = string.Empty;
+                            }
+
+                            @if (resultado >= 0 && resultado < 50)
+                            {
+                                claseBarra = "bg-danger";
+                            }
+                            else if (resultado >= 50 && resultado < 80)
+                            {
+                                claseBarra = "bg-warning";
+                            }
+                            else
+                            {
+                                claseBarra = "bg-success";
+                            }
+
+                            <div class="progress">
+                                <div class="progress-bar @claseBarra font-weight-bold" role="progressbar" aria-valuenow="@resultadoPorcentaje" aria-valuemin="0" aria-valuemax="100" style="width: @resultadoPorcentaje">
+                                    <span class="sr-only">@resultadoPorcentaje</span> @resultadoPorcentaje
+                                </div>
+                            </div>
+
+                        </li>
+                    }
+
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        @foreach (var item in Model.FasesDocumento.OrderBy(x => x.StrDescripcionPrimaria))
+        {
+            <div class="col-6">
+
+                <div class="card-header pt-2 pb-2">
+                    <div class=" font-weight-bold text-uppercase">
+                        <i class="fas fa-chart-area mr-1 text-primary"></i> @item.StrDescripcionSecundaria
+                    </div>
+                </div>
+
+                <div class="card-body pt-1 ">
+
+                    <ul class="nav flex-column pt-1">
+
+                        @foreach (var paso in Model.PasosDocumento.Where(x => x.StrFaseID == item.StrFaseID).OrderBy(x => x.IntNumero))
+                        {
+                            <li class="nav-item pt-2 d-inline">
+                                <span class="font-weight-bold">Paso N°@paso.IntNumero - </span>@paso.StrRequisito
+
+                                @{
+                                    var resultado = Convert.ToInt16(paso.DecResultado * 100);
+                                    var resultadoPorcentaje = $"{resultado}%";
+                                    var claseBarra = string.Empty;
+                                }
+
+
+                                @if (resultado >= 0 && resultado < 50)
+                                {
+                                    claseBarra = "bg-danger";
+                                }
+                                else if (resultado >= 50 && resultado < 80)
+                                {
+                                    claseBarra = "bg-warning";
+                                }
+                                else
+                                {
+                                    claseBarra = "bg-success";
+                                }
+
+                                <div class="progress">
+                                    <div class="progress-bar @claseBarra font-weight-bold" role="progressbar" aria-valuenow="@resultadoPorcentaje" aria-valuemin="0" aria-valuemax="100" style="width: @resultadoPorcentaje">
+                                        <span class="sr-only">@resultadoPorcentaje</span> @resultadoPorcentaje
+                                    </div>
+                                </div>
+
+                            </li>
+
+                        }
+
+                    </ul>
+
+
+                </div>
+            </div>
+
+        }
+    </div>
+}
+
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+    });
+
+</script>

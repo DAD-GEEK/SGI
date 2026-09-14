@@ -46,3 +46,14 @@ target/
 # SonarQube
 .scannerwork/
 sonar-project.properties
+
+# .NET / Visual Studio legacy
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+**/packages/*
+!**/packages/build/
+*.rar
+*.user
+

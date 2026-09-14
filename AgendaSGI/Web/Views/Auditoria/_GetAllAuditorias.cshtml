@@ -1,0 +1,137 @@
+﻿@model List<Models.AuditoriasEncabezado>
+
+@{
+    string Estado = string.Empty;
+}
+
+<div class=" container-fluid">
+
+    <div class=" col-md-12">
+        <div class="card">
+
+            <div class="card-header fondoOscuroSGI">
+                <button type="button" class="btn btn-outline-light btn-lg" data-toggle="modal" id="btnProgramarAuditoria"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;Programar auditoría</button>
+            </div>
+
+            <div class="card-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger block-center m-1" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
+                else
+                {
+                    @Html.AntiForgeryToken()
+                    <table id="tblAuditoria" class="table table-bordered dt-responsive " style="width:100%">
+                        <thead class="text-center text-white fondoColorSGI">
+                            <tr>
+
+                                <th class="d-none">Id</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Auditor</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody id="detalleAuditoria">
+                            @foreach (var item in Model)
+                            {
+                                Estado = (item.OpcEjecutada == true ? "REALIZADA" : "PENDIENTE");
+
+                                <tr>
+
+                                    <td class="d-none">@item.IntAuditoriaID</td>
+                                    <td class="text-left">@item.Clientes.StrNombre</td>
+                                     <td class="text-center">@item.DatFecha</td>
+                                     <td class="text-center">@item.StrAuditor</td>
+
+                                    @if (item.OpcEjecutada == true)
+                                    {
+                                        <td class="text-center h5"><span class="badge badge-success">@Estado</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center h5"><span class="badge badge-danger">@Estado</span></td>
+                                    }
+
+                                    <td class=" text-center">
+
+                                        <button title="Ver auditoría" data-toggle="tooltip" data-placement="left" class="btn btn-primary glyphicon glyphicon-trash" value="@item.IntAuditoriaID" onclick="auditoriaCRUD.deleteAuditoriaAsync(this)"><em class="fas fa-clipboard-check fa-fw"></em></button>
+                                        <button title="Realizar auditoría" data-toggle="tooltip" data-placement="left" class="btn btn-primary glyphicon glyphicon-trash" value="@item.IntAuditoriaID" onclick="auditoriaCRUD.deleteAuditoriaAsync(this)"><em class="fas fa-tasks fa-fw"></em></button>
+                                        
+                                        
+                                        <button title="Modificar programación" data-toggle="tooltip" data-placement="left" class="btn btn-dark glyphicon glyphicon-edit" value="@item.IntAuditoriaID" onclick="auditoriaCRUD.getAuditoriaParaEditarAsync(this)"><em class="fa fa-edit fa-fw"></em></button>
+                                        <button title="Eliminar" data-toggle="tooltip" data-placement="left" class="btn btn-danger glyphicon glyphicon-trash" value="@item.IntAuditoriaID" onclick="auditoriaCRUD.deleteAuditoriaAsync(this)"><em class="fa fa-trash fa-fw"></em></button>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        var btnProgramar = $("#btnProgramarAuditoria");
+
+        $('#tblAuditoria').DataTable({
+
+            "order": [[0, "desc"]],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+
+        btnProgramar.click(function () {
+            auditoriaCRUD.programarAuditoriaView();
+        });
+    });
+
+
+</script>
+
+

@@ -1,0 +1,98 @@
+﻿@{
+    Layout = null;
+}
+
+<input type="hidden" id="procesoID" value="@ViewBag.procesoID" />
+<input type="hidden" id="plantillaDetalleID" value="0" />
+
+<div class="modal-dialog " style=" max-width:1000px!important;">
+    <div class="modal-content card card-outline card-primary ">
+
+        @Html.Partial("_Modal_Titulo", new ViewDataDictionary { { "titulo", "Agregar item a la lista de verificación" }, { "icono", "fa fa-building" } })
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger block-center m-2" role="alert">
+                @ViewBag.Error
+            </div>
+        }
+        else
+        {
+            <form id="formGuardarDetalleGlobal">
+
+                <div class="modal-body pt-1" style="overflow-y:auto!important; max-height: 70vh !important;">
+                    <div class="container-fluid">
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="plantillaDetalleDescripcion">Descripción<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0" type="text" id="plantillaDetalleDescripcion" placeholder="Ingrese aquí el nombre del item de la lista de verificación..." autocomplete="off" maxlength="100" required />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fas fa-tags"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="form-group clearfix">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="plantillaDetalleEstado" checked>
+                                            <label for="plantillaDetalleEstado">
+                                                ¿Activo?
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+
+                                <div class="callout callout-warning">
+                                    <h5 class="font-weight-bold"><i class="fas fa-info-circle mr-1"></i>¡Alerta!</h5>
+                                    Para agregar los numerales a la Lista de verificación primero guarde los cambios haciendo click en el botón <span class="text-primary font-weight-bold">Aplicar</span>.
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+                @Html.Partial("_Modal_Footer", ViewData["claseGuardarPersonalizada"] = $"btnGuardarItemLista")
+
+            </form>
+
+        }
+
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/vistasParciales")
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        esVistaGlobal = false;
+        esVistaListaVerificacion = true;
+
+        plantillaListasDeVerificacionDetalleCRUD.guardarPalntillaListaVerificacionDetalleAsync(esVistaGlobal, esVistaListaVerificacion);
+    });
+
+
+</script>
+
+
+
