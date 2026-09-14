@@ -142,21 +142,21 @@ export const ChangePassword: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f9fb] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden font-sans">
+    <div className="min-h-[100dvh] w-full bg-[#f7f9fb] flex flex-col justify-between items-center px-4 py-3 sm:py-4 md:py-6 relative overflow-x-hidden font-sans">
       <div className="absolute inset-0 bg-gradient-to-br from-[#055bb2]/5 via-transparent to-[#3c475a]/5 pointer-events-none" />
 
-      <div className="w-full max-w-md bg-white rounded-2xl p-8 md:p-10 shadow-xl border border-[#c2c6d4]/40 relative z-10 space-y-6">
-        <div className="text-center space-y-3">
-          <div className="flex justify-center mb-3">
-            <div className="w-14 h-14 bg-[#055bb2]/10 rounded-2xl flex items-center justify-center text-[#055bb2]">
-              <ShieldCheck className="w-8 h-8" />
+      <div className="w-full max-w-md bg-white rounded-2xl p-5 sm:p-7 md:p-8 shadow-xl border border-[#c2c6d4]/40 relative z-10 space-y-4 sm:space-y-5 my-auto">
+        <div className="text-center space-y-2">
+          <div className="flex justify-center mb-2">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#055bb2]/10 rounded-2xl flex items-center justify-center text-[#055bb2]">
+              <ShieldCheck className="w-7 h-7 sm:w-8 sm:h-8" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold font-headline text-[#191c1e]">
+          <h1 className="text-xl sm:text-2xl font-bold font-headline text-[#191c1e]">
             Cambio de Contraseña Obligatorio
           </h1>
-          <p className="text-xs text-[#545f73] leading-relaxed">
-            Ha ingresado con una clave temporal. Por seguridad de la plataforma SGI, asigné su contraseña definitiva.
+          <p className="text-[11px] sm:text-xs text-[#545f73] leading-relaxed">
+            Ha ingresado con una clave temporal. Por seguridad de la plataforma SGI, asigne su contraseña definitiva.
           </p>
         </div>
 
@@ -298,6 +298,23 @@ export const ChangePassword: React.FC = () => {
           </div>
         </form>
       </div>
+
+      {/* Footer Corporativo con enlace a Waloyo Group */}
+      <footer className="w-full text-center text-[10px] sm:text-xs text-[#727783] relative z-10 shrink-0 pt-2 pb-1 space-y-0.5">
+        <p>© {new Date().getFullYear()} Gestión Integral SGI S.A.S. Todos los derechos reservados.</p>
+        <p className="text-[10px] sm:text-[11px] text-[#545f73]">
+          Desarrollado por{' '}
+          <a
+            href="https://waloyogroup.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-bold text-[#055bb2] hover:underline underline-offset-2 transition-colors"
+          >
+            Waloyo Group
+          </a>{' '}
+          — <span className="italic">Tecnología resiliente. Operación continua.</span>
+        </p>
+      </footer>
     </div>
   );
 };

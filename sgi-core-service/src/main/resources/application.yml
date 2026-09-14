@@ -37,6 +37,7 @@ logging:
     org.apache.catalina.connector.CoyoteAdapter: ERROR
     org.apache.coyote.http11.Http11NioProtocol: ERROR
     org.apache.catalina.core.ContainerBase.[Tomcat]: OFF
+    org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/].[dispatcherServlet]: OFF
 
 
 supabase:

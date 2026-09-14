@@ -433,11 +433,6 @@ const ClientesView: React.FC = () => {
         {/* Header Section (Stitch SGI Design Template System) */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-[#545f73] uppercase tracking-wider mb-1">
-              <span>SGI Unified Core</span>
-              <span>/</span>
-              <span className="text-[#055bb2]">Directorio B2B</span>
-            </div>
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-extrabold font-headline text-[#191c1e] tracking-tight">
                 Clientes
@@ -446,7 +441,7 @@ const ClientesView: React.FC = () => {
                 isLive ? 'bg-[#d1fae5] text-[#065f46] border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'
               }`}>
                 <Zap className={`w-3.5 h-3.5 ${isLive ? 'text-[#059669] animate-pulse' : 'text-amber-600'}`} />
-                {isLive ? 'Tiempo Real Reactivo (WebFlux Live Push)' : 'Sincronizado'}
+                {isLive ? 'Tiempo Real' : 'Sincronizado'}
               </span>
             </div>
             <p className="text-xs text-[#545f73] mt-1">

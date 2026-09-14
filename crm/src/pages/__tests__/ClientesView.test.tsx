@@ -14,7 +14,7 @@ describe('ClientesView Component Test Suite', () => {
     render(<ClientesView />);
 
     expect(screen.getByText('Clientes')).toBeInTheDocument();
-    expect(screen.getByText(/Directorio B2B/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sincronizado|Tiempo Real/i)).toBeInTheDocument();
     expect(screen.getByTestId('crm-sidebar')).toBeInTheDocument();
   });
 

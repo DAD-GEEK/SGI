@@ -250,52 +250,53 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f9fb] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden">
+    <div className="min-h-[100dvh] w-full bg-[#f7f9fb] flex flex-col justify-between items-center px-4 py-3 sm:py-4 md:py-6 relative overflow-x-hidden font-sans">
       <div className="absolute inset-0 bg-gradient-to-br from-[#055bb2]/5 via-transparent to-[#3c475a]/5 pointer-events-none" />
 
-      <div className="w-full max-w-md bg-white rounded-2xl p-8 md:p-10 shadow-xl border border-[#c2c6d4]/40 relative z-10 space-y-8">
-        <div className="text-center space-y-3">
-          <div className="flex justify-center mb-3">
+      {/* Tarjeta de Login Centrada Verticalmente sin Desbordamiento */}
+      <div className="w-full max-w-md bg-white rounded-2xl p-5 sm:p-7 md:p-8 shadow-xl border border-[#c2c6d4]/40 relative z-10 space-y-4 sm:space-y-5 my-auto">
+        <div className="text-center space-y-1.5 sm:space-y-2">
+          <div className="flex justify-center mb-1.5 sm:mb-2">
             <img
               src="/logo-limpio.png"
               alt="Gestión Integral SGI Logo"
-              className="w-16 h-16 object-contain"
+              className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
             />
           </div>
-          <h1 className="text-2xl font-bold font-headline text-[#191c1e]">
+          <h1 className="text-xl sm:text-2xl font-bold font-headline text-[#191c1e] tracking-tight">
             Gestión Integral SGI
           </h1>
-          <p className="text-xs uppercase tracking-wider font-semibold text-[#055bb2]">
+          <p className="text-[11px] sm:text-xs uppercase tracking-wider font-semibold text-[#055bb2]">
             Portal de Software
           </p>
         </div>
 
         {/* Notificación de Error o Validación del Sistema SGI */}
         {error && (
-          <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-3 leading-relaxed shadow-xs animate-in fade-in duration-200">
-            <AlertCircle className="w-5 h-5 shrink-0 text-red-600" />
+          <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs flex items-center gap-3 leading-relaxed shadow-xs animate-in fade-in duration-200">
+            <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
             <span className="font-medium">{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-5">
-          <div className="space-y-1.5">
+        <form onSubmit={handleSubmit} noValidate className="space-y-3.5 sm:space-y-4">
+          <div className="space-y-1">
             <label className="block text-xs font-semibold text-[#424752]">
               Correo Electrónico Corporativo *
             </label>
             <div className="relative">
-              <Mail className="w-5 h-5 text-[#727783] absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Mail className="w-4 h-4 text-[#727783] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="usuario@empresa.com"
-                className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#c2c6d4] text-sm focus:outline-none focus:border-[#055bb2] focus:ring-2 focus:ring-[#055bb2]/20 transition-all bg-[#f8fafc]"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#c2c6d4] text-xs sm:text-sm focus:outline-none focus:border-[#055bb2] focus:ring-2 focus:ring-[#055bb2]/20 transition-all bg-[#f8fafc]"
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <div className="flex justify-between items-center">
               <label className="block text-xs font-semibold text-[#424752]">
                 Contraseña *
@@ -303,31 +304,31 @@ export const Login: React.FC = () => {
               <button
                 type="button"
                 onClick={handleForgotPassword}
-                className="text-xs font-semibold text-[#055bb2] hover:underline cursor-pointer flex items-center gap-1"
+                className="text-[11px] sm:text-xs font-semibold text-[#055bb2] hover:underline cursor-pointer flex items-center gap-1"
               >
                 <HelpCircle className="w-3.5 h-3.5" />
                 <span>¿Olvidó su contraseña?</span>
               </button>
             </div>
             <div className="relative">
-              <Lock className="w-5 h-5 text-[#727783] absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="w-4 h-4 text-[#727783] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full pl-11 pr-4 py-3 rounded-xl border border-[#c2c6d4] text-sm focus:outline-none focus:border-[#055bb2] focus:ring-2 focus:ring-[#055bb2]/20 transition-all bg-[#f8fafc]"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#c2c6d4] text-xs sm:text-sm focus:outline-none focus:border-[#055bb2] focus:ring-2 focus:ring-[#055bb2]/20 transition-all bg-[#f8fafc]"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-1">
+          <div className="flex items-center justify-between pt-0.5">
             <label className="flex items-center gap-2 cursor-pointer select-none text-xs text-[#424752] font-medium">
               <input
                 type="checkbox"
                 checked={remember}
                 onChange={(e) => setRemember(e.target.checked)}
-                className="w-4 h-4 rounded text-[#055bb2] border-[#c2c6d4] focus:ring-[#055bb2]"
+                className="w-3.5 h-3.5 rounded text-[#055bb2] border-[#c2c6d4] focus:ring-[#055bb2]"
               />
               <span>Recordar esta sesión</span>
             </label>
@@ -340,7 +341,7 @@ export const Login: React.FC = () => {
                 aria-label="Información sobre la opción recordar sesión"
                 className="text-[#727783] hover:text-[#055bb2] transition-colors p-1 rounded-full hover:bg-black/5 cursor-help"
               >
-                <HelpCircle className="w-4 h-4" />
+                <HelpCircle className="w-3.5 h-3.5" />
               </button>
               <div className="absolute right-0 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-64 p-3 bg-[#191c1e] text-white text-[11px] leading-relaxed rounded-xl shadow-xl z-30 pointer-events-none border border-white/10">
                 <p className="font-bold text-[#a9c7ff] mb-1">¿Qué hace esta opción?</p>
@@ -355,10 +356,10 @@ export const Login: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 px-4 bg-[#055bb2] hover:bg-[#3374cd] text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+            className="w-full py-2.5 sm:py-3 px-4 bg-[#055bb2] hover:bg-[#3374cd] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer active:scale-[0.99]"
           >
             {loading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
                 <span>Iniciar Sesión</span>
@@ -368,18 +369,18 @@ export const Login: React.FC = () => {
           </button>
         </form>
 
-        <div className="pt-4 border-t border-[#e0e3e5] text-center space-y-2">
-          <div className="flex items-center justify-center gap-2 text-xs text-[#727783]">
-            <Shield className="w-4 h-4 text-[#055bb2]" />
-            <span>Conexión Cifrada</span>
+        <div className="pt-3 border-t border-[#e0e3e5] text-center">
+          <div className="flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-[#727783]">
+            <Shield className="w-3.5 h-3.5 text-[#055bb2]" />
+            <span>Conexión Cifrada de Alta Seguridad</span>
           </div>
         </div>
       </div>
 
-      {/* Footer Corporativo con enlace a Waloyo Group */}
-      <footer className="mt-8 text-center text-xs text-[#727783] relative z-10 space-y-1">
+      {/* Footer Corporativo con enlace a Waloyo Group perfectamente adaptado */}
+      <footer className="w-full text-center text-[10px] sm:text-xs text-[#727783] relative z-10 shrink-0 pt-2 pb-1 space-y-0.5">
         <p>© {new Date().getFullYear()} Gestión Integral SGI S.A.S. Todos los derechos reservados.</p>
-        <p className="text-[11px] text-[#545f73]">
+        <p className="text-[10px] sm:text-[11px] text-[#545f73]">
           Desarrollado por{' '}
           <a
             href="https://waloyogroup.com/"
