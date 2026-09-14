@@ -4,6 +4,25 @@ Todos los cambios del submódulo SGI (`apps/client/SGI`) se registran en este ar
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## [1.4.15] - 2026-09-14
+
+### 🛡️ Blindaje Resiliente de Flujos SSE y Manejo Silencioso de Desconexiones
+- **Manejador Global de Excepciones (`GlobalExceptionHandler.java`)**:
+  - Implementado `@RestControllerAdvice` corporativo para capturar y neutralizar `ClientAbortException`, `AsyncRequestTimeoutException` e `IOException` asociadas a cierres abruptos de clientes ("Broken pipe" y "Connection reset").
+  - Las desconexiones normales de navegadores (recargas de página, cambios de pestaña o navegación SPA) ahora se registran en nivel `DEBUG` bajo el estándar `[SGI-SSE]`, erradicando trazas de 50 líneas en logs de producción y previniendo falsos errores 500.
+  - Configurado en `application.yml` el silenciamiento de excepciones de socket en el wrapper del `dispatcherServlet` de Tomcat.
+  - Suite de 7 pruebas unitarias dedicadas en JUnit 5 (`GlobalExceptionHandlerTest.java`) validando retorno `204 No Content` en sockets cerrados y respuestas estructuradas para excepciones HTTP. Suite total: 32 pruebas en verde con 0 fallos.
+
+### 📱 Adaptabilidad 100% Viewport, Cero Scroll y Diseño Mobile-First en Login (`Login.tsx`, `ChangePassword.tsx`)
+- **Erradicación de Scroll Vertical Innecesario**:
+  - Eliminado el scroll vertical forzado en pantallas estándar de portátiles y escritorios ajustando el contenedor a `min-h-[100dvh]` con centrado automático vía `my-auto` y distribución `justify-between`.
+  - Reducción armonizada de padding y espaciado proporcional en tarjeta (`p-5 sm:p-7 md:p-8`), inputs, botones e insignias de seguridad.
+  - Anclaje fluido del footer corporativo de Waloyo Group al final del viewport sin desbordamiento ni ocultamiento visual.
+  - Réplica del mismo estándar de layout responsivo en la pantalla de `ChangePassword.tsx`.
+- **Depuración Visual en Módulo Clientes (`ClientesView.tsx`)**:
+  - Eliminado el encabezado técnico redundante `SGI Unified Core / Directorio B2B` para mantener coherencia minimalista.
+  - Simplificada la insignia de sincronización para indicar únicamente `Tiempo Real` o `Sincronizado` sin textos técnicos verbosos.
+
 ## [1.4.14] - 2026-09-14
 
 ### 🚀 Integración Total de Métricas de Alto Valor en Dashboard (Agenda y Consultor SGI)
