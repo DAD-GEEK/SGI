@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html lang="es" translate="no">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google" content="notranslate" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="shortcut icon" href="~/Content/images/logo_circular.png" type="image/x-icon" />
+    <meta name="keywords" content="app, SGI, Gestion, Integral, Gestion Integral">
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+
+    <title>Gestión Integral SGIapp</title>
+
+    <!-- Theme style -->
+    <link href="@Styles.Url("~/dist/css/adminlte.css")" rel="stylesheet" />
+
+    <!-- Mis estilos -->
+    <link href="@Styles.Url("~/content/MyStyle.css")" rel="stylesheet" />
+
+    <!-- Font Awesome Icons -->
+    <link href="@Styles.Url("~/Plugins/fontawesome-free/css/all.min.css")" rel="stylesheet" />
+
+    <!-- Google Font: Source Sans Pro -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <!-- fullCalendar -->
+    <link href="@Styles.Url("~/Plugins/fullcalendar-4.0.2/packages/core/main.css")" rel="stylesheet" />
+
+    <link href="@Styles.Url("~/Plugins/fullcalendar-4.0.2/packages/daygrid/main.css")" rel="stylesheet" />
+
+    <link href="@Styles.Url("~/Plugins/fullcalendar-4.0.2/packages/timegrid/main.css")" rel="stylesheet" />
+
+    <link href="@Styles.Url("~/Plugins/fullcalendar-4.0.2/packages/bootstrap/main.css")" rel="stylesheet" />
+
+    <link href="@Styles.Url("~/Plugins/fullcalendar-4.0.2/packages/list/main.css")" rel="stylesheet" />
+
+    <!-- Bootstrap Color Picker -->
+    <link href="@Styles.Url("~/Plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css")" rel="stylesheet" />
+
+    <!-- daterange picker -->
+    <link href="@Styles.Url("~/Plugins/daterangepicker/daterangepicker.css")" rel="stylesheet" />
+
+    <!-- SweetAlert2 -->
+    <link href="@Styles.Url("~/Plugins/sweetalert2Ultimate/sweetalert2.min.css")" rel="stylesheet" />
+
+    <!-- Toastr -->
+    <link href="@Styles.Url("~/Plugins/toastr/toastr.min.css")" rel="stylesheet" />
+
+    <!-- DataTables -->
+    <link href="@Styles.Url("~/Plugins/datatables-bs4/css/dataTables.bootstrap4.min.css")" rel="stylesheet" />
+    <link href="@Styles.Url("~/Plugins/datatables-responsive/css/responsive.bootstrap4.min.css")" rel="stylesheet" />
+
+    <!-- TempusDominus -->
+    <link href="@Styles.Url("~/Plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css")" rel="stylesheet" />
+
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link href="@Styles.Url("~/Plugins/icheck-bootstrap/icheck-bootstrap.min.css")" rel="stylesheet" />
+
+    <!-- Select2 -->
+    <link href="@Styles.Url("~/Plugins/select2/css/select2.min.css")" rel="stylesheet" />
+    <link href="@Styles.Url("~/Plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css")" rel="stylesheet" />
+
+    <!-- Parsley 2.9.2 -->
+    <link href="@Styles.Url("~/Plugins/Parsley/parsley.css")" rel="stylesheet" />
+
+    <link href="@Styles.Url("~/Content/whirl.css")" rel="stylesheet" />
+
+    @if (IsSectionDefined("Styles"))
+    {@RenderSection("Styles", required: false)}
+
+
+</head>
+<body class="hold-transition sidebar-mini sidebar-collapse">
+
+    <!-- Site wrapper -->
+    <div class="wrapper">
+
+        <!--Barra superior-->
+        @Html.Partial("_TopNavbar")
+
+        <!--Menú lateral -->
+        @Html.Partial("_Menu")
+
+        <!--Contenido-->
+        <div class="content-wrapper">
+            <div class="content">
+                @RenderBody()
+            </div>
+        </div>
+
+        <!--Pie de Página -->
+        @Html.Partial("_Footer")
+
+        <!--Barra lateral de Control -->
+        @Html.Partial("_ControlSidebar")
+
+    </div>
+
+    @if (IsSectionDefined("BodyArea"))
+    {@RenderSection("BodyArea", required: false)}
+
+    <!-- jQuery -->
+    <script src="@Scripts.Url("~/Plugins/jquery/jquery.min.js")"></script>
+
+
+    <!-- Bootstrap 4 -->
+    <script src="@Scripts.Url("~/Plugins/bootstrap/js/bootstrap.bundle.min.js")"></script>
+
+    <!-- AdminLTE App -->
+    <script src="@Scripts.Url("~/dist/js/adminlte.js")"></script>
+
+    <!-- DataTables Responsive-->
+    <script src="@Scripts.Url("~/Plugins/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/datatables-bs4/js/dataTables.bootstrap4.min.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/datatables-responsive/js/dataTables.responsive.min.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/datatables-responsive/js/responsive.bootstrap4.min.js")"></script>
+
+    <!-- Select2 -->
+    <script src="@Scripts.Url("~/Plugins/select2/js/select2.full.min.js")"></script>
+
+    <!--fullCalendar 2.2.5-->
+    <script src="@Scripts.Url("~/Plugins/fullcalendar-4.0.2/packages/core/main.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/fullcalendar-4.0.2/packages/interaction/main.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/fullcalendar-4.0.2/packages/daygrid/main.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/fullcalendar-4.0.2/packages/timegrid/main.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/fullcalendar-4.0.2/packages/core/locales/es.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/fullcalendar-4.0.2/packages/bootstrap/main.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/fullcalendar-4.0.2/packages/list/main.js")"></script>
+
+    <!--Moment JS-->
+    <script src="@Scripts.Url("~/Plugins/moment/moment.min.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/moment/locale/es-mx.js")"></script>
+
+
+    <!-- qTip -->
+    <script src="@Scripts.Url("//cdnjs.cloudflare.com/ajax/libs/qtip2/3.0.3/jquery.qtip.min.js")"></script>
+
+    <!-- date-range-picker -->
+    <script src="@Scripts.Url("~/Plugins/daterangepicker/daterangepicker.js")"></script>
+
+    <!-- Sweet Alert 2 -->
+    <script src="@Scripts.Url("~/Plugins/sweetalert2Ultimate/sweetalert2.js")"></script>
+
+    <!-- Toastr -->
+    <script src="@Scripts.Url("~/Plugins/toastr/toastr.min.js")"></script>
+
+    <!--TempusDominus-->
+    <script src="@Scripts.Url("~/Plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js")"></script>
+
+    <!--Inputmask-->
+    <script src="@Scripts.Url("~/Plugins/inputmask/dist/jquery.inputmask.bundle.js")"></script>
+    <script src="@Scripts.Url("~/Plugins/inputmask/jquery.inputmask.min.js")"></script>
+
+    <!-- bootstrap color picker -->
+    <script src="@Scripts.Url("~/Plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js")"></script>
+
+    <!-- Bootstrap4 Duallistbox -->
+    <script src="@Scripts.Url("~/Plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js")"></script>
+
+    <!--ChartJS-->
+    <script src="@Scripts.Url("~/Plugins/chart.js/Chart.min.js")"></script>
+
+    <script src="@Scripts.Url("~/Scripts/propios/waitingDialog.js")"></script>
+
+    <script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+    <!-- =============== PAGE VENDOR SCRIPTS ===============-->
+    @RenderSection("scripts", required: false)
+
+
+    <script type="text/javascript">
+
+        var rootHost = "@Scripts.Url("~/")";
+
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        function onAjaxBeginForm() {
+
+            $("body").css("cursor", "progress");
+            waitingDialog.show();
+        }
+
+        function onAjaxCompleteForm() {
+
+            $("body").css("cursor", "default");
+            waitingDialog.hide();
+        }
+
+        $(document).ajaxStart(function () {
+            onAjaxBeginForm();
+        });
+
+        $(document).ajaxStop(function () {
+            onAjaxCompleteForm();
+        });
+
+        $(window).on('beforeunload', function () {
+            $('*').css("cursor", "progress");
+            waitingDialog.show();
+        });
+
+        setInterval(verifySession, 300000);
+
+        function verifySession() {
+
+            fetch(`${rootHost}Auth/VerificarSessionFrontEnd`, {
+                method: 'POST'
+            })
+                .then(res => res.json())
+                .then(res => {
+
+                    if (res.msn == false) {
+
+                        Swal.fire({
+                            title: "¡Redireccionando...!",
+                            text: "La sesión de usuario no ha sido encontrada, será enviado al inicio de la aplicación.",
+                            icon: 'warning',
+                            showDenyButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'OK',
+                        }).then(function(result) {
+                            if (result.isConfirmed)
+                                window.location.href = rootHost + "Auth/Login";
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    location.href = rootHost + "Auth/Login";
+                });
+
+        }
+
+    </script>
+
+</body>
+</html>

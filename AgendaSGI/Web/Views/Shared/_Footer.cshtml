@@ -1,0 +1,10 @@
+﻿@using Across;
+<footer class="main-footer">
+    <div class="float-right d-none d-sm-block font-italic font-weight-bold">
+        Versión @typeof(Web.MvcApplication).Assembly.GetName().Version
+    </div>
+    <!-- Default to the left -->
+    <strong>Copyright &copy; 2021 - @DateTime.Now.Year <a class="font-italic" href="https://gestionintegralsgi.com.co/" target="_blank">www.gestionintegralsgi.com.co</a>.</strong> Todos los derechos reservados - <span class="font-weight-bold">Fecha de actualización: </span> @common.GetFechaCompilacion(typeof(MvcApplication).Assembly).ToString("dd 'de' MMMM 'del' yyyy")
+
+
+</footer>

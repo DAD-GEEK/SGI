@@ -1,0 +1,263 @@
+﻿@model Models.Usuarios
+<input type="hidden" id="usuarioID" value="@Model.IntUsuarioID" />
+<input type="hidden" id="tipoVista" value="p" />
+<input type="hidden" id="usuarioClaveActual" value="@Model.StrClave" />
+
+
+<div class="container-fluid">
+
+    <form action="#" method="post" id="formEditarGlobal">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-12" style="height:auto">
+
+                <div class="card card-primary card-outline">
+
+                    <div class="card-body pt-1">
+                        <div class="row">
+                            <div class="col-md-12 pb-1 pt-0">
+                                <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioCodigo">Usuario<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 info" name="usuarioCodigo" id="usuarioCodigo" value="@Model.StrCodigo" type="text" readonly placeholder="Código de indentificación de usuario" required="required" autocomplete="off" />
+                                        <div class="input-group-append" id="codigoIcono">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-user"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span class="text-danger"><small></small> </span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioNombre">Nombre<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 info" name="usuarioNombre" id="usuarioNombre" value="@Model.StrNombre" type="text" placeholder="Nombre del usuario" autocomplete="off" data-parsley-required data-parsley-errors-container="#errorUsuarioNombre" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-user-tag"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span class="text-danger" id="errorUsuarioNombre"><small></small> </span>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioEmail">Email<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 info" name="usuarioEmail" id="usuarioEmail" type="email" value="@Model.StrEmail" placeholder="Código de indentificación de usuario" autocomplete="off" data-parsley-required data-parsley-errors-container="#errorUsuarioEmail" />
+                                        <div class="input-group-append" id="codigoIcono">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-envelope"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span class="text-danger" id="errorUsuarioEmail"><small></small> </span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioDireccion">Direccion</label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 info" name="usuarioDireccion" id="usuarioDireccion" value="@Model.StrDireccion" type="text" placeholder="Dirección del usuario" autocomplete="off" />
+                                        <div class="input-group-append" id="codigoIcono">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-street-view"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioTelefonoFijo">Teléfono fijo</label>
+                                    <div class="input-group with-focus">
+                                        <input class="form-control border-right-0 info" name="usuarioTelefonoFijo" id="usuarioTelefonoFijo" value="@Model.StrTelefonoFijo" type="text" placeholder="Teléfono del usuario" autocomplete="off" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-phone"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioCiudad">Ciudad<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        @Html.DropDownList("listaCiudades", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "form-control select2bs4", style = "width: 100%;", id = "usuarioCiudad", data_parsley_required = "required", data_parsley_errors_container = "#errorUsuarioCiudad" })
+                                    </div>
+                                    <span class="text-danger" id="errorUsuarioCiudad"><small></small> </span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioCelular">Celular<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 info" name="usuarioCelular" id="usuarioCelular" value="@Model.StrCelular" type="text" placeholder="Celular del usuario" autocomplete="off" data-parsley-required data-parsley-errors-container="#errorUsuarioCelular" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-mobile-alt"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span class="text-danger" id="errorUsuarioCelular"><small></small> </span>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioColor">Color agenda</label>
+                                    <div class="input-group colorAgenda">
+                                        <input type="text" class="form-control border-right-0" name="usuarioColor" id="usuarioColor" value="@Model.StrColor" placeholder="Color agenda" autocomplete="off" />
+
+                                        <div class="input-group-append p-0 m-0">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0 p-0 m-0 pr-1">
+                                                <em class="fas fa-square fa-2x "></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span class="text-danger" id="errorUsuarioColor"><small></small> </span>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 pt-1">
+                                <div class="form-group  ">
+                                    <div class="form-group clearfix">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="opcCambiarClave">
+                                            <label for="opcCambiarClave" class="font-weight-bold">
+                                                Cambiar contraseña
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 ocultar">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioClaveAnt">Contraseña actual<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 info" name="usuarioClaveAnt" id="usuarioClaveAnt" value="" type="password" placeholder="Contraseña anterior" autocomplete="off" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-lock-open"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 ocultar">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioClave">Nueva contraseña<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 info" name="usuarioClave" id="usuarioClave" value="" type="password" placeholder="Nueva contraseña" autocomplete="off" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-lock"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 ocultar">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="usuarioClaveConfirmar">Confirmar contraseña<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 info" name="usuarioClaveConfirmar" id="usuarioClaveConfirmar" type="password" placeholder="Confirmar contraseña" autocomplete="off" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-lock"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!-- /.card -->
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-primary btn-block font-weight-bold" type="submit" title="Actualizar mi perfil" data-toggle="tooltip" data-placement="left">Guardar cambios</button>
+
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        usuariosCRUD.updateUsuarioAsync();
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $(".ocultar").hide();
+
+        $("#opcCambiarClave").click(function () {
+            if ($("#opcCambiarClave").is(":checked")) {
+                $(".ocultar").show();
+            } else {
+                $(".ocultar").hide();
+            }
+        });
+
+
+        //Inicializar ColorPicker
+        $('.colorAgenda').colorpicker();
+
+        //Al cargar la página tome el color de la base de datos
+        $('.colorAgenda .fa-square').css('color', "@Model.StrColor");
+
+        //Cambiar el icono de color al seleccionar un color diferente
+        $('.colorAgenda').on('colorpickerChange', function (event) {
+            $('.colorAgenda .fa-square').css('color', event.color.toString());
+        });
+
+    });
+
+</script>

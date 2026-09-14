@@ -1,0 +1,96 @@
+﻿@model List<Models.ActividadesActa>
+
+
+@{
+    string fecha = string.Empty;
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card-body p-0">
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger block-center" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+            else
+            {
+
+                <table class="table table-responsive-lg table-sm" id="tblCompromisos" style="width:100% !important">
+                    <thead>
+                        <tr>
+                            <th style="display: none; ">ActividadID</th>
+                            <th>Actividad</th>
+                            <th>Responsable</th>
+                            <th class="text-center">Fecha</th>
+                            <th class="text-center">Ejecuta</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tblDetalleCompromisos" style="width:100%!important">
+
+                        @foreach (var item in Model)
+                        {
+                            if (item.DatFecha.HasValue)
+                            {
+                                fecha = item.DatFecha.Value.ToString("yyyy-MM-dd");
+                            }
+                            <tr class="item" data-id="@item.IntActividadID">
+
+                                <td style="text-align:center; display:none;"><span class="iActividadID">@item.IntActividadID</span></td>
+                                <td class=""><span class="iCompromisoDescripcion text-muted ">@item.StrDescripcion</span></td>
+                                <td class=""><span class="iCompromisoResponsable text-muted">@item.StrResponsable</span></td>
+                                <td class="text-center"><span class="iCompromisoFecha text-muted">@fecha</span></td>
+
+                                @if (item.OpcEjecuta != true)
+                                {
+                                    <td class="text-center h5"><a href="#" class="iCompromisoEstado" data-estado="False" data-id="@item.IntActividadID" onclick="actaCRUD.updateEjecutaCompromisosAsync(@item.IntActividadID, true)"><span class="badge badge-danger">NO</span></a></td>
+
+                                }
+                                else
+                                {
+                                    <td class="text-center h5"><a href="#" class="iCompromisoEstado" data-estado="True" data-id="@item.IntActividadID" onclick="actaCRUD.updateEjecutaCompromisosAsync(@item.IntActividadID, false)"><span class="badge badge-success">SI</span></a></td>
+
+                                }
+                      
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+        </div>
+
+    </div>
+</div>
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $("#tblDetalleCompromisos > tr").each(function (i, tr) {
+
+            var descripcion = $(tr).find(".iCompromisoDescripcion").html();
+            descripcion = unescape(descripcion);
+            $(tr).find(".iCompromisoDescripcion").html(descripcion);
+
+            //Si el acta ya fue enviada
+            if ($("#opcEnviado").prop("checked")) {
+                $(".enviado", tr).attr("disabled", true);
+            }
+
+            $('.remove-item').off().click(function (e) {
+                $(this).parent('td').parent('tr').remove();
+            });
+
+        });
+
+    });
+
+</script>

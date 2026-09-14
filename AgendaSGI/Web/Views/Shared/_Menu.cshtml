@@ -1,0 +1,142 @@
+﻿ @{
+
+     Models.Usuarios usuario = (Models.Usuarios)HttpContext.Current.Session["Usuario"];
+
+     string usuarioNombre = string.Empty;
+
+     if (usuario != null)
+     {
+         usuarioNombre = usuario.StrNombre;
+     }
+ }
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Logo -->
+    <a href="@Url.Action("Index","Home")" class="brand-link">
+        <img src="~/Content/images/logo_circular.png" alt="SGI" class="brand-image img-circle elevation-5"
+             style="opacity: 1">
+        <span class="brand-text font-weight-light font-weight-bold">GESTIÓN INTEGRAL </span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="~/Content/images/usuarios/default.png" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="@Url.Action("Index","Cuenta")" class="d-block"> @usuarioNombre</a>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                <!--Maestros-->
+                <li class="nav-header">SGI App</li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("Index","Clientes")" class="nav-link">
+                        <i class="fa fa-users-cog nav-icon"></i>
+                        <p>Clientes</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("Index","Agenda")" class="nav-link">
+                        <i class="fa fa-calendar-check nav-icon"></i>
+                        <p>Agenda</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("Index","Actas")" class="nav-link">
+                        <i class="fas fa-book-open nav-icon"></i>
+                        <p>Actas</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("TiemposAsesorias","Agenda")" class="nav-link">
+                        <i class="fa fa-users nav-icon"></i>
+                        <p>Tiempos</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("Index","Informes")" class="nav-link">
+                        <i class="fas fa-chart-pie nav-icon"></i>
+                        <p>Informes</p>
+                    </a>
+                </li>
+
+
+
+                @*<li class="nav-header">AUDITORIA</li>
+
+        <li class="nav-item">
+            <a href="@Url.Action("Index","Procesos")" class="nav-link">
+                <i class="fas fa-clone nav-icon"></i>
+
+                <p>Procesos</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="@Url.Action("Index","Numerales")" class="nav-link">
+                <i class="fas fa-align-justify nav-icon"></i>
+
+                <p>Numerales</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="@Url.Action("Index","Preguntas")" class="nav-link">
+                <i class="fas fa-question nav-icon"></i>
+
+                <p>Preguntas</p>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a href="@Url.Action("Index","Auditoria")" class="nav-link">
+                <i class="fas fa-list-ol nav-icon"></i>
+
+                <p>Auditoría</p>
+            </a>
+        </li>*@
+
+                <li class="nav-header">PARÁMETROS</li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("Index","Configuracion")" class="nav-link">
+                        <i class="fas fa-cogs nav-icon"></i>
+                        <p>Configuración</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("Index","Usuarios")" class="nav-link">
+                        <i class="fas fa-user-plus nav-icon"></i>
+                        <p>Usuarios</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="@Url.Action("Index","TipoEventos")" class="nav-link">
+                        <i class="fas fa-chalkboard-teacher nav-icon"></i>
+                        <p>Tipo de visitas</p>
+                    </a>
+                </li>
+
+
+
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>
+

@@ -1,0 +1,42 @@
+﻿<div class="content-header pt-0 mt-0">
+    <div class="container-fluid pt-0 mt-0">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-dark font-weight-bold">Configuración</h1>
+                <small>Módulo de configuración general del sistema</small>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Parámetros</a></li>
+                    <li class="breadcrumb-item active">Configuración</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="divGetConfiguracion">
+
+</div>
+
+@section BodyArea {
+    <div class=" modal fade fade bd-example-modal-sm" id="modal" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor">
+
+        </div>
+    </div>
+}
+
+<script src="@Scripts.Url("~/Scripts/modulos/Configuracion/CRUDConfiguracion.js")"></script>
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            configuracionCRUD.getConfiguracion();
+        });
+
+    </script>
+}

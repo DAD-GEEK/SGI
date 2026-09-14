@@ -1,0 +1,153 @@
+﻿
+
+@model List<Models.Preguntas>
+
+@{
+    string Estado = string.Empty;
+}
+
+<div class=" container-fluid">
+
+    <div class=" col-md-12">
+        <div class="card">
+
+            <div class="card-header fondoOscuroSGI">
+                <button type="button" class="btn btn-outline-light btn-lg" data-toggle="modal" data-url="@Url.Action("CrearPregunta","Preguntas")" id="btnCrearPregunta"><i class="fas fa-question"></i>&nbsp;&nbsp;Agregar pregunta</button>
+            </div>
+
+            <div class="card-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger block-center m-1" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
+                else
+                {
+                    @Html.AntiForgeryToken()
+                    <table id="tblPreguntas" class="table table-bordered dt-responsive " style="width:100%">
+                        <thead class="text-center text-white fondoColorSGI">
+                            <tr>
+                                <th class="d-none">Id</th>
+                                <th>Pregunta</th>
+                                <th>Evidencia</th>
+                                <th>Proceso</th>
+                                <th>Numeral</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+
+
+                            </tr>
+                        </thead>
+
+                        <tbody id="detallePreguntas">
+                            @foreach (var item in Model)
+                            {
+                                Estado = (item.OpcEstado == true ? "ACTIVO" : "INACTIVO");
+
+                                <tr>
+                                    <td class="d-none">@item.IntPreguntaID</td>
+
+                                    <td class="text-center">@item.StrDescripcion</td>
+
+                                    <td class="text-center">@item.StrEvidencia</td>
+
+                                    <td class="text-center">@item.Procesos.StrDescripcion</td>
+
+                                    <td class="text-center">@item.Numerales.StrDescripcion</td>
+
+                                    @if (item.OpcEstado == true)
+                                    {
+                                        <td class="text-center h5"><span class="badge badge-success">@Estado</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center h5"><span class="badge badge-danger">@Estado</span></td>
+                                    }
+
+
+                                    <td class=" text-center">
+                                        <button title="Editar" data-toggle="tooltip" data-placement="left" class="btn btn-dark glyphicon glyphicon-edit" value="@item.IntPreguntaID" onclick="preguntasCRUD.getPreguntaParaEditarAsync(this)"><em class="fa fa-edit fa-fw"></em></button>
+                                        <button title="Eliminar" data-toggle="tooltip" data-placement="left" class="btn btn-danger glyphicon glyphicon-trash" value="@item.IntPreguntaID" onclick="preguntasCRUD.deletePreguntaAsync(this)"><em class="fa fa-trash fa-fw"></em></button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $("#btnCrearPregunta").on("click", function () {
+
+            var url = $(this).data("url");
+
+            $.get(url, function (data) {
+
+                if (data.error != null) {
+                    if (data.exc == true) {
+                        swal("¡Error!", data.error, "error");
+                        return;
+                    }
+                    swal("¡Validación!", data.error, "info");
+                } else {
+                    $('#contenedor').empty().html(data);
+                    $('#modal').modal('show');
+                }
+
+            });
+        });
+
+
+        $('#tblPreguntas').DataTable({
+
+            "order": [[0, "desc"]],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]]
+        });
+    });
+
+
+</script>
+
+

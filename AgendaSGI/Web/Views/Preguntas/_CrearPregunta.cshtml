@@ -1,0 +1,125 @@
+﻿
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:800px!important; max-height:75vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><em class="fas fa-question text-gray "></em></span>&nbsp; Agregar pregunta</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form method="post" action="#" id="formCrearGlobal">
+            @Html.AntiForgeryToken()
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12" style="height:auto">
+
+                            <div class="card card-primary card-outline card-outline-tabs">
+
+                                <div class="card-body pt-1">
+
+                                    <div class="row">
+                                        <div class="col-md-12 pb-1 pt-0">
+                                            <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="preguntaDescripcion">Pregunta<span class="text-danger">*</span></label>
+                                                <textarea class="form-control" id="preguntaDescripcion" autocomplete="off" maxlength="500" placeholder="Agregar pregunta..." data-parsley-required data-parsley-errors-container="#errorPreguntaDescripcion"></textarea>
+                                                <span class="text-danger" id="errorPreguntaDescripcion"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="preguntaDescripcion">Evidencia<span class="text-danger">*</span></label>
+                                                <textarea class="form-control" id="preguntaEvidencia" autocomplete="off" maxlength="200" placeholder="Agregar evidencia..." data-parsley-required data-parsley-errors-container="#errorPreguntaEvidencia"></textarea>
+                                                <span class="text-danger" id="errorPreguntaEvidencia"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="preguntaProceso">Proceso<span class="text-danger">*</span></label>
+                                                @Html.DropDownList("listaProcesos", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "preguntaProceso", placeholder = "-- Seleccione una opción", data_parsley_required = "required", data_parsley_errors_container = "#errorPreguntaProceso" })
+                                                <span class="text-danger" id="errorPreguntaProceso"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="preguntaNumeral">Numeral de la norma<span class="text-danger">*</span></label>
+                                                @Html.DropDownList("listaNumerales", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "preguntaNumeral", placeholder = "-- Seleccione una opción", data_parsley_required = "required", data_parsley_errors_container = "#errorPreguntaNumeral" })
+                                                <span class="text-danger" id="errorPreguntaNumeral"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 mr">
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="button" data-dismiss="modal" class="btn btn-block btn-dark">Cancelar</button>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-block ">Guardar</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script src="@Scripts.Url("~/Plugins/Parsley/parsley.js")"></script>
+
+<link href="~/Plugins/Parsley/Parsley.css" rel="stylesheet" />
+<script type="text/javascript">
+
+    $(function () {
+
+        $(document).ready(function () {
+
+            $("#preguntaProceso").select2({
+                placeholder: '-- Selecccione una opción --',
+                theme: 'bootstrap4'
+             });
+
+            $("#preguntaNumeral").select2({
+                placeholder: '-- Selecccione una opción --',
+                theme: 'bootstrap4'
+            });
+
+            preguntasCRUD.crearPreguntaAsync();
+        });
+    });
+
+</script>

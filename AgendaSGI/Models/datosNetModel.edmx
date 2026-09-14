@@ -1,0 +1,1522 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="datosNetModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Actas">
+          <Key>
+            <PropertyRef Name="IntActaID" />
+          </Key>
+          <Property Name="IntActaID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IntAgendaID" Type="int" Nullable="false" />
+          <Property Name="IntConsecutivo" Type="int" />
+        </EntityType>
+        <EntityType Name="ActividadesActa">
+          <Key>
+            <PropertyRef Name="IntActividadID" />
+          </Key>
+          <Property Name="IntActividadID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IntActaID" Type="int" />
+          <Property Name="StrDescripcion" Type="varchar" MaxLength="2000" />
+          <Property Name="StrResponsable" Type="varchar" MaxLength="500" />
+          <Property Name="DatFecha" Type="datetime" />
+          <Property Name="OpcEjecuta" Type="bit" />
+        </EntityType>
+        <EntityType Name="Agenda">
+          <Key>
+            <PropertyRef Name="IntAgendaID" />
+          </Key>
+          <Property Name="IntAgendaID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrTitulo" Type="nvarchar" MaxLength="500" />
+          <Property Name="StrDescripcion" Type="nvarchar" MaxLength="500" />
+          <Property Name="DatFechaInicial" Type="datetime" />
+          <Property Name="DatFechaFinal" Type="datetime" />
+          <Property Name="OpcAllDay" Type="bit" />
+          <Property Name="OpcEnviado" Type="bit" />
+          <Property Name="OpcCancelada" Type="bit" />
+          <Property Name="StrHoras" Type="nvarchar" MaxLength="20" />
+          <Property Name="IntClienteID" Type="int" Nullable="false" />
+          <Property Name="IntTipoEventoID" Type="int" Nullable="false" />
+          <Property Name="IntUsuarioID" Type="int" Nullable="false" />
+          <Property Name="IntActaID" Type="int" />
+          <Property Name="OpcLunch" Type="bit" />
+          <Property Name="DatFechaIngreso" Type="datetime" />
+        </EntityType>
+        <EntityType Name="AsistentesActa">
+          <Key>
+            <PropertyRef Name="IntAsistenteID" />
+          </Key>
+          <Property Name="IntAsistenteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrNombre" Type="nvarchar" MaxLength="100" />
+          <Property Name="StrProceso" Type="nvarchar" MaxLength="50" />
+          <Property Name="OpcAsiste" Type="bit" />
+          <Property Name="IntActaID" Type="int" />
+        </EntityType>
+        <EntityType Name="Ciudades">
+          <Key>
+            <PropertyRef Name="IntCiudadID" />
+          </Key>
+          <Property Name="IntCiudadID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrCodigo" Type="nvarchar" MaxLength="20" />
+          <Property Name="StrDescripcion" Type="nvarchar" MaxLength="50" />
+          <Property Name="IntDepartamentoID" Type="int" />
+        </EntityType>
+        <EntityType Name="Clientes">
+          <Key>
+            <PropertyRef Name="IntClienteID" />
+          </Key>
+          <Property Name="IntClienteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrIdentificacion" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IntDV" Type="int" />
+          <Property Name="StrNombre" Type="nvarchar" MaxLength="200" />
+          <Property Name="StrDireccion" Type="nvarchar" MaxLength="100" />
+          <Property Name="StrEmail" Type="nvarchar" MaxLength="100" />
+          <Property Name="IntCiudadID" Type="int" />
+          <Property Name="StrTelefono" Type="nvarchar" MaxLength="50" />
+          <Property Name="StrPaginaWeb" Type="nvarchar" MaxLength="100" />
+          <Property Name="DatFechaIngreso" Type="date" Nullable="false" />
+          <Property Name="OpcEstado" Type="bit" />
+        </EntityType>
+        <EntityType Name="Configuracion">
+          <Key>
+            <PropertyRef Name="IntID" />
+          </Key>
+          <Property Name="IntID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrHoraInicial" Type="nvarchar" MaxLength="10" />
+          <Property Name="StrHoraFinal" Type="nvarchar" MaxLength="10" />
+          <Property Name="StrVistaAgenda" Type="nvarchar" MaxLength="20" />
+          <Property Name="IntDuracionDefault" Type="int" />
+          <Property Name="StrSMPTEmail" Type="nvarchar" MaxLength="50" />
+          <Property Name="StrSMTPPassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="StrSMTPPort" Type="int" />
+          <Property Name="StrSMTPHost" Type="nvarchar" MaxLength="50" />
+          <Property Name="OpcSMTPSSL" Type="bit" />
+        </EntityType>
+        <EntityType Name="Contactos">
+          <Key>
+            <PropertyRef Name="IntContactoID" />
+          </Key>
+          <Property Name="IntContactoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrNombre" Type="nvarchar" MaxLength="200" />
+          <Property Name="StrCargo" Type="nvarchar" MaxLength="50" />
+          <Property Name="StrTelefonoFijo" Type="nvarchar" MaxLength="50" />
+          <Property Name="StrCelular" Type="nvarchar" MaxLength="50" />
+          <Property Name="StrEmail" Type="nvarchar" MaxLength="100" />
+          <Property Name="IntClienteID" Type="int" />
+        </EntityType>
+        <EntityType Name="Contratos">
+          <Key>
+            <PropertyRef Name="IntContratoID" />
+          </Key>
+          <Property Name="IntContratoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IntNumeroContrato" Type="int" />
+          <Property Name="DatFechaInicial" Type="datetime" Nullable="false" />
+          <Property Name="DatFechaFinal" Type="datetime" Nullable="false" />
+          <Property Name="IntHoras" Type="int" />
+          <Property Name="IntValor" Type="int" />
+          <Property Name="StrEmail" Type="nvarchar" MaxLength="100" />
+          <Property Name="IntClienteID" Type="int" />
+          <Property Name="OpcEstado" Type="bit" />
+        </EntityType>
+        <EntityType Name="Contratos_SistemasDeGestion">
+          <Key>
+            <PropertyRef Name="IntRegistroID" />
+          </Key>
+          <Property Name="IntRegistroID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IntContratoID" Type="int" Nullable="false" />
+          <Property Name="IntSistemaID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Contratos_Usuarios">
+          <Key>
+            <PropertyRef Name="IntRegistroID" />
+          </Key>
+          <Property Name="IntRegistroID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IntContratoID" Type="int" Nullable="false" />
+          <Property Name="IntUsuarioID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Departamentos">
+          <Key>
+            <PropertyRef Name="IntDepartamentoID" />
+          </Key>
+          <Property Name="IntDepartamentoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrCodigo" Type="nvarchar" MaxLength="20" />
+          <Property Name="StrDescripcion" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="LogsEx">
+          <Key>
+            <PropertyRef Name="IntLogID" />
+          </Key>
+          <Property Name="IntLogID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IntUsuarioID" Type="int" />
+          <Property Name="StrMensaje" Type="nvarchar(max)" />
+          <Property Name="StrRecurso" Type="nvarchar" MaxLength="4000" />
+          <Property Name="DatFecha" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Modulos">
+          <Key>
+            <PropertyRef Name="IntModuloID" />
+          </Key>
+          <Property Name="IntModuloID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrDescripcion" Type="nvarchar" MaxLength="50" />
+          <Property Name="StrControlador" Type="nvarchar" MaxLength="20" />
+          <Property Name="StrAccion" Type="nvarchar" MaxLength="20" />
+          <Property Name="OpcEstado" Type="bit" />
+        </EntityType>
+        <EntityType Name="Procesos">
+          <Key>
+            <PropertyRef Name="IntProcesoID" />
+          </Key>
+          <Property Name="IntProcesoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrDescripcion" Type="nvarchar" MaxLength="50" />
+          <Property Name="OpcEstado" Type="bit" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="IntRolID" />
+          </Key>
+          <Property Name="IntRolID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrCodigo" Type="nvarchar" MaxLength="20" />
+          <Property Name="StrDescripcion" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Roles_Modulos">
+          <Key>
+            <PropertyRef Name="IntRegistroID" />
+          </Key>
+          <Property Name="IntRegistroID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IntRolID" Type="int" Nullable="false" />
+          <Property Name="IntModuloID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SistemasDeGestion">
+          <Key>
+            <PropertyRef Name="IntSistemaID" />
+          </Key>
+          <Property Name="IntSistemaID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrCodigo" Type="nvarchar" MaxLength="50" />
+          <Property Name="StrDescripcion" Type="nvarchar" MaxLength="100" />
+          <Property Name="OpcEstado" Type="bit" />
+        </EntityType>
+        <EntityType Name="TemasActa">
+          <Key>
+            <PropertyRef Name="IntTemaID" />
+          </Key>
+          <Property Name="IntTemaID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IntActaID" Type="int" />
+          <Property Name="StrDescripcion" Type="nvarchar" MaxLength="200" />
+          <Property Name="StrResponsable" Type="nvarchar" MaxLength="100" />
+          <Property Name="StrDesarrollo" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="TipoEventos">
+          <Key>
+            <PropertyRef Name="IntTipoEventoID" />
+          </Key>
+          <Property Name="IntTipoEventoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StrCodigo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="StrDescripcion" Type="nvarchar" MaxLength="100" />
+          <Property Name="OpcSoporte" Type="bit" />
+          <Property Name="OpcAlerta" Type="bit" />
+          <Property Name="OpcEstado" Type="bit" />
+        </EntityType>
+        <EntityType Name="Usuarios">
+          <Key>
+            <PropertyRef Name="IntUsuarioID" />
+          </Key>
+          <Property Name="IntUsuarioID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IntRolID" Type="int" />
+          <Property Name="StrCodigo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="StrNombre" Type="nvarchar" MaxLength="200" />
+          <Property Name="StrClave" Type="nvarchar" MaxLength="500" />
+          <Property Name="StrEmail" Type="nvarchar" MaxLength="100" />
+          <Property Name="IntCiudadID" Type="int" />
+          <Property Name="StrDireccion" Type="nvarchar" MaxLength="100" />
+          <Property Name="StrTelefonoFijo" Type="nvarchar" MaxLength="50" />
+          <Property Name="StrCelular" Type="nvarchar" MaxLength="50" />
+          <Property Name="StrColor" Type="nvarchar" MaxLength="20" />
+          <Property Name="OpcEstado" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Actas_Agenda">
+          <End Role="Agenda" Type="Self.Agenda" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Actas" Type="Self.Actas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Agenda">
+              <PropertyRef Name="IntAgendaID" />
+            </Principal>
+            <Dependent Role="Actas">
+              <PropertyRef Name="IntAgendaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Actividades_Actas">
+          <End Role="Actas" Type="Self.Actas" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ActividadesActa" Type="Self.ActividadesActa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actas">
+              <PropertyRef Name="IntActaID" />
+            </Principal>
+            <Dependent Role="ActividadesActa">
+              <PropertyRef Name="IntActaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agenda_Clientes">
+          <End Role="Clientes" Type="Self.Clientes" Multiplicity="1" />
+          <End Role="Agenda" Type="Self.Agenda" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="IntClienteID" />
+            </Principal>
+            <Dependent Role="Agenda">
+              <PropertyRef Name="IntClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agenda_TipoEventos">
+          <End Role="TipoEventos" Type="Self.TipoEventos" Multiplicity="1" />
+          <End Role="Agenda" Type="Self.Agenda" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoEventos">
+              <PropertyRef Name="IntTipoEventoID" />
+            </Principal>
+            <Dependent Role="Agenda">
+              <PropertyRef Name="IntTipoEventoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agenda_usuarios">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
+          <End Role="Agenda" Type="Self.Agenda" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IntUsuarioID" />
+            </Principal>
+            <Dependent Role="Agenda">
+              <PropertyRef Name="IntUsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsistentesActa_Actas">
+          <End Role="Actas" Type="Self.Actas" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AsistentesActa" Type="Self.AsistentesActa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actas">
+              <PropertyRef Name="IntActaID" />
+            </Principal>
+            <Dependent Role="AsistentesActa">
+              <PropertyRef Name="IntActaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ciudades_Departamentos">
+          <End Role="Departamentos" Type="Self.Departamentos" Multiplicity="0..1" />
+          <End Role="Ciudades" Type="Self.Ciudades" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departamentos">
+              <PropertyRef Name="IntDepartamentoID" />
+            </Principal>
+            <Dependent Role="Ciudades">
+              <PropertyRef Name="IntDepartamentoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Clientes_Ciudades">
+          <End Role="Ciudades" Type="Self.Ciudades" Multiplicity="0..1" />
+          <End Role="Clientes" Type="Self.Clientes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ciudades">
+              <PropertyRef Name="IntCiudadID" />
+            </Principal>
+            <Dependent Role="Clientes">
+              <PropertyRef Name="IntCiudadID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contactos_Clientes">
+          <End Role="Clientes" Type="Self.Clientes" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Contactos" Type="Self.Contactos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="IntClienteID" />
+            </Principal>
+            <Dependent Role="Contactos">
+              <PropertyRef Name="IntClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contratos_Clientes">
+          <End Role="Clientes" Type="Self.Clientes" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Contratos" Type="Self.Contratos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="IntClienteID" />
+            </Principal>
+            <Dependent Role="Contratos">
+              <PropertyRef Name="IntClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contratos_SistemasDeGestion_Contratos">
+          <End Role="Contratos" Type="Self.Contratos" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Contratos_SistemasDeGestion" Type="Self.Contratos_SistemasDeGestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contratos">
+              <PropertyRef Name="IntContratoID" />
+            </Principal>
+            <Dependent Role="Contratos_SistemasDeGestion">
+              <PropertyRef Name="IntContratoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contratos_SistemasDeGestion_Sistemas">
+          <End Role="SistemasDeGestion" Type="Self.SistemasDeGestion" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Contratos_SistemasDeGestion" Type="Self.Contratos_SistemasDeGestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SistemasDeGestion">
+              <PropertyRef Name="IntSistemaID" />
+            </Principal>
+            <Dependent Role="Contratos_SistemasDeGestion">
+              <PropertyRef Name="IntSistemaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contratos_Usuarios_Contratos">
+          <End Role="Contratos" Type="Self.Contratos" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Contratos_Usuarios" Type="Self.Contratos_Usuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contratos">
+              <PropertyRef Name="IntContratoID" />
+            </Principal>
+            <Dependent Role="Contratos_Usuarios">
+              <PropertyRef Name="IntContratoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contratos_Usuarios_Usuarios">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
+          <End Role="Contratos_Usuarios" Type="Self.Contratos_Usuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IntUsuarioID" />
+            </Principal>
+            <Dependent Role="Contratos_Usuarios">
+              <PropertyRef Name="IntUsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Logs_Usuarios">
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
+          <End Role="LogsEx" Type="Self.LogsEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IntUsuarioID" />
+            </Principal>
+            <Dependent Role="LogsEx">
+              <PropertyRef Name="IntUsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Roles_Modulos_Modulos">
+          <End Role="Modulos" Type="Self.Modulos" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Roles_Modulos" Type="Self.Roles_Modulos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Modulos">
+              <PropertyRef Name="IntModuloID" />
+            </Principal>
+            <Dependent Role="Roles_Modulos">
+              <PropertyRef Name="IntModuloID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Roles_Modulos_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Roles_Modulos" Type="Self.Roles_Modulos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="IntRolID" />
+            </Principal>
+            <Dependent Role="Roles_Modulos">
+              <PropertyRef Name="IntRolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Temas_Actas">
+          <End Role="Actas" Type="Self.Actas" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TemasActa" Type="Self.TemasActa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actas">
+              <PropertyRef Name="IntActaID" />
+            </Principal>
+            <Dependent Role="TemasActa">
+              <PropertyRef Name="IntActaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuarios_Ciudades">
+          <End Role="Ciudades" Type="Self.Ciudades" Multiplicity="0..1" />
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ciudades">
+              <PropertyRef Name="IntCiudadID" />
+            </Principal>
+            <Dependent Role="Usuarios">
+              <PropertyRef Name="IntCiudadID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuarios_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="IntRolID" />
+            </Principal>
+            <Dependent Role="Usuarios">
+              <PropertyRef Name="IntRolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="datosNetModelStoreContainer">
+          <EntitySet Name="Actas" EntityType="Self.Actas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActividadesActa" EntityType="Self.ActividadesActa" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Agenda" EntityType="Self.Agenda" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsistentesActa" EntityType="Self.AsistentesActa" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Ciudades" EntityType="Self.Ciudades" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Clientes" EntityType="Self.Clientes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Configuracion" EntityType="Self.Configuracion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contactos" EntityType="Self.Contactos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contratos" EntityType="Self.Contratos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contratos_SistemasDeGestion" EntityType="Self.Contratos_SistemasDeGestion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contratos_Usuarios" EntityType="Self.Contratos_Usuarios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Departamentos" EntityType="Self.Departamentos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LogsEx" EntityType="Self.LogsEx" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Modulos" EntityType="Self.Modulos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Procesos" EntityType="Self.Procesos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles_Modulos" EntityType="Self.Roles_Modulos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SistemasDeGestion" EntityType="Self.SistemasDeGestion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TemasActa" EntityType="Self.TemasActa" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TipoEventos" EntityType="Self.TipoEventos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Actas_Agenda" Association="Self.FK_Actas_Agenda">
+            <End Role="Agenda" EntitySet="Agenda" />
+            <End Role="Actas" EntitySet="Actas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Actividades_Actas" Association="Self.FK_Actividades_Actas">
+            <End Role="Actas" EntitySet="Actas" />
+            <End Role="ActividadesActa" EntitySet="ActividadesActa" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agenda_Clientes" Association="Self.FK_Agenda_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="Agenda" EntitySet="Agenda" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agenda_TipoEventos" Association="Self.FK_Agenda_TipoEventos">
+            <End Role="TipoEventos" EntitySet="TipoEventos" />
+            <End Role="Agenda" EntitySet="Agenda" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agenda_usuarios" Association="Self.FK_Agenda_usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Agenda" EntitySet="Agenda" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsistentesActa_Actas" Association="Self.FK_AsistentesActa_Actas">
+            <End Role="Actas" EntitySet="Actas" />
+            <End Role="AsistentesActa" EntitySet="AsistentesActa" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ciudades_Departamentos" Association="Self.FK_Ciudades_Departamentos">
+            <End Role="Departamentos" EntitySet="Departamentos" />
+            <End Role="Ciudades" EntitySet="Ciudades" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Clientes_Ciudades" Association="Self.FK_Clientes_Ciudades">
+            <End Role="Ciudades" EntitySet="Ciudades" />
+            <End Role="Clientes" EntitySet="Clientes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contactos_Clientes" Association="Self.FK_Contactos_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="Contactos" EntitySet="Contactos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contratos_Clientes" Association="Self.FK_Contratos_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="Contratos" EntitySet="Contratos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contratos_SistemasDeGestion_Contratos" Association="Self.FK_Contratos_SistemasDeGestion_Contratos">
+            <End Role="Contratos" EntitySet="Contratos" />
+            <End Role="Contratos_SistemasDeGestion" EntitySet="Contratos_SistemasDeGestion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contratos_SistemasDeGestion_Sistemas" Association="Self.FK_Contratos_SistemasDeGestion_Sistemas">
+            <End Role="SistemasDeGestion" EntitySet="SistemasDeGestion" />
+            <End Role="Contratos_SistemasDeGestion" EntitySet="Contratos_SistemasDeGestion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contratos_Usuarios_Contratos" Association="Self.FK_Contratos_Usuarios_Contratos">
+            <End Role="Contratos" EntitySet="Contratos" />
+            <End Role="Contratos_Usuarios" EntitySet="Contratos_Usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contratos_Usuarios_Usuarios" Association="Self.FK_Contratos_Usuarios_Usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Contratos_Usuarios" EntitySet="Contratos_Usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Logs_Usuarios" Association="Self.FK_Logs_Usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="LogsEx" EntitySet="LogsEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Roles_Modulos_Modulos" Association="Self.FK_Roles_Modulos_Modulos">
+            <End Role="Modulos" EntitySet="Modulos" />
+            <End Role="Roles_Modulos" EntitySet="Roles_Modulos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Roles_Modulos_Roles" Association="Self.FK_Roles_Modulos_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Roles_Modulos" EntitySet="Roles_Modulos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Temas_Actas" Association="Self.FK_Temas_Actas">
+            <End Role="Actas" EntitySet="Actas" />
+            <End Role="TemasActa" EntitySet="TemasActa" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuarios_Ciudades" Association="Self.FK_Usuarios_Ciudades">
+            <End Role="Ciudades" EntitySet="Ciudades" />
+            <End Role="Usuarios" EntitySet="Usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuarios_Roles" Association="Self.FK_Usuarios_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Usuarios" EntitySet="Usuarios" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="datosNetModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="datosNetEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Actas" EntityType="datosNetModel.Actas" />
+          <EntitySet Name="ActividadesActa" EntityType="datosNetModel.ActividadesActa" />
+          <EntitySet Name="Agenda" EntityType="datosNetModel.Agenda" />
+          <EntitySet Name="AsistentesActa" EntityType="datosNetModel.AsistentesActa" />
+          <EntitySet Name="Ciudades" EntityType="datosNetModel.Ciudades" />
+          <EntitySet Name="Clientes" EntityType="datosNetModel.Clientes" />
+          <EntitySet Name="Configuracion" EntityType="datosNetModel.Configuracion" />
+          <EntitySet Name="Contactos" EntityType="datosNetModel.Contactos" />
+          <EntitySet Name="Contratos" EntityType="datosNetModel.Contratos" />
+          <EntitySet Name="Contratos_SistemasDeGestion" EntityType="datosNetModel.Contratos_SistemasDeGestion" />
+          <EntitySet Name="Contratos_Usuarios" EntityType="datosNetModel.Contratos_Usuarios" />
+          <EntitySet Name="Departamentos" EntityType="datosNetModel.Departamentos" />
+          <EntitySet Name="LogsEx" EntityType="datosNetModel.LogsEx" />
+          <EntitySet Name="Modulos" EntityType="datosNetModel.Modulos" />
+          <EntitySet Name="Procesos" EntityType="datosNetModel.Procesos" />
+          <EntitySet Name="Roles" EntityType="datosNetModel.Roles" />
+          <EntitySet Name="Roles_Modulos" EntityType="datosNetModel.Roles_Modulos" />
+          <EntitySet Name="SistemasDeGestion" EntityType="datosNetModel.SistemasDeGestion" />
+          <EntitySet Name="TemasActa" EntityType="datosNetModel.TemasActa" />
+          <EntitySet Name="TipoEventos" EntityType="datosNetModel.TipoEventos" />
+          <EntitySet Name="Usuarios" EntityType="datosNetModel.Usuarios" />
+          <AssociationSet Name="FK_Actas_Agenda" Association="datosNetModel.FK_Actas_Agenda">
+            <End Role="Agenda" EntitySet="Agenda" />
+            <End Role="Actas" EntitySet="Actas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Actividades_Actas" Association="datosNetModel.FK_Actividades_Actas">
+            <End Role="Actas" EntitySet="Actas" />
+            <End Role="ActividadesActa" EntitySet="ActividadesActa" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsistentesActa_Actas" Association="datosNetModel.FK_AsistentesActa_Actas">
+            <End Role="Actas" EntitySet="Actas" />
+            <End Role="AsistentesActa" EntitySet="AsistentesActa" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Temas_Actas" Association="datosNetModel.FK_Temas_Actas">
+            <End Role="Actas" EntitySet="Actas" />
+            <End Role="TemasActa" EntitySet="TemasActa" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agenda_Clientes" Association="datosNetModel.FK_Agenda_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="Agenda" EntitySet="Agenda" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agenda_TipoEventos" Association="datosNetModel.FK_Agenda_TipoEventos">
+            <End Role="TipoEventos" EntitySet="TipoEventos" />
+            <End Role="Agenda" EntitySet="Agenda" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Agenda_usuarios" Association="datosNetModel.FK_Agenda_usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Agenda" EntitySet="Agenda" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Ciudades_Departamentos" Association="datosNetModel.FK_Ciudades_Departamentos">
+            <End Role="Departamentos" EntitySet="Departamentos" />
+            <End Role="Ciudades" EntitySet="Ciudades" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Clientes_Ciudades" Association="datosNetModel.FK_Clientes_Ciudades">
+            <End Role="Ciudades" EntitySet="Ciudades" />
+            <End Role="Clientes" EntitySet="Clientes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuarios_Ciudades" Association="datosNetModel.FK_Usuarios_Ciudades">
+            <End Role="Ciudades" EntitySet="Ciudades" />
+            <End Role="Usuarios" EntitySet="Usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contactos_Clientes" Association="datosNetModel.FK_Contactos_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="Contactos" EntitySet="Contactos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contratos_Clientes" Association="datosNetModel.FK_Contratos_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="Contratos" EntitySet="Contratos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contratos_SistemasDeGestion_Contratos" Association="datosNetModel.FK_Contratos_SistemasDeGestion_Contratos">
+            <End Role="Contratos" EntitySet="Contratos" />
+            <End Role="Contratos_SistemasDeGestion" EntitySet="Contratos_SistemasDeGestion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contratos_Usuarios_Contratos" Association="datosNetModel.FK_Contratos_Usuarios_Contratos">
+            <End Role="Contratos" EntitySet="Contratos" />
+            <End Role="Contratos_Usuarios" EntitySet="Contratos_Usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contratos_SistemasDeGestion_Sistemas" Association="datosNetModel.FK_Contratos_SistemasDeGestion_Sistemas">
+            <End Role="SistemasDeGestion" EntitySet="SistemasDeGestion" />
+            <End Role="Contratos_SistemasDeGestion" EntitySet="Contratos_SistemasDeGestion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contratos_Usuarios_Usuarios" Association="datosNetModel.FK_Contratos_Usuarios_Usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="Contratos_Usuarios" EntitySet="Contratos_Usuarios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Logs_Usuarios" Association="datosNetModel.FK_Logs_Usuarios">
+            <End Role="Usuarios" EntitySet="Usuarios" />
+            <End Role="LogsEx" EntitySet="LogsEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Roles_Modulos_Modulos" Association="datosNetModel.FK_Roles_Modulos_Modulos">
+            <End Role="Modulos" EntitySet="Modulos" />
+            <End Role="Roles_Modulos" EntitySet="Roles_Modulos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Roles_Modulos_Roles" Association="datosNetModel.FK_Roles_Modulos_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Roles_Modulos" EntitySet="Roles_Modulos" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Usuarios_Roles" Association="datosNetModel.FK_Usuarios_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Usuarios" EntitySet="Usuarios" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Actas">
+          <Key>
+            <PropertyRef Name="IntActaID" />
+          </Key>
+          <Property Name="IntActaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IntAgendaID" Type="Int32" Nullable="false" />
+          <Property Name="IntConsecutivo" Type="Int32" />
+          <NavigationProperty Name="Agenda" Relationship="datosNetModel.FK_Actas_Agenda" FromRole="Actas" ToRole="Agenda" />
+          <NavigationProperty Name="ActividadesActa" Relationship="datosNetModel.FK_Actividades_Actas" FromRole="Actas" ToRole="ActividadesActa" />
+          <NavigationProperty Name="AsistentesActa" Relationship="datosNetModel.FK_AsistentesActa_Actas" FromRole="Actas" ToRole="AsistentesActa" />
+          <NavigationProperty Name="TemasActa" Relationship="datosNetModel.FK_Temas_Actas" FromRole="Actas" ToRole="TemasActa" />
+        </EntityType>
+        <EntityType Name="ActividadesActa">
+          <Key>
+            <PropertyRef Name="IntActividadID" />
+          </Key>
+          <Property Name="IntActividadID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IntActaID" Type="Int32" />
+          <Property Name="StrDescripcion" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="StrResponsable" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DatFecha" Type="DateTime" Precision="3" />
+          <Property Name="OpcEjecuta" Type="Boolean" />
+          <NavigationProperty Name="Actas" Relationship="datosNetModel.FK_Actividades_Actas" FromRole="ActividadesActa" ToRole="Actas" />
+        </EntityType>
+        <EntityType Name="Agenda">
+          <Key>
+            <PropertyRef Name="IntAgendaID" />
+          </Key>
+          <Property Name="IntAgendaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrTitulo" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="StrDescripcion" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DatFechaInicial" Type="DateTime" Precision="3" />
+          <Property Name="DatFechaFinal" Type="DateTime" Precision="3" />
+          <Property Name="OpcAllDay" Type="Boolean" />
+          <Property Name="OpcEnviado" Type="Boolean" />
+          <Property Name="OpcCancelada" Type="Boolean" />
+          <Property Name="StrHoras" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IntClienteID" Type="Int32" Nullable="false" />
+          <Property Name="IntTipoEventoID" Type="Int32" Nullable="false" />
+          <Property Name="IntUsuarioID" Type="Int32" Nullable="false" />
+          <Property Name="IntActaID" Type="Int32" />
+          <Property Name="OpcLunch" Type="Boolean" />
+          <Property Name="DatFechaIngreso" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Actas" Relationship="datosNetModel.FK_Actas_Agenda" FromRole="Agenda" ToRole="Actas" />
+          <NavigationProperty Name="Clientes" Relationship="datosNetModel.FK_Agenda_Clientes" FromRole="Agenda" ToRole="Clientes" />
+          <NavigationProperty Name="TipoEventos" Relationship="datosNetModel.FK_Agenda_TipoEventos" FromRole="Agenda" ToRole="TipoEventos" />
+          <NavigationProperty Name="Usuarios" Relationship="datosNetModel.FK_Agenda_usuarios" FromRole="Agenda" ToRole="Usuarios" />
+        </EntityType>
+        <EntityType Name="AsistentesActa">
+          <Key>
+            <PropertyRef Name="IntAsistenteID" />
+          </Key>
+          <Property Name="IntAsistenteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrNombre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StrProceso" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OpcAsiste" Type="Boolean" />
+          <Property Name="IntActaID" Type="Int32" />
+          <NavigationProperty Name="Actas" Relationship="datosNetModel.FK_AsistentesActa_Actas" FromRole="AsistentesActa" ToRole="Actas" />
+        </EntityType>
+        <EntityType Name="Ciudades">
+          <Key>
+            <PropertyRef Name="IntCiudadID" />
+          </Key>
+          <Property Name="IntCiudadID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrCodigo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="StrDescripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IntDepartamentoID" Type="Int32" />
+          <NavigationProperty Name="Departamentos" Relationship="datosNetModel.FK_Ciudades_Departamentos" FromRole="Ciudades" ToRole="Departamentos" />
+          <NavigationProperty Name="Clientes" Relationship="datosNetModel.FK_Clientes_Ciudades" FromRole="Ciudades" ToRole="Clientes" />
+          <NavigationProperty Name="Usuarios" Relationship="datosNetModel.FK_Usuarios_Ciudades" FromRole="Ciudades" ToRole="Usuarios" />
+        </EntityType>
+        <EntityType Name="Clientes">
+          <Key>
+            <PropertyRef Name="IntClienteID" />
+          </Key>
+          <Property Name="IntClienteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrIdentificacion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IntDV" Type="Int32" />
+          <Property Name="StrNombre" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="StrDireccion" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StrEmail" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IntCiudadID" Type="Int32" />
+          <Property Name="StrTelefono" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrPaginaWeb" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DatFechaIngreso" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="OpcEstado" Type="Boolean" />
+          <NavigationProperty Name="Agenda" Relationship="datosNetModel.FK_Agenda_Clientes" FromRole="Clientes" ToRole="Agenda" />
+          <NavigationProperty Name="Ciudades" Relationship="datosNetModel.FK_Clientes_Ciudades" FromRole="Clientes" ToRole="Ciudades" />
+          <NavigationProperty Name="Contactos" Relationship="datosNetModel.FK_Contactos_Clientes" FromRole="Clientes" ToRole="Contactos" />
+          <NavigationProperty Name="Contratos" Relationship="datosNetModel.FK_Contratos_Clientes" FromRole="Clientes" ToRole="Contratos" />
+        </EntityType>
+        <EntityType Name="Configuracion">
+          <Key>
+            <PropertyRef Name="IntID" />
+          </Key>
+          <Property Name="IntID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrHoraInicial" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="StrHoraFinal" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="StrVistaAgenda" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IntDuracionDefault" Type="Int32" />
+          <Property Name="StrSMPTEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrSMTPPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrSMTPPort" Type="Int32" />
+          <Property Name="StrSMTPHost" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OpcSMTPSSL" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Contactos">
+          <Key>
+            <PropertyRef Name="IntContactoID" />
+          </Key>
+          <Property Name="IntContactoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrNombre" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="StrCargo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrTelefonoFijo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrCelular" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrEmail" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IntClienteID" Type="Int32" />
+          <NavigationProperty Name="Clientes" Relationship="datosNetModel.FK_Contactos_Clientes" FromRole="Contactos" ToRole="Clientes" />
+        </EntityType>
+        <EntityType Name="Contratos">
+          <Key>
+            <PropertyRef Name="IntContratoID" />
+          </Key>
+          <Property Name="IntContratoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IntNumeroContrato" Type="Int32" />
+          <Property Name="DatFechaInicial" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DatFechaFinal" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="IntHoras" Type="Int32" />
+          <Property Name="IntValor" Type="Int32" />
+          <Property Name="StrEmail" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IntClienteID" Type="Int32" />
+          <Property Name="OpcEstado" Type="Boolean" />
+          <NavigationProperty Name="Clientes" Relationship="datosNetModel.FK_Contratos_Clientes" FromRole="Contratos" ToRole="Clientes" />
+          <NavigationProperty Name="Contratos_SistemasDeGestion" Relationship="datosNetModel.FK_Contratos_SistemasDeGestion_Contratos" FromRole="Contratos" ToRole="Contratos_SistemasDeGestion" />
+          <NavigationProperty Name="Contratos_Usuarios" Relationship="datosNetModel.FK_Contratos_Usuarios_Contratos" FromRole="Contratos" ToRole="Contratos_Usuarios" />
+        </EntityType>
+        <EntityType Name="Contratos_SistemasDeGestion">
+          <Key>
+            <PropertyRef Name="IntRegistroID" />
+          </Key>
+          <Property Name="IntRegistroID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IntContratoID" Type="Int32" Nullable="false" />
+          <Property Name="IntSistemaID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Contratos" Relationship="datosNetModel.FK_Contratos_SistemasDeGestion_Contratos" FromRole="Contratos_SistemasDeGestion" ToRole="Contratos" />
+          <NavigationProperty Name="SistemasDeGestion" Relationship="datosNetModel.FK_Contratos_SistemasDeGestion_Sistemas" FromRole="Contratos_SistemasDeGestion" ToRole="SistemasDeGestion" />
+        </EntityType>
+        <EntityType Name="Contratos_Usuarios">
+          <Key>
+            <PropertyRef Name="IntRegistroID" />
+          </Key>
+          <Property Name="IntRegistroID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IntContratoID" Type="Int32" Nullable="false" />
+          <Property Name="IntUsuarioID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Contratos" Relationship="datosNetModel.FK_Contratos_Usuarios_Contratos" FromRole="Contratos_Usuarios" ToRole="Contratos" />
+          <NavigationProperty Name="Usuarios" Relationship="datosNetModel.FK_Contratos_Usuarios_Usuarios" FromRole="Contratos_Usuarios" ToRole="Usuarios" />
+        </EntityType>
+        <EntityType Name="Departamentos">
+          <Key>
+            <PropertyRef Name="IntDepartamentoID" />
+          </Key>
+          <Property Name="IntDepartamentoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrCodigo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="StrDescripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Ciudades" Relationship="datosNetModel.FK_Ciudades_Departamentos" FromRole="Departamentos" ToRole="Ciudades" />
+        </EntityType>
+        <EntityType Name="LogsEx">
+          <Key>
+            <PropertyRef Name="IntLogID" />
+          </Key>
+          <Property Name="IntLogID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IntUsuarioID" Type="Int32" />
+          <Property Name="StrMensaje" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StrRecurso" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="DatFecha" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Usuarios" Relationship="datosNetModel.FK_Logs_Usuarios" FromRole="LogsEx" ToRole="Usuarios" />
+        </EntityType>
+        <EntityType Name="Modulos">
+          <Key>
+            <PropertyRef Name="IntModuloID" />
+          </Key>
+          <Property Name="IntModuloID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrDescripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrControlador" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="StrAccion" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="OpcEstado" Type="Boolean" />
+          <NavigationProperty Name="Roles_Modulos" Relationship="datosNetModel.FK_Roles_Modulos_Modulos" FromRole="Modulos" ToRole="Roles_Modulos" />
+        </EntityType>
+        <EntityType Name="Procesos">
+          <Key>
+            <PropertyRef Name="IntProcesoID" />
+          </Key>
+          <Property Name="IntProcesoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrDescripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OpcEstado" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="IntRolID" />
+          </Key>
+          <Property Name="IntRolID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrCodigo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="StrDescripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Roles_Modulos" Relationship="datosNetModel.FK_Roles_Modulos_Roles" FromRole="Roles" ToRole="Roles_Modulos" />
+          <NavigationProperty Name="Usuarios" Relationship="datosNetModel.FK_Usuarios_Roles" FromRole="Roles" ToRole="Usuarios" />
+        </EntityType>
+        <EntityType Name="Roles_Modulos">
+          <Key>
+            <PropertyRef Name="IntRegistroID" />
+          </Key>
+          <Property Name="IntRegistroID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IntRolID" Type="Int32" Nullable="false" />
+          <Property Name="IntModuloID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Modulos" Relationship="datosNetModel.FK_Roles_Modulos_Modulos" FromRole="Roles_Modulos" ToRole="Modulos" />
+          <NavigationProperty Name="Roles" Relationship="datosNetModel.FK_Roles_Modulos_Roles" FromRole="Roles_Modulos" ToRole="Roles" />
+        </EntityType>
+        <EntityType Name="SistemasDeGestion">
+          <Key>
+            <PropertyRef Name="IntSistemaID" />
+          </Key>
+          <Property Name="IntSistemaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrCodigo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrDescripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OpcEstado" Type="Boolean" />
+          <NavigationProperty Name="Contratos_SistemasDeGestion" Relationship="datosNetModel.FK_Contratos_SistemasDeGestion_Sistemas" FromRole="SistemasDeGestion" ToRole="Contratos_SistemasDeGestion" />
+        </EntityType>
+        <EntityType Name="TemasActa">
+          <Key>
+            <PropertyRef Name="IntTemaID" />
+          </Key>
+          <Property Name="IntTemaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IntActaID" Type="Int32" />
+          <Property Name="StrDescripcion" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="StrResponsable" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StrDesarrollo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Actas" Relationship="datosNetModel.FK_Temas_Actas" FromRole="TemasActa" ToRole="Actas" />
+        </EntityType>
+        <EntityType Name="TipoEventos">
+          <Key>
+            <PropertyRef Name="IntTipoEventoID" />
+          </Key>
+          <Property Name="IntTipoEventoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StrCodigo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrDescripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OpcSoporte" Type="Boolean" />
+          <Property Name="OpcAlerta" Type="Boolean" />
+          <Property Name="OpcEstado" Type="Boolean" />
+          <NavigationProperty Name="Agenda" Relationship="datosNetModel.FK_Agenda_TipoEventos" FromRole="TipoEventos" ToRole="Agenda" />
+        </EntityType>
+        <EntityType Name="Usuarios">
+          <Key>
+            <PropertyRef Name="IntUsuarioID" />
+          </Key>
+          <Property Name="IntUsuarioID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IntRolID" Type="Int32" />
+          <Property Name="StrCodigo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrNombre" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="StrClave" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="StrEmail" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IntCiudadID" Type="Int32" />
+          <Property Name="StrDireccion" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StrTelefonoFijo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrCelular" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StrColor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="OpcEstado" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Agenda" Relationship="datosNetModel.FK_Agenda_usuarios" FromRole="Usuarios" ToRole="Agenda" />
+          <NavigationProperty Name="Ciudades" Relationship="datosNetModel.FK_Usuarios_Ciudades" FromRole="Usuarios" ToRole="Ciudades" />
+          <NavigationProperty Name="Contratos_Usuarios" Relationship="datosNetModel.FK_Contratos_Usuarios_Usuarios" FromRole="Usuarios" ToRole="Contratos_Usuarios" />
+          <NavigationProperty Name="LogsEx" Relationship="datosNetModel.FK_Logs_Usuarios" FromRole="Usuarios" ToRole="LogsEx" />
+          <NavigationProperty Name="Roles" Relationship="datosNetModel.FK_Usuarios_Roles" FromRole="Usuarios" ToRole="Roles" />
+        </EntityType>
+        <Association Name="FK_Actas_Agenda">
+          <End Type="datosNetModel.Agenda" Role="Agenda" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.Actas" Role="Actas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Agenda">
+              <PropertyRef Name="IntAgendaID" />
+            </Principal>
+            <Dependent Role="Actas">
+              <PropertyRef Name="IntAgendaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Actividades_Actas">
+          <End Type="datosNetModel.Actas" Role="Actas" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.ActividadesActa" Role="ActividadesActa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actas">
+              <PropertyRef Name="IntActaID" />
+            </Principal>
+            <Dependent Role="ActividadesActa">
+              <PropertyRef Name="IntActaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsistentesActa_Actas">
+          <End Type="datosNetModel.Actas" Role="Actas" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.AsistentesActa" Role="AsistentesActa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actas">
+              <PropertyRef Name="IntActaID" />
+            </Principal>
+            <Dependent Role="AsistentesActa">
+              <PropertyRef Name="IntActaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Temas_Actas">
+          <End Type="datosNetModel.Actas" Role="Actas" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.TemasActa" Role="TemasActa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actas">
+              <PropertyRef Name="IntActaID" />
+            </Principal>
+            <Dependent Role="TemasActa">
+              <PropertyRef Name="IntActaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agenda_Clientes">
+          <End Type="datosNetModel.Clientes" Role="Clientes" Multiplicity="1" />
+          <End Type="datosNetModel.Agenda" Role="Agenda" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="IntClienteID" />
+            </Principal>
+            <Dependent Role="Agenda">
+              <PropertyRef Name="IntClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agenda_TipoEventos">
+          <End Type="datosNetModel.TipoEventos" Role="TipoEventos" Multiplicity="1" />
+          <End Type="datosNetModel.Agenda" Role="Agenda" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoEventos">
+              <PropertyRef Name="IntTipoEventoID" />
+            </Principal>
+            <Dependent Role="Agenda">
+              <PropertyRef Name="IntTipoEventoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Agenda_usuarios">
+          <End Type="datosNetModel.Usuarios" Role="Usuarios" Multiplicity="1" />
+          <End Type="datosNetModel.Agenda" Role="Agenda" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IntUsuarioID" />
+            </Principal>
+            <Dependent Role="Agenda">
+              <PropertyRef Name="IntUsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Ciudades_Departamentos">
+          <End Type="datosNetModel.Departamentos" Role="Departamentos" Multiplicity="0..1" />
+          <End Type="datosNetModel.Ciudades" Role="Ciudades" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Departamentos">
+              <PropertyRef Name="IntDepartamentoID" />
+            </Principal>
+            <Dependent Role="Ciudades">
+              <PropertyRef Name="IntDepartamentoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Clientes_Ciudades">
+          <End Type="datosNetModel.Ciudades" Role="Ciudades" Multiplicity="0..1" />
+          <End Type="datosNetModel.Clientes" Role="Clientes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ciudades">
+              <PropertyRef Name="IntCiudadID" />
+            </Principal>
+            <Dependent Role="Clientes">
+              <PropertyRef Name="IntCiudadID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuarios_Ciudades">
+          <End Type="datosNetModel.Ciudades" Role="Ciudades" Multiplicity="0..1" />
+          <End Type="datosNetModel.Usuarios" Role="Usuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ciudades">
+              <PropertyRef Name="IntCiudadID" />
+            </Principal>
+            <Dependent Role="Usuarios">
+              <PropertyRef Name="IntCiudadID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contactos_Clientes">
+          <End Type="datosNetModel.Clientes" Role="Clientes" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.Contactos" Role="Contactos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="IntClienteID" />
+            </Principal>
+            <Dependent Role="Contactos">
+              <PropertyRef Name="IntClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contratos_Clientes">
+          <End Type="datosNetModel.Clientes" Role="Clientes" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.Contratos" Role="Contratos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="IntClienteID" />
+            </Principal>
+            <Dependent Role="Contratos">
+              <PropertyRef Name="IntClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contratos_SistemasDeGestion_Contratos">
+          <End Type="datosNetModel.Contratos" Role="Contratos" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.Contratos_SistemasDeGestion" Role="Contratos_SistemasDeGestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contratos">
+              <PropertyRef Name="IntContratoID" />
+            </Principal>
+            <Dependent Role="Contratos_SistemasDeGestion">
+              <PropertyRef Name="IntContratoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contratos_Usuarios_Contratos">
+          <End Type="datosNetModel.Contratos" Role="Contratos" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.Contratos_Usuarios" Role="Contratos_Usuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contratos">
+              <PropertyRef Name="IntContratoID" />
+            </Principal>
+            <Dependent Role="Contratos_Usuarios">
+              <PropertyRef Name="IntContratoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contratos_SistemasDeGestion_Sistemas">
+          <End Type="datosNetModel.SistemasDeGestion" Role="SistemasDeGestion" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.Contratos_SistemasDeGestion" Role="Contratos_SistemasDeGestion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SistemasDeGestion">
+              <PropertyRef Name="IntSistemaID" />
+            </Principal>
+            <Dependent Role="Contratos_SistemasDeGestion">
+              <PropertyRef Name="IntSistemaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contratos_Usuarios_Usuarios">
+          <End Type="datosNetModel.Usuarios" Role="Usuarios" Multiplicity="1" />
+          <End Type="datosNetModel.Contratos_Usuarios" Role="Contratos_Usuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IntUsuarioID" />
+            </Principal>
+            <Dependent Role="Contratos_Usuarios">
+              <PropertyRef Name="IntUsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Logs_Usuarios">
+          <End Type="datosNetModel.Usuarios" Role="Usuarios" Multiplicity="0..1" />
+          <End Type="datosNetModel.LogsEx" Role="LogsEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuarios">
+              <PropertyRef Name="IntUsuarioID" />
+            </Principal>
+            <Dependent Role="LogsEx">
+              <PropertyRef Name="IntUsuarioID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Roles_Modulos_Modulos">
+          <End Type="datosNetModel.Modulos" Role="Modulos" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.Roles_Modulos" Role="Roles_Modulos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Modulos">
+              <PropertyRef Name="IntModuloID" />
+            </Principal>
+            <Dependent Role="Roles_Modulos">
+              <PropertyRef Name="IntModuloID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Roles_Modulos_Roles">
+          <End Type="datosNetModel.Roles" Role="Roles" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="datosNetModel.Roles_Modulos" Role="Roles_Modulos" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="IntRolID" />
+            </Principal>
+            <Dependent Role="Roles_Modulos">
+              <PropertyRef Name="IntRolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Usuarios_Roles">
+          <End Type="datosNetModel.Roles" Role="Roles" Multiplicity="0..1" />
+          <End Type="datosNetModel.Usuarios" Role="Usuarios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="IntRolID" />
+            </Principal>
+            <Dependent Role="Usuarios">
+              <PropertyRef Name="IntRolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="datosNetModelStoreContainer" CdmEntityContainer="datosNetEntities">
+          <EntitySetMapping Name="Actas">
+            <EntityTypeMapping TypeName="datosNetModel.Actas">
+              <MappingFragment StoreEntitySet="Actas">
+                <ScalarProperty Name="IntConsecutivo" ColumnName="IntConsecutivo" />
+                <ScalarProperty Name="IntAgendaID" ColumnName="IntAgendaID" />
+                <ScalarProperty Name="IntActaID" ColumnName="IntActaID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActividadesActa">
+            <EntityTypeMapping TypeName="datosNetModel.ActividadesActa">
+              <MappingFragment StoreEntitySet="ActividadesActa">
+                <ScalarProperty Name="OpcEjecuta" ColumnName="OpcEjecuta" />
+                <ScalarProperty Name="DatFecha" ColumnName="DatFecha" />
+                <ScalarProperty Name="StrResponsable" ColumnName="StrResponsable" />
+                <ScalarProperty Name="StrDescripcion" ColumnName="StrDescripcion" />
+                <ScalarProperty Name="IntActaID" ColumnName="IntActaID" />
+                <ScalarProperty Name="IntActividadID" ColumnName="IntActividadID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Agenda">
+            <EntityTypeMapping TypeName="datosNetModel.Agenda">
+              <MappingFragment StoreEntitySet="Agenda">
+                <ScalarProperty Name="DatFechaIngreso" ColumnName="DatFechaIngreso" />
+                <ScalarProperty Name="OpcLunch" ColumnName="OpcLunch" />
+                <ScalarProperty Name="IntActaID" ColumnName="IntActaID" />
+                <ScalarProperty Name="IntUsuarioID" ColumnName="IntUsuarioID" />
+                <ScalarProperty Name="IntTipoEventoID" ColumnName="IntTipoEventoID" />
+                <ScalarProperty Name="IntClienteID" ColumnName="IntClienteID" />
+                <ScalarProperty Name="StrHoras" ColumnName="StrHoras" />
+                <ScalarProperty Name="OpcCancelada" ColumnName="OpcCancelada" />
+                <ScalarProperty Name="OpcEnviado" ColumnName="OpcEnviado" />
+                <ScalarProperty Name="OpcAllDay" ColumnName="OpcAllDay" />
+                <ScalarProperty Name="DatFechaFinal" ColumnName="DatFechaFinal" />
+                <ScalarProperty Name="DatFechaInicial" ColumnName="DatFechaInicial" />
+                <ScalarProperty Name="StrDescripcion" ColumnName="StrDescripcion" />
+                <ScalarProperty Name="StrTitulo" ColumnName="StrTitulo" />
+                <ScalarProperty Name="IntAgendaID" ColumnName="IntAgendaID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsistentesActa">
+            <EntityTypeMapping TypeName="datosNetModel.AsistentesActa">
+              <MappingFragment StoreEntitySet="AsistentesActa">
+                <ScalarProperty Name="IntActaID" ColumnName="IntActaID" />
+                <ScalarProperty Name="OpcAsiste" ColumnName="OpcAsiste" />
+                <ScalarProperty Name="StrProceso" ColumnName="StrProceso" />
+                <ScalarProperty Name="StrNombre" ColumnName="StrNombre" />
+                <ScalarProperty Name="IntAsistenteID" ColumnName="IntAsistenteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Ciudades">
+            <EntityTypeMapping TypeName="datosNetModel.Ciudades">
+              <MappingFragment StoreEntitySet="Ciudades">
+                <ScalarProperty Name="IntDepartamentoID" ColumnName="IntDepartamentoID" />
+                <ScalarProperty Name="StrDescripcion" ColumnName="StrDescripcion" />
+                <ScalarProperty Name="StrCodigo" ColumnName="StrCodigo" />
+                <ScalarProperty Name="IntCiudadID" ColumnName="IntCiudadID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Clientes">
+            <EntityTypeMapping TypeName="datosNetModel.Clientes">
+              <MappingFragment StoreEntitySet="Clientes">
+                <ScalarProperty Name="OpcEstado" ColumnName="OpcEstado" />
+                <ScalarProperty Name="DatFechaIngreso" ColumnName="DatFechaIngreso" />
+                <ScalarProperty Name="StrPaginaWeb" ColumnName="StrPaginaWeb" />
+                <ScalarProperty Name="StrTelefono" ColumnName="StrTelefono" />
+                <ScalarProperty Name="IntCiudadID" ColumnName="IntCiudadID" />
+                <ScalarProperty Name="StrEmail" ColumnName="StrEmail" />
+                <ScalarProperty Name="StrDireccion" ColumnName="StrDireccion" />
+                <ScalarProperty Name="StrNombre" ColumnName="StrNombre" />
+                <ScalarProperty Name="IntDV" ColumnName="IntDV" />
+                <ScalarProperty Name="StrIdentificacion" ColumnName="StrIdentificacion" />
+                <ScalarProperty Name="IntClienteID" ColumnName="IntClienteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Configuracion">
+            <EntityTypeMapping TypeName="datosNetModel.Configuracion">
+              <MappingFragment StoreEntitySet="Configuracion">
+                <ScalarProperty Name="OpcSMTPSSL" ColumnName="OpcSMTPSSL" />
+                <ScalarProperty Name="StrSMTPHost" ColumnName="StrSMTPHost" />
+                <ScalarProperty Name="StrSMTPPort" ColumnName="StrSMTPPort" />
+                <ScalarProperty Name="StrSMTPPassword" ColumnName="StrSMTPPassword" />
+                <ScalarProperty Name="StrSMPTEmail" ColumnName="StrSMPTEmail" />
+                <ScalarProperty Name="IntDuracionDefault" ColumnName="IntDuracionDefault" />
+                <ScalarProperty Name="StrVistaAgenda" ColumnName="StrVistaAgenda" />
+                <ScalarProperty Name="StrHoraFinal" ColumnName="StrHoraFinal" />
+                <ScalarProperty Name="StrHoraInicial" ColumnName="StrHoraInicial" />
+                <ScalarProperty Name="IntID" ColumnName="IntID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contactos">
+            <EntityTypeMapping TypeName="datosNetModel.Contactos">
+              <MappingFragment StoreEntitySet="Contactos">
+                <ScalarProperty Name="IntClienteID" ColumnName="IntClienteID" />
+                <ScalarProperty Name="StrEmail" ColumnName="StrEmail" />
+                <ScalarProperty Name="StrCelular" ColumnName="StrCelular" />
+                <ScalarProperty Name="StrTelefonoFijo" ColumnName="StrTelefonoFijo" />
+                <ScalarProperty Name="StrCargo" ColumnName="StrCargo" />
+                <ScalarProperty Name="StrNombre" ColumnName="StrNombre" />
+                <ScalarProperty Name="IntContactoID" ColumnName="IntContactoID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contratos">
+            <EntityTypeMapping TypeName="datosNetModel.Contratos">
+              <MappingFragment StoreEntitySet="Contratos">
+                <ScalarProperty Name="OpcEstado" ColumnName="OpcEstado" />
+                <ScalarProperty Name="IntClienteID" ColumnName="IntClienteID" />
+                <ScalarProperty Name="StrEmail" ColumnName="StrEmail" />
+                <ScalarProperty Name="IntValor" ColumnName="IntValor" />
+                <ScalarProperty Name="IntHoras" ColumnName="IntHoras" />
+                <ScalarProperty Name="DatFechaFinal" ColumnName="DatFechaFinal" />
+                <ScalarProperty Name="DatFechaInicial" ColumnName="DatFechaInicial" />
+                <ScalarProperty Name="IntNumeroContrato" ColumnName="IntNumeroContrato" />
+                <ScalarProperty Name="IntContratoID" ColumnName="IntContratoID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contratos_SistemasDeGestion">
+            <EntityTypeMapping TypeName="datosNetModel.Contratos_SistemasDeGestion">
+              <MappingFragment StoreEntitySet="Contratos_SistemasDeGestion">
+                <ScalarProperty Name="IntSistemaID" ColumnName="IntSistemaID" />
+                <ScalarProperty Name="IntContratoID" ColumnName="IntContratoID" />
+                <ScalarProperty Name="IntRegistroID" ColumnName="IntRegistroID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contratos_Usuarios">
+            <EntityTypeMapping TypeName="datosNetModel.Contratos_Usuarios">
+              <MappingFragment StoreEntitySet="Contratos_Usuarios">
+                <ScalarProperty Name="IntUsuarioID" ColumnName="IntUsuarioID" />
+                <ScalarProperty Name="IntContratoID" ColumnName="IntContratoID" />
+                <ScalarProperty Name="IntRegistroID" ColumnName="IntRegistroID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Departamentos">
+            <EntityTypeMapping TypeName="datosNetModel.Departamentos">
+              <MappingFragment StoreEntitySet="Departamentos">
+                <ScalarProperty Name="StrDescripcion" ColumnName="StrDescripcion" />
+                <ScalarProperty Name="StrCodigo" ColumnName="StrCodigo" />
+                <ScalarProperty Name="IntDepartamentoID" ColumnName="IntDepartamentoID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LogsEx">
+            <EntityTypeMapping TypeName="datosNetModel.LogsEx">
+              <MappingFragment StoreEntitySet="LogsEx">
+                <ScalarProperty Name="DatFecha" ColumnName="DatFecha" />
+                <ScalarProperty Name="StrRecurso" ColumnName="StrRecurso" />
+                <ScalarProperty Name="StrMensaje" ColumnName="StrMensaje" />
+                <ScalarProperty Name="IntUsuarioID" ColumnName="IntUsuarioID" />
+                <ScalarProperty Name="IntLogID" ColumnName="IntLogID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Modulos">
+            <EntityTypeMapping TypeName="datosNetModel.Modulos">
+              <MappingFragment StoreEntitySet="Modulos">
+                <ScalarProperty Name="OpcEstado" ColumnName="OpcEstado" />
+                <ScalarProperty Name="StrAccion" ColumnName="StrAccion" />
+                <ScalarProperty Name="StrControlador" ColumnName="StrControlador" />
+                <ScalarProperty Name="StrDescripcion" ColumnName="StrDescripcion" />
+                <ScalarProperty Name="IntModuloID" ColumnName="IntModuloID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Procesos">
+            <EntityTypeMapping TypeName="datosNetModel.Procesos">
+              <MappingFragment StoreEntitySet="Procesos">
+                <ScalarProperty Name="OpcEstado" ColumnName="OpcEstado" />
+                <ScalarProperty Name="StrDescripcion" ColumnName="StrDescripcion" />
+                <ScalarProperty Name="IntProcesoID" ColumnName="IntProcesoID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="datosNetModel.Roles">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="StrDescripcion" ColumnName="StrDescripcion" />
+                <ScalarProperty Name="StrCodigo" ColumnName="StrCodigo" />
+                <ScalarProperty Name="IntRolID" ColumnName="IntRolID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles_Modulos">
+            <EntityTypeMapping TypeName="datosNetModel.Roles_Modulos">
+              <MappingFragment StoreEntitySet="Roles_Modulos">
+                <ScalarProperty Name="IntModuloID" ColumnName="IntModuloID" />
+                <ScalarProperty Name="IntRolID" ColumnName="IntRolID" />
+                <ScalarProperty Name="IntRegistroID" ColumnName="IntRegistroID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SistemasDeGestion">
+            <EntityTypeMapping TypeName="datosNetModel.SistemasDeGestion">
+              <MappingFragment StoreEntitySet="SistemasDeGestion">
+                <ScalarProperty Name="OpcEstado" ColumnName="OpcEstado" />
+                <ScalarProperty Name="StrDescripcion" ColumnName="StrDescripcion" />
+                <ScalarProperty Name="StrCodigo" ColumnName="StrCodigo" />
+                <ScalarProperty Name="IntSistemaID" ColumnName="IntSistemaID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TemasActa">
+            <EntityTypeMapping TypeName="datosNetModel.TemasActa">
+              <MappingFragment StoreEntitySet="TemasActa">
+                <ScalarProperty Name="StrDesarrollo" ColumnName="StrDesarrollo" />
+                <ScalarProperty Name="StrResponsable" ColumnName="StrResponsable" />
+                <ScalarProperty Name="StrDescripcion" ColumnName="StrDescripcion" />
+                <ScalarProperty Name="IntActaID" ColumnName="IntActaID" />
+                <ScalarProperty Name="IntTemaID" ColumnName="IntTemaID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TipoEventos">
+            <EntityTypeMapping TypeName="datosNetModel.TipoEventos">
+              <MappingFragment StoreEntitySet="TipoEventos">
+                <ScalarProperty Name="OpcEstado" ColumnName="OpcEstado" />
+                <ScalarProperty Name="OpcAlerta" ColumnName="OpcAlerta" />
+                <ScalarProperty Name="OpcSoporte" ColumnName="OpcSoporte" />
+                <ScalarProperty Name="StrDescripcion" ColumnName="StrDescripcion" />
+                <ScalarProperty Name="StrCodigo" ColumnName="StrCodigo" />
+                <ScalarProperty Name="IntTipoEventoID" ColumnName="IntTipoEventoID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Usuarios">
+            <EntityTypeMapping TypeName="datosNetModel.Usuarios">
+              <MappingFragment StoreEntitySet="Usuarios">
+                <ScalarProperty Name="OpcEstado" ColumnName="OpcEstado" />
+                <ScalarProperty Name="StrColor" ColumnName="StrColor" />
+                <ScalarProperty Name="StrCelular" ColumnName="StrCelular" />
+                <ScalarProperty Name="StrTelefonoFijo" ColumnName="StrTelefonoFijo" />
+                <ScalarProperty Name="StrDireccion" ColumnName="StrDireccion" />
+                <ScalarProperty Name="IntCiudadID" ColumnName="IntCiudadID" />
+                <ScalarProperty Name="StrEmail" ColumnName="StrEmail" />
+                <ScalarProperty Name="StrClave" ColumnName="StrClave" />
+                <ScalarProperty Name="StrNombre" ColumnName="StrNombre" />
+                <ScalarProperty Name="StrCodigo" ColumnName="StrCodigo" />
+                <ScalarProperty Name="IntRolID" ColumnName="IntRolID" />
+                <ScalarProperty Name="IntUsuarioID" ColumnName="IntUsuarioID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

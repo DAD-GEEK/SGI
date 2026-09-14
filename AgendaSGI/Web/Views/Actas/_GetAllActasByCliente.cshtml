@@ -1,0 +1,149 @@
+﻿
+@model List<Models.Actas>
+
+@{
+    string Estado = string.Empty;
+}
+
+<div class="row">
+    <div class=" col-md-12">
+        <div class="card card-outline card-primary">
+
+            <div class="card-body">
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger block-center" role="alert">
+                        @ViewBag.Error
+                    </div>
+                }
+                else
+                {
+                    @Html.AntiForgeryToken()
+                    <table id="tblActas" class="table table-bordered dt-responsive " style="width:100%">
+                        <thead class="text-center text-white fondoColorSGI">
+                            <tr>
+                                <th class="d-none">Id</th>
+                                <th>Consecutivo</th>
+                                <th class="text-center">Fecha</th>
+                                <th class="text-center">Tipo Visita</th>
+                                <th>Asesor</th>
+
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="detalleClientes">
+                            @foreach (var item in Model.OrderBy(x => x.IntConsecutivo))
+                            {
+                                Estado = (item.Agenda.OpcEnviado == true ? "ENVIADA" : "SIN ENVIAR");
+
+                                <tr>
+                                    <td class="d-none">@item.IntActaID</td>
+
+                                    <td class="text-center font-weight-bold h6">@item.IntConsecutivo</td>
+
+                                    <td class="fecha text-center">@item.Agenda.DatFechaInicial.Value.ToString("yyyy-MM-dd")</td>
+
+                                    <td class="text-center">@item.Agenda.TipoEventos.StrDescripcion</td>
+
+                                    <td>@item.Agenda.Usuarios.StrNombre</td>
+
+
+                                    @if (item.Agenda.OpcEnviado == true)
+                                    {
+                                        <td class="text-center h5"><span class="badge badge-success">@Estado</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center h5"><span class="badge badge-danger">@Estado</span></td>
+                                    }
+
+                                    <td class=" text-center">
+                                        <button type="button" class="btn btn-primary" id="btnVerActa" data-agendaid="@item.Agenda.IntAgendaID">
+                                            <i class="fa fa-eye fa-1x"></i>
+                                        </button>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+@*<script src="@Scripts.Url("~/Scripts/modulos/Acta/CRUDActa.js")"></script>*@
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('#tblActas').DataTable({
+
+            "order": [[1, "desc"]],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": false
+                }],
+            "language": {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Mostrar _MENU_ registros",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Ningún dato disponible en esta tabla",
+                "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Siguiente",
+                    "sPrevious": "Anterior"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                }
+            },
+
+            "lengthMenu": [[10, 20, 50, 100], [10, 20, 50, 100]],
+
+        });
+
+        //Al dar click abre el modal vista previa del acta
+        $('#tblActas tbody ').on('click', 'button', function () {
+            var agendaID = $(this).data("agendaid");
+
+            var url = rootHost + 'Actas/GetVistaPreviaActa';
+            $.get(url, { AgendaID: agendaID }).done(function (data) {
+                if (data.error != null) {
+                    if (data.exc == true) {
+                        swal("¡Error!", data.error, "error");
+                        return;
+                    }
+                    swal("¡Validación!", data.error, "info");
+                } else {
+                    $('#contenedor').empty().html(data);
+                    $('#modal').modal('show');
+                }
+            });
+        });
+    });
+
+
+</script>
+
+

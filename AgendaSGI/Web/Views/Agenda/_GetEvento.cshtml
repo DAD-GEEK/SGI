@@ -1,0 +1,316 @@
+﻿@model Models.Agenda
+
+@{
+    Layout = null;
+
+}
+
+<input type="hidden" id="agendaID" value="@Model.IntAgendaID" />
+<input style="display:none" type="checkbox" id="opcCancelada" checked="@Model.OpcCancelada">
+<input style="display:none" type="checkbox" id="opcEnviado" checked="@Model.OpcEnviado">
+<input class="d-none" type="hidden" id="opcIsAdmin" value="@ViewBag.isAdmin" />
+
+<input type="hidden" id="usuarioEvento" value="@Model.IntUsuarioID" />
+
+<div class="modal-dialog " style=" max-width:900px!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><em class="fas fa-user-clock text-gray "></em></span>&nbsp; Visita programada</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick="agendaCRUD.limpiarInputsCalendario();">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form method="post" action="#" id="formEditarGlobal">
+            @Html.AntiForgeryToken()
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12" style="height:auto">
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="citaCliente">Cliente<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            @Html.DropDownList("listaClientes", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control", style = "width: 100%;", id = "citaCliente", placeholder = "-- Seleccione una opción", @disabled = "disabled", data_parsley_required = "required", data_parsley_errors_container = "#errorCitaClientes" })
+                                        </div>
+                                        <span class="text-danger" id="errorCitaClientes"><small></small> </span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="citaTipoEvento">Tipo visita<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            @Html.DropDownList("listaTipoEvento", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "citaTipoEvento", placeholder = "-- Seleccione una opción", data_parsley_required = "required", data_parsley_errors_container = "#errorCitaTipoVisita" })
+                                        </div>
+                                        <span class="text-danger" id="errorCitaTipoVisita"><small></small> </span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="citaTipoEvento">Asesor</label>
+                                        <div class=" input-group with-focus">
+                                            <input class="form-control border-right-0" type="text" disabled value="@Model.Usuarios.StrNombre" autocomplete="off" />
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                    <em class="fa fa-user-check"></em>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span class="text-danger" id="errorCitaTipoVisita"><small></small> </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="citaHoraInicial">Hora Inicial<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            <div class="input-group date timepickerFecha" id="timepickerInicio" data-target-input="nearest" data-target="#timepickerInicio" data-toggle="datetimepicker">
+                                                <input type="text" class="form-control datetimepicker-input border-right-0" id="citaFechaInicial" autocomplete="off" value="@ViewBag.FechaInicial" data-target="#timepickerInicio" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                        <em class="fas fa-calendar-check"></em>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span class="text-danger" id="errorcitaHoraInicial"><small></small> </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label font-weight-bold" for="citaHoraFinal">Hora final<span class="text-danger">*</span></label>
+                                        <div class=" input-group with-focus">
+                                            <div class="input-group date timepickerFecha" id="timepickerFinal" data-target-input="nearest" data-target="#timepickerFinal" data-toggle="datetimepicker">
+                                                <input type="text" class="form-control datetimepicker-input border-right-0" id="citaFechaFinal" autocomplete="off" value="@ViewBag.FechaFinal" data-target="#timepickerFinal" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                        <em class="fas fa-calendar-check"></em>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span class="text-danger" id="errorcitaHoraFinal"><small></small> </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <fieldset class="border" style="padding-top:0px;padding-left:10px;padding-right:10px;padding-bottom:5px;">
+                                <legend class="w-auto text-sm text-bold font-weight-bold" style="margin-bottom:0px!important;">&nbsp;&nbsp;Recurrencia&nbsp;&nbsp;</legend>
+
+                                <div class="row">
+                                    <div class="col-md-2 pt-1 mt-1 ">
+                                        <div class="form-group  ">
+                                            <div class="form-group clearfix">
+                                                <div class="icheck-primary d-inline">
+                                                    <input type="checkbox" id="citaAllDay" checked="@Model.OpcAllDay">
+                                                    <label for="citaAllDay">
+                                                        Todo el dia
+                                                    </label>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 pt-1 mt-1 ">
+                                        <div class="form-group  ">
+                                            <div class="form-group clearfix">
+                                                <div class="icheck-primary d-inline">
+                                                    <input type="checkbox" id="opcLunch" checked="@Model.OpcLunch">
+                                                    <label for="opcLunch">
+                                                        Hora de almuerzo
+                                                    </label>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    @if (!ViewBag.horaMarcada)
+                                    {
+                                        <div class="col-md-6" id="divBtnMarcarLlegada">
+                                            <div class="form-group  ">
+                                                <button type="button" class="btn btn-block btn-outline-primary bloquear" id="btnMarcarLlegada"><i class="fas fa-user-cog mr-1"></i>Marcar inicio</button>
+
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class=" input-group with-focus">
+                                                <textarea class="form-control" id="citaDescripcion" rows="4" placeholder="Descripción..." data-parsley-length="[5,500]">@Model.StrDescripcion</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-0 mr">
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="row">
+
+                                <div class="col-xs-12 col-md-2">
+                                    <button type="button" data-dismiss="modal" class="btn btn-block btn-dark" onclick="agendaCRUD.limpiarInputsCalendario();">Salir</button>
+                                </div>
+
+                                <div class="col-xs-12 col-md-2">
+                                    <button type="button" class="btn btn-block btn-dark cancelado bloquear enviado" onclick="agendaCRUD.cancelarVisitaAsync(this);" data-eventoid="@Model.IntAgendaID">Cancelar visita</button>
+                                </div>
+
+                                <div class="col-xs-12 col-md-2">
+                                    <button type="button" class="btn btn-block btn-danger bloquear enviado" onclick="agendaCRUD.deleteEventoAsync(this);" data-eventoid="@Model.IntAgendaID">Eliminar visita</button>
+                                </div>
+                                <div class="col-xs-12 col-md-2">
+                                    <button type="submit" class="btn btn-primary btn-block cancelado bloquear enviado ">Guardar</button>
+                                </div>
+                                <div class="col-xs-12 col-md-2">
+                                    <button type="button" class="btn btn-primary btn-block cancelado bloquear" id="btnCrearActa" data-url="@Url.Action("GenerarActa","Actas")"><i class="fas fa fa-clipboard-check mr-2"></i>Acta de visita</button>
+                                </div>
+                                <div class="col-xs-12 col-md-2">
+                                    <button type="button" class="btn btn-primary btn-block cancelado" id="btnVistaPrevia" data-url="@Url.Action("GetVistaPreviaActa","Actas")"><i class="fa fa-mail-bulk"></i>&nbsp;&nbsp;Enviar acta</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+
+@*<script src="@Scripts.Url("~/Plugins/Parsley/parsley.js")"></script>
+    <script src="@Scripts.Url("~/Scripts/modulos/Acta/CRUDActa.js")"></script>*@
+
+
+<link href="~/Plugins/Parsley/Parsley.css" rel="stylesheet" />
+<script type="text/javascript">
+
+    $(function () {
+        $(document).ready(function () {
+
+            agendaCRUD.updateEventoAsync();
+
+            $("#btnMarcarLlegada").click(function () {
+
+                agendaCRUD.marcarLlegadaAsync();
+                
+            });
+
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) 
+                $("#divBtnMarcarLlegada").addClass("d-none");
+            
+            //Si abre el evento un usuario diferente
+            if ($("#usuarioEvento").val() != $("#usuarioID").val() && $("#opcIsAdmin").val() == 'False') {
+                $(".bloquear").attr("disabled", true);
+            }
+
+
+            //Si el acta ya fue enviada
+            if ($("#opcEnviado").prop("checked") && $("#opcIsAdmin").val() == 'False') {
+                $(".enviado").attr("disabled", true);
+            }
+
+            // Si la visita fue cancelada
+            if ($("#opcCancelada").prop("checked") && $("#opcIsAdmin").val() == 'False') {
+                $(".cancelado").attr("disabled", true);
+            }
+
+
+            //Abrir modal crear acta
+            $("#btnCrearActa,#btnVistaPrevia").on("click", function () {
+
+                var url = $(this).data("url");
+
+                $.get(url, { AgendaID: $("#agendaID").val() }).done(function (data) {
+                    if (data.error != null) {
+                        if (data.exc == true) {
+                            swal("¡Error!", data.error, "error");
+                            return;
+                        }
+                        swal("¡Validación!", data.error, "info");
+                    } else {
+                        $('#contenedor2').empty().html(data);
+                        $('#modal2').modal('show');
+                    }
+                });
+            });
+
+            //Primero debe ir el select2, sino se dañan los input
+            $(".select2").select2({
+                placeholder: '-- Seleccione una opción --',
+                theme: 'default'
+            });
+
+            $(".select2bs4").select2({
+                placeholder: '-- Seleccione una opción --',
+                theme: 'bootstrap4'
+            });
+
+            $('#citaAllDay').on("change", function () {
+                if ($(this).prop('checked') === true) {
+                    $(".datetimepicker-input").prop("disabled", true);
+                    var fechaInicial = ($("#citaFechaInicial").val()).substring(0, 10);
+                    var fechaFinal = ($("#citaFechaInicial").val()).substring(0, 10);
+
+                    fechaInicial = fechaInicial + ' ' + $("#horaInicial").val();
+                    fechaFinal = fechaFinal + ' ' + $("#horaFinal").val();
+
+                    fechaInicial = (moment(fechaInicial, 'YYYY-MM-DD h:m A').format('YYYY-MM-DD h:mm A'));
+                    fechaFinal = (moment(fechaFinal, 'YYYY-MM-DD h:m A').format('YYYY-MM-DD h:mm A'));
+
+                    $("#citaFechaInicial").val(fechaInicial);
+                    $("#citaFechaFinal").val(fechaFinal);
+
+                } else {
+                    $(".datetimepicker-input").prop("disabled", false);
+                }
+            });
+
+            $('#timepickerFinal').datetimepicker({
+                defaultDate: moment($("#citaFechaFinal").val(), 'YYYY-MM-DD h:m A'),
+                format: 'YYYY-MM-DD h:mm A',
+                //defaultDate: "11/1/2013 08:00:00",
+                locale: 'es',
+                icons: {
+                    time: "fa fa-clock",
+                    date: "fas fa-calendar-alt",
+                }
+            });
+
+            $('#timepickerInicio').datetimepicker({
+                defaultDate: (moment($("#citaFechaInicial").val(), 'YYYY-MM-DD h:m A')),
+                format: 'YYYY-MM-DD h:mm A',
+                //defaultDate: "11/1/2013 08:00:00",
+                locale: 'es',
+                icons: {
+                    time: "fa fa-clock",
+                    date: "fas fa-calendar-alt",
+                }
+            });
+        });
+    });
+
+</script>

@@ -1,0 +1,92 @@
+﻿<div class="content-header pt-0 mt-0">
+    <div class="container-fluid pt-0 mt-0">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-dark font-weight-bold">Actas</h1>
+                <small>Módulo para administrar las actas</small>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">SGIapp</a></li>
+                    <li class="breadcrumb-item active">Actas</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card card-outline card-primary">
+    <div class="card-body ">
+        <div class="row">
+            <div class="col-lg-6">
+
+                <div class="form-group">
+                    <label class="col-form-label font-weight-bold text-sm">Seleccionar un cliente<span class="text-danger font-weight-bold">*</span></label>
+                    <div class=" input-group with-focus">
+                        @Html.DropDownList("listaClientes", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "actaCliente", placeholder = "-- Seleccione una opción", data_parsley_required = "required", data_parsley_errors_container = "#errorCitaClientes" })
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-3">
+
+                <div class="form-group">
+                    <label class="col-form-label font-weight-bold text-sm">&nbsp;</label>
+                    <div class=" input-group with-focus">
+                        <button type="button" class="btn btn-block btn-primary" id="btnConsultarCliente">Consultar</button>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-lg-3">
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div id="divGetAllActasByCliente">
+
+</div>
+
+@section BodyArea {
+    <div class=" modal fade fade bd-example-modal-sm" id="modal" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor">
+
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#actaCliente").select2({
+                placeholder: '-- Selecccione una opción --',
+                theme: 'bootstrap4'
+            });
+
+            var btnConsultar = $("#btnConsultarCliente");
+            btnConsultar.click(function () {
+
+                var clienteID = $("#actaCliente").val();
+                if (clienteID.length == 0) return swal("¡Alerta!", "Debe seleccionar un cliente válido.", "warning");
+
+                actaCRUD.getAllActasByCliente(clienteID);
+                
+            });
+
+        });
+
+    </script>
+}

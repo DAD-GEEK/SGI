@@ -1,0 +1,165 @@
+﻿
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:1200px!important; max-height:75vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><em class="fas fa-calendar-check text-gray "></em></span>&nbsp; Programar auditoría</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form method="post" action="#" id="formCrearGlobal">
+            @Html.AntiForgeryToken()
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12" style="height:auto">
+
+                            <div class="card card-primary card-outline card-outline-tabs">
+
+                                <div class="card-body pt-1">
+
+                                    <div class="row">
+                                        <div class="col-md-12 pb-1 pt-0">
+                                            <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <div class="form-group">
+                                                    <label class="form-control-label font-weight-bold" for="citaCliente">Cliente<span class="text-danger">*</span></label>
+                                                    <div class=" input-group with-focus">
+                                                        @Html.DropDownList("listaClientes", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "form-control ", style = "width: 100%;", id = "programarCliente", placeholder = "-- Seleccione una opción", data_parsley_required = "required", data_parsley_errors_container = "#errorProgramarCliente" })
+                                                    </div>
+                                                    <span class="text-danger" id="errorProgramarCliente"><small></small> </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="programarUsuarios">Auditor<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    @Html.DropDownList("listaUsuarios", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "form-control", style = "width: 100%;", multiple = "multiple", id = "programarUsuarios", data_parsley_required = "required", data_parsley_errors_container = "#errorProgramarUsuarios" })
+                                                </div>
+                                                <span class="text-danger" id="errorProgramarUsuarios"><small></small> </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="programarAuditados">Auditados<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <input class="form-control border-right-0 info" name="programarAuditados" id="programarAuditados" type="text" placeholder="Personal a auditar..." maxlength="500" autocomplete="off" data-parsley-required="required" , data-parsley-errors-container="#errorProgramarAuditados" />
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <em class="fas fa-user-check"></em>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <span class="text-danger" id="errorProgramarAuditados"><small></small> </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="programarAlcance">Alcance<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <textarea class="form-control border-right-0 info" rows="3" name="programarAlcance" id="programarAlcance" type="text" placeholder="Alcance de la auditoría..." maxlength="200" autocomplete="off" data-parsley-required="required" , data-parsley-errors-container="#errorProgramarAlcance"></textarea>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <em class="fas fa-clone"></em>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <span class="text-danger" id="errorProgramarAlcance"><small></small> </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="form-control-label font-weight-bold" for="programarFortalezas">Fortalezas<span class="text-danger">*</span></label>
+                                                <div class=" input-group with-focus">
+                                                    <textarea class="form-control border-right-0 info" rows="3" name="programarFortalezas" id="programarFortalezas" type="text" placeholder="Fortalezas de la auditoría..." maxlength="200" autocomplete="off" data-parsley-required="required" , data-parsley-errors-container="#errorProgramarFortalezas"></textarea>
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                            <em class="fas fa-clone"></em>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <span class="text-danger" id="errorProgramarFortalezas"><small></small> </span>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <!-- /.card -->
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 mr">
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="button" data-dismiss="modal" class="btn btn-block btn-dark">Cancelar</button>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-block ">Guardar</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<script src="@Scripts.Url("~/Plugins/Parsley/parsley.js")"></script>
+
+<link href="~/Plugins/Parsley/Parsley.css" rel="stylesheet" />
+<script type="text/javascript">
+
+    $(function () {
+
+        $(document).ready(function () {
+
+            $("#programarCliente").select2({
+                placeholder: '-- Selecccione una opción --',
+                theme: 'bootstrap4'
+            });
+
+            $("#programarUsuarios").select2({
+                placeholder: '-- Selecccione una opción --',
+                theme: 'default'
+            });
+
+        });
+    });
+
+</script>

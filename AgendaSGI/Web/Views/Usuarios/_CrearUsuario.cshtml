@@ -1,0 +1,198 @@
+﻿@model Models.Usuarios
+
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:500px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><em class="fa fa-user-plus text-gray "></em></span>&nbsp; Agregar usuario</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form method="post" action="#" id="formCrearGlobal">
+            @Html.AntiForgeryToken()
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12" style="height:auto">
+
+                            <div class="card card-primary card-outline card-outline-tabs">
+
+                                <div class="card-header p-0 border-bottom-0">
+                                    <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="general" data-toggle="pill" href="#generalTab" role="tab" aria-controls="custom-tabs-four-home" aria-selected="true">Información general</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="roles" data-toggle="pill" href="#rolesTab" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Roles</a>
+                                        </li>
+                                        @*<li class="nav-item">
+                                              <a class="nav-link" id="parametros" data-toggle="pill" href="#tabParametros" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="false">Parámetros</a>
+                                            </li>*@
+                                    </ul>
+                                </div>
+
+                                <div class="card-body pt-1">
+                                    <div class="tab-content" id="custom-tabs-four-tabContent">
+
+                                        @*Datos Generales*@
+                                        <div class="tab-pane fade show active" id="generalTab" role="tabpanel" aria-labelledby="general">
+
+                                            <div class="row">
+                                                <div class="col-md-12 pb-1 pt-0">
+                                                    <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="usuarioCodigo">Usuario<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="usuarioCodigo" id="usuarioCodigo" type="text" placeholder="Código de indentificación de usuario" required="required" autocomplete="off" />
+                                                            <div class="input-group-append" id="codigoIcono">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-user"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <span class="text-danger"><small></small> </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="usuarioNombre">Nombre<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="usuarioNombre" id="usuarioNombre" type="text" placeholder="Nombre de usuario" required="required" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-stream"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="usuarioClave">Clave<span class="text-danger">*</span></label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="usuarioClave" id="usuarioClave" type="password" placeholder="Constraseña de usuario" required="required" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-asterisk"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="usuarioEmail">Email</label>
+                                                        <div class=" input-group with-focus">
+                                                            <input class="form-control border-right-0 info" name="usuarioEmail" id="usuarioEmail" type="email" placeholder="Email del usuario" autocomplete="off" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                                    <em class="fa fa-mail-bulk"></em>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="tab-pane fade show" id="rolesTab" role="tabpanel" aria-labelledby="roles">
+
+                                            <div class="row">
+                                                <div class="col-md-12 pb-1 pt-0">
+                                                    <small>Campos obligatorios <span class="text-danger">*</span> </small>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label class="form-control-label font-weight-bold" for="usuarioRol">Rol</label>
+                                                        <div class=" input-group with-focus">
+                                                            @Html.DropDownList("listaRoles", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "select2bs4 form-control ", style = "width: 100%;", id = "usuarioRol", placeholder = "-- Seleccione una opción", data_parsley_required = "required", data_parsley_errors_container = "#errorUsuarioRol" })
+                                                        </div>
+                                                        <span class="text-danger" id="errorUsuarioRol"><small></small> </span>
+                                                    </div>
+                                                </div>
+
+
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <!-- /.card -->
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="modal-footer bg-light">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="button" data-dismiss="modal" class="btn btn-block btn-dark">Cancelar</button>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-block ">Guardar</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $(".select2bs4").select2({
+            placeholder: '-- Selecccione una opción --',
+            theme: 'bootstrap4'
+        });
+        usuariosCRUD.crearUsuarioAsync();
+    });
+
+</script>

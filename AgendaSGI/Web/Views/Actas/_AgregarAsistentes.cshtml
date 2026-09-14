@@ -1,0 +1,130 @@
+﻿
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog " style=" max-width:500px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><em class="fa fa-user-plus text-gray "></em></span>&nbsp; Agregar asistencia</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form method="post" action="#" id="formCrearGlobal">
+            @*@Html.AntiForgeryToken()*@
+
+            <div class="modal-body">
+                <div class="container-fluid">
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger block-center" role="alert">
+                            @ViewBag.Error
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold " for="asistenteNombre">Nombre<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 info validateParsley" name="asistenteNombre" id="asistenteNombre" type="text" placeholder="Nombre del asistente..." autocomplete="off" data-parsley-length="[5, 100]" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-user"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <span class="text-danger"><small></small> </span>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="form-control-label font-weight-bold" for="asistenteProceso">Proceso<span class="text-danger">*</span></label>
+                                    <div class=" input-group with-focus">
+                                        <input class="form-control border-right-0 info validateParsley" name="asistenteProceso" id="asistenteProceso" type="text" placeholder="Proceso del asistente..." autocomplete="off" data-parsley-length="[1, 50]" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                                <em class="fa fa-stream"></em>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                <div class="form-group  ">
+                                    <div class="form-group clearfix">
+                                        <div class="icheck-primary d-inline">
+                                            <input type="checkbox" id="opcAsiste" checked>
+                                            <label for="opcAsiste">
+                                                Asiste
+                                            </label>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    }
+
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="button" data-dismiss="modal" class="btn btn-block btn-dark">Cancelar</button>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="button" class="btn btn-primary btn-block" id="btnAgregarAsistente">Agregar</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+
+@*<script src="@Scripts.Url("~/Plugins/Parsley/parsley.js")"></script>*@
+
+<link href="~/Plugins/Parsley/Parsley.css" rel="stylesheet" />
+<script type="text/javascript">
+
+    $(function () {
+
+        $(document).ready(function () {
+
+            var btnAgregar = $("#btnAgregarAsistente");
+            btnAgregar.click(function () {
+                actaCRUD.agregarAsistentes();
+            });
+
+        });
+    });
+
+</script>
+

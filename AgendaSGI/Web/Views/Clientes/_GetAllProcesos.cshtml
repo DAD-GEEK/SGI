@@ -1,0 +1,63 @@
+﻿@model List<Models.Clientes_Procesos>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card-body p-0">
+
+            @if (ViewBag.Error  != null)
+            {
+                <div class="alert alert-danger block-center m-1" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
+            else
+            {
+                <table class="table table-responsive-lg table-sm " id="tblProcesos" style="width:100% !important">
+                    <thead>
+                        <tr class="justify-content-center align-content-center">
+                            <th class="d-none">ProcesoID</th>
+                            <th>Descripción</th>
+                            <th>Nombre proceso</th>                           
+                            <th class="text-right" >&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody id="divGenerarDetalleProceso">
+                        @foreach (var item in Model)
+                        {
+
+                            <tr class="item iRegistroID" data-registroid="@item.IntRegistroID">
+                                <td style="display:none!important" class"d-none"><span class="iProcesoID">@item.IntProcesoID</span></td>
+                                <td class="pt-0 pb-0"><span class="form-control font-weight-bold border-0 ml-0 pl-0 iProceso">@item.Procesos.StrDescripcion</span></td>
+                                <td class="pt-0 pb-0"><input class="form-control border-0 ml-0 pl-0 letras iProcesoNombre" type="text" style="width:100%!important" value="@item.StrAlias" maxlength="100"/></td>
+                                <td class="pt-0 pb-0 text-right"><button type="button" class="btn bg-white remove-item" data-procesoid="@item.IntProcesoID" onclick="clientesCRUD.identificarProcesosDeleted(this);"><i class="fa fa-trash-alt fa-1x text-danger"></i></button></td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+
+            }
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $("#divGenerarDetalleProceso > tr").each(function (i,tr) {
+            $('.remove-item').off().click(function (e) {
+                $(this).parent('td').parent('tr').remove();
+            });
+        });
+
+        $(".iProcesoNombre").keypress(function () {
+            $("#modificProceso").val("True");
+        });
+       
+    });
+
+</script>

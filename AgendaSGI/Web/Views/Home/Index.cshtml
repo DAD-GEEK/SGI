@@ -1,0 +1,103 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+
+    Models.Usuarios usuario = (Models.Usuarios)HttpContext.Current.Session["Usuario"];
+
+    string usuarioNombre = string.Empty;
+
+    if (usuario != null)
+    {
+        usuarioNombre = usuario.StrNombre;
+    }
+
+}
+<div class="pt-2 m-0">
+    <div class="card ">
+        <div class="card-body text-center bg-center bannerSGI">
+            <div class="row">
+                <div class="col-12 text-white">
+                    <img class="img-thumbnail float-left" style="max-height:100px!important;" src="~/Content/images/codigoQR.jpeg" alt="Código QR" />
+
+                    <img class="img-thumbnail img-circle" src="~/Content/images/logo.png" alt="Image" style="height:150px!important" />
+                    <h3 class="m-2">¡Hola @usuarioNombre!</h3>
+                    <h3 class="m-4">Bienvenido(a) a Gestión Integral SGI App</h3>
+
+                </div>
+                <div class="card-body text-center">
+
+                    <div class="row">
+                        <div class=" col-12">
+
+                            <div class="d-inline-block">
+                                <button class="btn btn-primary"><i class="fas fa-user-edit mr-2"></i>@Html.ActionLink("Ver mi perfil", "Index", "Cuenta", null, htmlAttributes: new { @class = "text-white font-weight-bold" })</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12 col-lg-6 col-xl-3">
+            <div class="card mb-2">
+                <img class="card-img-top" src="~/Content/images/clientes01.jpg" style=" filter: brightness(50%);" alt="Clientes">
+                <div class="card-img-overlay">
+                    <h5 class="card-title text-white font-weight-bold">Clientes</h5>
+                    <p class="card-text pb-1 pt-1 text-white">
+                        Información general <br /> de los clientes de <br /> Gestión integral SGI.
+                    </p>
+                    <a href="@Url.Action("Index","Clientes")" class="btn btn-primary">Abrir clientes</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 col-lg-6 col-xl-3">
+            <div class="card mb-2">
+                <img class="card-img-top" src="~/Content/images/calendar04.jpg" style=" filter: brightness(50%);" alt="Agenda">
+                <div class="card-img-overlay">
+                    <h5 class="card-title text-white font-weight-bold">Agenda</h5>
+                    <p class="card-text pb-1 pt-1 text-white">
+                        Calendario con <br /> las información <br /> de visita a los clientes.
+                    </p>
+                    <a href="@Url.Action("Index","Agenda")" class="btn btn-primary">Abrir agenda</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 col-lg-6 col-xl-3">
+            <div class="card mb-2">
+                <img class="card-img-top" src="~/Content/images/calendar01.jpg" style=" filter: brightness(50%);" alt="Actas">
+                <div class="card-img-overlay">
+                    <h5 class="card-title text-white font-weight-bold">Actas</h5>
+                    <p class="card-text pb-1 pt-1 text-white">
+                        Actas de visita <br /> generadas <br /> a los clientes.
+                    </p>
+                    <a href="@Url.Action("Index","Actas")" class="btn btn-primary">Abrir actas</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-6 col-xl-3">
+            <div class="card mb-2">
+                <img class="card-img-top" src="~/Content/images/informes01.jpg" style=" filter: brightness(50%);" alt="Informes">
+                <div class="card-img-overlay">
+                    <h5 class="card-title text-white font-weight-bold">Informes</h5>
+                    <p class="card-text pb-1 pt-1 text-white">
+                        Informes de visita <br /> y de contratos <br /> de los clientes.
+                    </p>
+                    <a href="@Url.Action("Index","Informes")" class="btn btn-primary">Abrir informes</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+
+
+
+</script>

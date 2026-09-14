@@ -1,0 +1,176 @@
+﻿<input type="hidden" id="usuarioID" value="@ViewBag.UsuarioID" />
+<input type="hidden" id="usuarioColorAgenda" value="@ViewBag.ColorAgenda" />
+<input type="hidden" id="horaInicial" value="@ViewBag.HoraInicial" />
+<input type="hidden" id="horaFinal" value="@ViewBag.HoraFinal" />
+<input type="hidden" id="duracionDefault" value="@ViewBag.DuracionEvento" />
+<input type="hidden" id="vistaDefault" value="@ViewBag.VistaDefault" />
+<input type="hidden" id="indexTblActividades" />
+<input type="hidden" id="fechaInicialProgramacion"/>
+<input type="hidden" id="fechaFinalProgramacion" />
+
+<input style="display:none" type="checkbox" id="inputAgregar" />
+<input style="display:none" type="checkbox" id="inputEditar" />
+<input style="display:none" type="checkbox" id="inputEliminar" />
+<input style="display:none" type="text" id="eventoID" />
+<input style="display:none" type="text" id="fechaDefault" />
+
+@*modelo Eventos*@
+<input style="display:none" type="text" class="modeloEventos" id="inputId" />
+<input style="display:none" type="text" class="modeloEventos" id="inputTitle" />
+<input style="display:none" type="text" class="modeloEventos" id="inputStart" />
+<input style="display:none" type="text" class="modeloEventos" id="inputEnd" />
+<input style="display:none" type="text" class="modeloEventos" id="inputBackgroundColor" />
+<input style="display:none" type="text" class="modeloEventos" id="inputClienteNombre" />
+<input style="display:none" type="text" class="modeloEventos" id="inputTipoEvento" />
+<input style="display:none" type="text" class="modeloEventos" id="inputDescripcion" />
+<input style="display:none" type="text" class="modeloEventos" id="inputAsesorID" />
+<input style="display:none" type="text" class="modeloEventos" id="inputAsesorNombre" />
+<input style="display:none" type="text" class="modeloEventos" id="inputAllDay" />
+<input style="display:none" type="text" class="modeloEventos" id="inputEnviado" />
+<input style="display:none" type="text" class="modeloEventos" id="inputCancelada" />
+<input style="display:none" type="text" class="modeloEventos" id="inputSoporte" />
+
+
+<div class="content-header pt-0 mt-0">
+    <div class="container-fluid pt-0 mt-0">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-dark font-weight-bold">Agenda</h1>
+                <small>Módulo para administrar la agenda de los asesores</small>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">SGIapp</a></li>
+                    <li class="breadcrumb-item active">Agenda</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="sticky-top mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title font-weight-bold">Busqueda rápida</h4>
+                            </div>
+                            <div class="card-body">
+
+                                <label class="form-control-label font-weight-bold text-muted" for="asesorBuscar">Asesor</label>
+                                <div class="form-group">
+                                    @Html.DropDownList("listaUsuarios", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "form-control select2", style = "width: 100%;", multiple = "multiple", id = "asesorBuscar" })
+                                </div>
+
+                                <label class="form-control-label font-weight-bold text-muted" for="clienteBuscar">Cliente</label>
+                                <div class="form-group">
+                                    @Html.DropDownList("listaClientes", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "form-control select2", style = "width: 100%;", multiple = "multiple", id = "clienteBuscar" })
+                                </div>
+
+                                <label class="form-control-label font-weight-bold text-muted" for="tipoEventoBuscar">Tipo de visita</label>
+                                <div class="form-group">
+                                    @Html.DropDownList("listaTipoEvento", null, "-- Seleccione una opción --", htmlAttributes: new { @class = "form-control select2", style = "width: 100%;", multiple = "multiple", id = "tipoEventoBuscar" })
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-xs-6 col-lg-6 ">
+                                        <button type="button" class="btn btn-block btn-primary" onclick="agendaCRUD.refrescarCalendario();"><i class="fas fa-sync-alt mr-2"></i>Refrescar</button>
+
+                                    </div>
+                                    <div class="col-xs-6 col-lg-6 ">
+                                        <button type="button" class="btn btn-block btn-primary" onclick="agendaCRUD.getCalendario();"><i class="fa fa-search mr-2"></i>Buscar</button>
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="card card-primary">
+                        <div class="card-body p-0">
+                            <!-- THE CALENDAR -->
+                            <div id="divGetCalendario"></div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+</div>
+
+@section BodyArea {
+    <div class=" modal fade fade bd-example-modal-sm" id="modal" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor">
+
+        </div>
+    </div>
+
+    <div class=" modal fade fade bd-example-modal-sm" id="modal2" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor2">
+
+        </div>
+    </div>
+
+
+    <div class=" modal fade fade bd-example-modal-sm" id="modal3" tabindex="10" role="dialog" aria-hidden="true" data-backdrop="static">
+        <div id="contenedor3">
+
+        </div>
+    </div>
+
+}
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#fechaDefault").val(new Date);
+
+            agendaCRUD.getCalendario();
+
+            //Primero debe ir el select2, sino se dañan los input
+            $(".select2").select2({
+                placeholder: '-- Seleccione una opción --',
+                theme: 'default'
+            });
+
+            $(".select2bs4").select2({
+                placeholder: '-- Seleccione una opción --',
+                theme: 'bootstrap4'
+            });
+
+            $("#btnAgregarCita").on("click", function () {
+
+                var url = $(this).data("url");
+
+                $.get(url, function (data) {
+
+                    $('#contenedor').empty().html(data);
+                    $('#modal').modal('show');
+                });
+            });
+        });
+
+    </script>
+}
+
+

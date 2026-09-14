@@ -1,0 +1,41 @@
+﻿html {
+    font-size: 14px;
+}
+
+.ancho-100 {
+    width: 100%;
+}
+
+.fondoOscuroSGI {
+    background-color: #343a40 !important;
+}
+
+.fondoColorSGI {
+    background-color: #3e78c8 !important;
+}
+
+.textoSGI {
+    color: #3e78c8 !important
+}
+
+.bannerSGI {
+    background-image: url("../Content/images/bannerSGI.jpg");
+    display: block
+}
+
+.input-group.with-focus .form-control {
+    transition: none;
+}
+
+    .input-group.with-focus .form-control:focus + .input-group-append > .input-group-text {
+        border-color: #66afe9;
+    }
+
+    .input-group.with-focus .form-control.is-invalid + .input-group-append > .input-group-text {
+        border-color: #f05050;
+    }
+
+    .input-group.with-focus .form-control.is-valid + .input-group-append > .input-group-text {
+        border-color: #28a745;
+    }
+

@@ -1,0 +1,27 @@
+﻿@{
+    Layout = null;
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger block-center" role="alert">
+        @ViewBag.Error
+    </div>
+}
+else
+{
+
+    <div id="calendar" class="pull-right"></div>
+
+}
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        agendaCRUD.getAllEventos();
+    });
+
+</script>

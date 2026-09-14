@@ -1,0 +1,138 @@
+﻿@model Models.TipoEventos
+@{
+    Layout = null;
+}
+
+<input type="hidden" id="tipoEventoID" value="@Model.IntTipoEventoID" />
+
+<div class="modal-dialog " style=" max-width:500px!important; max-height:100vh!important;">
+    <div class="modal-content card card-outline card-primary ">
+        <div class="modal-header bg-light pl-4 ">
+            <h3 class="modal-title font-weight-bold h4" id="myModalLabel"><span class=""><i class="fas fa-clone"></i></span>&nbsp; Modificar tipo de evento</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form method="post" action="#" id="formEditarGlobal">
+            @Html.AntiForgeryToken()
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12" style="height:auto">
+
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="tipoEventoCodigo">Código<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0 info" name="tipoEventoCodigo" value="@Model.StrCodigo" id="tipoEventoCodigo" type="text" placeholder="Código del tipo de evento..." autocomplete="off" minlength="1" maxlength="5" data-parsley-required data-parsley-errors-container="#errorTipoEventoCodigo" />
+                                    <div class="input-group-append" id="codigoIcono">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-clone"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span class="text-danger" id="errorTipoEventoCodigo"><small></small> </span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="form-control-label font-weight-bold" for="tipoEventoDescripcion">Descripción<span class="text-danger">*</span></label>
+                                <div class=" input-group with-focus">
+                                    <input class="form-control border-right-0 info" name="tipoEventoDescripcion" id="tipoEventoDescripcion" value="@Model.StrDescripcion" type="text" placeholder="Descripción del tipo de evento..." autocomplete="off" minlength="4" maxlength="50" data-parsley-required data-parsley-errors-container="#errorTipoEventoDescripcion" />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text text-muted bg-transparent border-left-0">
+                                            <i class="fas fa-tags"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span class="text-danger" id="errorTipoEventoDescripcion"><small></small> </span>
+                            </div>
+
+                            <div class="form-group  ">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-primary d-inline">
+                                        <input type="checkbox" id="opcEstado" checked="@Model.OpcEstado">
+                                        <label for="opcEstado">
+                                            ¿Activo?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group  ">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-primary d-inline">
+                                        <input type="checkbox" id="opcSoporte" checked="@Model.OpcSoporte">
+                                        <label for="opcSoporte">
+                                            NO generar acta
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="form-group  ">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-primary d-inline">
+                                        <input type="checkbox" id="opcAlerta" checked="@Model.OpcAlerta">
+                                        <label for="opcAlerta">
+                                            Generar alerta
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 mr">
+
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="row">
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="button" data-dismiss="modal" class="btn btn-block btn-dark">Cancelar</button>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-block ">Guardar</button>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $(document).ready(function () {
+
+            tipoEventosCRUD.updateTipoEventoAsync();
+
+        });
+    });
+
+</script>
+

@@ -1,0 +1,89 @@
+﻿@model List<Models.AsistentesActa>
+
+<div class="card-body p-0">
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger block-center" role="alert">
+            @ViewBag.Error
+        </div>
+    }
+    else
+    {
+        <table class="table projects">
+            <thead>
+                <tr>
+
+                    <th style="width: 50%">
+                        Nombre
+                    </th>
+                    <th style="width: 30%">
+                        Proceso
+                    </th>
+
+                    <th style="width: 10%" class="text-center">
+                        Asistencia
+                    </th>
+
+                    <th style="width: 10%" class="text-center">
+                        Acciones
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody id="tblDetalleAsistentes">
+
+
+                @foreach (var item in Model)
+                {
+
+                    <tr class="iAsistenteID" data-id="@item.IntAsistenteID">
+
+                        <td class=""><span class="iNombreAsistente">@item.StrNombre</span></td>
+
+                        <td class=""><span class="iProcesoAsistente">@item.StrProceso</span></td>
+
+                        @if (item.OpcAsiste == true)
+                        {
+                            <td class="text-center"><a href="#" class="iOpcAsiste" data-asistencia="True" onclick="actaCRUD.cambiarAsistencia(this);"><span class="badge badge-success">ASISTE</span></a></td>
+                        }
+                        else
+                        {
+                            <td class="text-center"><a href="#" class="iOpcAsiste" data-asistencia="False" onclick="actaCRUD.cambiarAsistencia(this);"><span class="badge badge-danger">NO ASISTE</span></a></td>
+                        }
+
+                        <td class="text-center"><button type="button" class="btn bg-white p-0 remove-item enviado" data-id="@item.IntAsistenteID" onclick="actaCRUD.identificarAsistentesDeleted(this);"><em class="fa fa-trash-alt fa-1x text-danger"></em> </button></td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+        </table>
+    }
+</div>
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.collapse').collapse();
+
+        $("#tblDetalleAsistentes > tr").each(function (i, tr) {
+
+            //Si el acta ya fue enviada
+            if ($("#opcEnviado").prop("checked")) {
+                $(".enviado", tr).attr("disabled", true);
+
+            }
+
+            $('.remove-item').off().click(function (e) {
+                $(this).parent('td').parent('tr').remove();
+            });
+
+        });
+
+    });
+
+</script>

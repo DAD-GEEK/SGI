@@ -1,0 +1,86 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+
+@model Models.Usuarios
+
+<div id="fondo"></div>
+
+<div class="login-box">
+    <!-- /.login-logo -->
+    <div class="card card-outline card-primary">
+
+        @*<div class="card-header text-center">
+                <a href="#" class="h1"><b>Gestión Integral</b> SGI</a>
+            </div>*@
+        <div class="login-logo">
+            <img src="~/Content/images/logo.png" class="img-responsive pt-3 pb-3" alt="Logo SGI" style="padding:30px 100px 0px 100px; width:100%" />
+
+        </div>
+        <form method="post" id="formValidarLogin">
+            @Html.AntiForgeryToken()
+            <div class="card-body pt-0">
+                <p class="login-box-msg font-weight-bold">Iniciar sesión en la aplicación</p>
+
+                <div class="form-group">
+                    <div class="input-group mb-3 with-focus pb-0">
+                        <input type="text" class="form-control border-right-0" id="usuarioLogin" name="usuarioLogin" placeholder="Usuario o correo electrónico..." autocomplete="off" required>
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-user"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group mb-3 with-focus">
+                        <input type="password" class="form-control border-right-0" id="contraseñaLogin" name="contraseñaLogin" placeholder="Contraseña..." autocomplete="off" required>
+                        <div class="input-group-append">
+                            <span class="input-group-text text-muted bg-transparent border-left-0">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <span class="text-danger" id="errorLogin">@ViewBag.Error</span>
+
+                <div class="social-auth-links text-center mt-2 mb-3  ">
+                    <button type="submit" class="btn btn-block btn-primary">
+                        <i class="fas fa-sign-in-alt mr-2"></i> <span class="font-weight-bold">Iniciar sesión</span>
+                    </button>
+                </div>
+
+                <p class="mb-1">
+                    <a href="#" id="olvideContraseña">Olvidé mi contraseña</a>
+                </p>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script src="@Scripts.Url("~/Plugins/jquery/jquery.min.js")"></script>
+<script src="@Scripts.Url("~/Scripts/app.js")"></script>
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $(document).ready(function () {
+            usuarioAutenticacion.validarLoginAsync();
+
+            $("#olvideContraseña").click(function () {
+                swal.fire("¡Información!", "Comuníquese con el usuario administrador para validar la contraseña", "info");
+
+            });
+        })
+
+    });
+
+</script>
