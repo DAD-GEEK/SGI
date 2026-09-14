@@ -98,6 +98,21 @@ jobs:
     if: ${{ needs.changes.outputs.core == 'true' }}
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: testpassword
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Descargar Codigo
         uses: actions/checkout@v4
@@ -109,10 +124,21 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
+      - name: Preparar Esquema PostgreSQL
+        run: |
+          PGPASSWORD=testpassword psql -h 127.0.0.1 -U postgres -d postgres -c "CREATE SCHEMA IF NOT EXISTS sgi;"
+
       - name: Otorgar Permisos de Ejecucion al Wrapper de Maven
         run: chmod +x mvnw
         working-directory: sgi-core-service
 
       - name: Compilar y Ejecutar Pruebas Unitarias (Maven)
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://127.0.0.1:5432/postgres?currentSchema=sgi
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: testpassword
+          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+          SPRING_JPA_PROPERTIES_HIBERNATE_HBM2DDL_CREATE_NAMESPACES: true
         run: ./mvnw clean test
         working-directory: sgi-core-service
+
